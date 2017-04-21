@@ -17,13 +17,15 @@ public class TestScreen implements Screen, InputProcessor {
     private SpriteBatch batch;
     private Texture img;
     private Vector2 imagePos;
+    private Vector2 imagePosMovement;
 
     @Override
     public void show() { //"wie" der Constructor
         SM.input.setInputProcessor(this);
         batch = new SpriteBatch();
-        img = new Texture("assets/badlogic.jpg");
+        img = new Texture("assets/guenter_right.png");
         imagePos = new Vector2(0, 0);
+        imagePosMovement = new Vector2(0,0);
     }
 
     @Override
@@ -33,6 +35,7 @@ public class TestScreen implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+        imagePos.add(imagePosMovement);
         batch.draw(img, imagePos.x, imagePos.y);
         batch.end();
     }
@@ -66,31 +69,53 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Input.Keys.A:
-                imagePos.set(imagePos.x - 5, imagePos.y);
-                break;
-            case Input.Keys.D:
-                imagePos.set(imagePos.x + 5, imagePos.y);
-                break;
-            case Input.Keys.S:
-                imagePos.set(imagePos.x, imagePos.y - 5);
-                break;
-            case Input.Keys.W:
-                imagePos.set(imagePos.x, imagePos.y + 5);
-                break;
 
+        switch (keycode) {
+            case Input.Keys.LEFT:
+            case Input.Keys.A:
+                imagePosMovement.set(-5, imagePosMovement.y);
+                break;
+            case Input.Keys.RIGHT:
+            case Input.Keys.D:
+                imagePosMovement.set(+5, imagePosMovement.y);
+                break;
+            case Input.Keys.DOWN:
+            case Input.Keys.S:
+                imagePosMovement.set(imagePosMovement.x, -5);
+                break;
+            case Input.Keys.UP:
+            case Input.Keys.W:
+                imagePosMovement.set(imagePosMovement.x, +5);
+                break;
         }
+
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
+
+        switch (keycode) {
+            case Input.Keys.LEFT:
+            case Input.Keys.RIGHT:
+            case Input.Keys.A:
+            case Input.Keys.D:
+                imagePosMovement.set(0, imagePosMovement.y);
+                break;
+            case Input.Keys.DOWN:
+            case Input.Keys.UP:
+            case Input.Keys.W:
+            case Input.Keys.S:
+                imagePosMovement.set(imagePosMovement.x, 0);
+                break;
+        }
+
         return false;
     }
 
     @Override
     public boolean keyTyped(char character) {
+
         return false;
     }
 
