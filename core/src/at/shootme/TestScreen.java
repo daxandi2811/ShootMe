@@ -1,6 +1,7 @@
 package at.shootme;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -15,14 +16,14 @@ public class TestScreen implements Screen, InputProcessor {
 
     private SpriteBatch batch;
     private Texture img;
-    private Vector2 clickPos;
+    private Vector2 imagePos;
 
     @Override
     public void show() { //"wie" der Constructor
         SM.input.setInputProcessor(this);
         batch = new SpriteBatch();
         img = new Texture("assets/badlogic.jpg");
-        clickPos = new Vector2(0, 0);
+        imagePos = new Vector2(0, 0);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class TestScreen implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(img, clickPos.x, clickPos.y);
+        batch.draw(img, imagePos.x, imagePos.y);
         batch.end();
     }
 
@@ -65,6 +66,21 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        switch (keycode) {
+            case Input.Keys.A:
+                imagePos.set(imagePos.x - 5, imagePos.y);
+                break;
+            case Input.Keys.D:
+                imagePos.set(imagePos.x + 5, imagePos.y);
+                break;
+            case Input.Keys.S:
+                imagePos.set(imagePos.x, imagePos.y - 5);
+                break;
+            case Input.Keys.W:
+                imagePos.set(imagePos.x, imagePos.y + 5);
+                break;
+
+        }
         return false;
     }
 
@@ -80,7 +96,7 @@ public class TestScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        clickPos.set(screenX, SM.graphics.getHeight() - screenY);
+        imagePos.set(screenX, SM.graphics.getHeight() - screenY);
         return false;
     }
 
