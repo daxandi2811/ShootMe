@@ -31,7 +31,7 @@ public class TestScreen implements Screen, InputProcessor {
     @Override
     public void render(float delta) { //hier nie Objekte erzeugen
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
@@ -73,19 +73,19 @@ public class TestScreen implements Screen, InputProcessor {
         switch (keycode) {
             case Input.Keys.LEFT:
             case Input.Keys.A:
-                imagePosMovement.set(-5, imagePosMovement.y);
+                imagePosMovement.set(-7, imagePosMovement.y);
                 break;
             case Input.Keys.RIGHT:
             case Input.Keys.D:
-                imagePosMovement.set(+5, imagePosMovement.y);
+                imagePosMovement.set(+7, imagePosMovement.y);
                 break;
             case Input.Keys.DOWN:
             case Input.Keys.S:
-                imagePosMovement.set(imagePosMovement.x, -5);
+                imagePosMovement.set(imagePosMovement.x, -7);
                 break;
             case Input.Keys.UP:
             case Input.Keys.W:
-                imagePosMovement.set(imagePosMovement.x, +5);
+                imagePosMovement.set(imagePosMovement.x, +7);
                 break;
         }
 
@@ -100,13 +100,28 @@ public class TestScreen implements Screen, InputProcessor {
             case Input.Keys.RIGHT:
             case Input.Keys.A:
             case Input.Keys.D:
+
                 imagePosMovement.set(0, imagePosMovement.y);
+
+                if(SM.input.isKeyPressed(Input.Keys.RIGHT) ||SM.input.isKeyPressed(Input.Keys.D))
+                    imagePosMovement.set(+7, imagePosMovement.y);
+
+                if(SM.input.isKeyPressed(Input.Keys.LEFT) ||SM.input.isKeyPressed(Input.Keys.A))
+                    imagePosMovement.set(-7, imagePosMovement.y);
+
                 break;
             case Input.Keys.DOWN:
             case Input.Keys.UP:
             case Input.Keys.W:
             case Input.Keys.S:
+
                 imagePosMovement.set(imagePosMovement.x, 0);
+
+                if(SM.input.isKeyPressed(Input.Keys.DOWN) ||SM.input.isKeyPressed(Input.Keys.S))
+                    imagePosMovement.set(-7, imagePosMovement.y);
+
+                if(SM.input.isKeyPressed(Input.Keys.UP) ||SM.input.isKeyPressed(Input.Keys.W))
+                    imagePosMovement.set(+7, imagePosMovement.y);
                 break;
         }
 
