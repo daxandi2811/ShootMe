@@ -8,6 +8,8 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -15,23 +17,23 @@ import com.badlogic.gdx.physics.box2d.*;
 /**
  * Created by Alexander Dietrich on 07.04.2017.
  */
-public class GameScreen implements Screen, InputProcessor {
+public class GameScreen implements Screen, InputProcessor, ShootMeVariables {
 
     private SpriteBatch batch;
     private World world;
     private OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
 
-    private Player player;
+    private Sprite floorSprite;
 
-    private static final float PIXELS_TO_METRES = 100f;
+    private Player player;
 
     private float partStep;
 
     @Override
     public void show() { //"wie" der Constructor
 
-        camera = new OrthographicCamera(1280, 720);
+        camera = new OrthographicCamera(12.8f * 100f, 7.2f * 100f); //change factor to 100 for normal view, change to 1.1 for model view
 
         debugRenderer = new Box2DDebugRenderer();
 
@@ -41,19 +43,25 @@ public class GameScreen implements Screen, InputProcessor {
         world = new World(new Vector2(0, -98), true);
 
         player = new Player();
-        player.init(new Vector2(0, 50), world);
+        player.init(new Vector2(0, 50 * PIXELS_TO_METERS), world);
 
+        floorSprite = new Sprite(new Texture("assets/irregular_stone_floor_20130930_1665458395.jpg"));
+
+        floorSprite.setSize(SM.graphics.getWidth(), 50);
+        floorSprite.setOriginCenter();
+        floorSprite.setPosition(-SM.graphics.getWidth()/2,0);
 
         BodyDef floorBodyDef = new BodyDef();
         floorBodyDef.type = BodyDef.BodyType.StaticBody;
 
-        floorBodyDef.position.set(0, 0);
+        floorBodyDef.position.set((floorSprite.getX()) * PIXELS_TO_METERS,
+                (floorSprite.getY()) * PIXELS_TO_METERS);
 
         Body floorBody = world.createBody(floorBodyDef);
 
         PolygonShape floorShape = new PolygonShape();
 
-        floorShape.setAsBox(SM.graphics.getWidth() / 2 - 1, 5);
+        floorShape.setAsBox( floorSprite.getWidth()* PIXELS_TO_METERS, floorSprite.getHeight() * PIXELS_TO_METERS);
 
 
         FixtureDef floorFixDef = new FixtureDef();
@@ -73,8 +81,9 @@ public class GameScreen implements Screen, InputProcessor {
      *
      * */
     private void step(float timeStep) {
+
         world.step(timeStep, 6, 2);
-        player.moveHorizontally();
+        player.move();
     }
 
     @Override
@@ -90,18 +99,16 @@ public class GameScreen implements Screen, InputProcessor {
             accumulator -= 1f / 60f;
         }
         while (accumulator > 1f / 60f);
-
         partStep += accumulator;
 
-
-        player.moveSprite();
 
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(player.getSprite(), player.getSprite().getX(), player.getSprite().getY());
+        player.drawSprite(batch);
+        floorSprite.draw(batch);
         batch.end();
 
         debugRenderer.render(world, camera.combined);
