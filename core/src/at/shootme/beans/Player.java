@@ -1,6 +1,6 @@
 package at.shootme.beans;
 
-import at.shootme.ShootMeVariables;
+import at.shootme.ShootMeConstants;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,7 +13,7 @@ import static at.shootme.beans.VerticalMovementState.*;
 /**
  * Created by Alexander Dietrich on 01.05.2017.
  */
-public class Player implements ShootMeVariables{
+public class Player implements ShootMeConstants {
 
     private Sprite sprite;
     private Body body;
@@ -21,7 +21,7 @@ public class Player implements ShootMeVariables{
     private HorizontalMovementState horizontalMovementState = STOPPED;
     private VerticalMovementState verticalMovementState = STANDING;
 
-    private static final String TEXTUREPATH = "assets/badlogic.jpg";
+    private static final String TEXTUREPATH = "assets/playersprite.png";
 
     public Player() {
     }
@@ -31,15 +31,16 @@ public class Player implements ShootMeVariables{
         Texture texture = new Texture(TEXTUREPATH);
         sprite = new Sprite(texture);
 
-       /* sprite.setSize(35f, 175f); resizing sprite
-        sprite.setOriginCenter();*/
-
+        sprite.setSize(sprite.getWidth() /2, sprite.getHeight() /2);
+        sprite.setOriginCenter();
 
         sprite.setPosition(position.x, position.y);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
+
+        System.out.println(sprite.getWidth());
         bodyDef.position.set((sprite.getX() + sprite.getWidth() / 2) * PIXELS_TO_METERS,
                 (sprite.getY() + sprite.getHeight() / 2) * PIXELS_TO_METERS);
 
@@ -49,7 +50,9 @@ public class Player implements ShootMeVariables{
 
         PolygonShape shape = new PolygonShape();
 
-        shape.setAsBox(sprite.getWidth() / 2*PIXELS_TO_METERS, sprite.getHeight() / 2 * PIXELS_TO_METERS);
+
+        //The minus 3 makes the polygon slighty smaller than the sprite so there are no visible gaps between the world and the player
+        shape.setAsBox((sprite.getWidth() -3) / 2*PIXELS_TO_METERS, (sprite.getHeight()-3) / 2 * PIXELS_TO_METERS);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -124,7 +127,6 @@ public class Player implements ShootMeVariables{
 
 
         body.applyLinearImpulse(new Vector2(horizontalForce, verticalForce), body.getWorldCenter(), true);
-        System.out.println(""+body.getLinearVelocity().x +"  "+ body.getLinearVelocity().y);
     }
 
     public void jump() {

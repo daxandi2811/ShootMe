@@ -17,7 +17,7 @@ import com.badlogic.gdx.physics.box2d.*;
 /**
  * Created by Alexander Dietrich on 07.04.2017.
  */
-public class GameScreen implements Screen, InputProcessor, ShootMeVariables {
+public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
     private SpriteBatch batch;
     private World world;
@@ -30,10 +30,11 @@ public class GameScreen implements Screen, InputProcessor, ShootMeVariables {
 
     private float partStep;
 
+
     @Override
     public void show() { //"wie" der Constructor
 
-        camera = new OrthographicCamera(12.8f * 100f, 7.2f * 100f); //change factor to 100 for normal view, change to 1.1 for model view
+        camera = new OrthographicCamera(12.8f * 101f, 7.2f * 101); //change factor to 110 for normal view, change to 1.1 for model view
 
         debugRenderer = new Box2DDebugRenderer();
 
@@ -54,14 +55,14 @@ public class GameScreen implements Screen, InputProcessor, ShootMeVariables {
         BodyDef floorBodyDef = new BodyDef();
         floorBodyDef.type = BodyDef.BodyType.StaticBody;
 
-        floorBodyDef.position.set((floorSprite.getX()) * PIXELS_TO_METERS,
-                (floorSprite.getY()) * PIXELS_TO_METERS);
+        floorBodyDef.position.set((floorSprite.getX() + floorSprite.getWidth() /2) * PIXELS_TO_METERS,
+                (floorSprite.getY()) + floorSprite.getHeight() /2 * PIXELS_TO_METERS);
 
         Body floorBody = world.createBody(floorBodyDef);
 
         PolygonShape floorShape = new PolygonShape();
 
-        floorShape.setAsBox( floorSprite.getWidth()* PIXELS_TO_METERS, floorSprite.getHeight() * PIXELS_TO_METERS);
+        floorShape.setAsBox( floorSprite.getWidth()/2* PIXELS_TO_METERS, floorSprite.getHeight() /2 * PIXELS_TO_METERS);
 
 
         FixtureDef floorFixDef = new FixtureDef();
@@ -100,6 +101,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeVariables {
         }
         while (accumulator > 1f / 60f);
         partStep += accumulator;
+
 
 
         Gdx.gl.glClearColor(255, 255, 255, 1);

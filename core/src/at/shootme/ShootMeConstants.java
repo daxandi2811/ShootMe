@@ -3,7 +3,7 @@ package at.shootme;
 /**
  * Created by Alexander Dietrich on 01.05.2017.
  */
-public interface ShootMeVariables {
+public interface ShootMeConstants {
 
     //only change for testing purposes!
     float METERS_TO_PIXELS = 100f; //default: 100f
