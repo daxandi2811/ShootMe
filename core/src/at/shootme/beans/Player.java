@@ -31,32 +31,32 @@ public class Player implements ShootMeConstants {
         Texture texture = new Texture(TEXTUREPATH);
         sprite = new Sprite(texture);
 
-        sprite.setSize(sprite.getWidth() /2, sprite.getHeight() /2);
+        sprite.setSize(sprite.getWidth() / 2, sprite.getHeight() / 2);
         sprite.setOriginCenter();
 
         sprite.setPosition(position.x, position.y);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-
-
-        System.out.println(sprite.getWidth());
+        bodyDef.linearDamping = 3f;
         bodyDef.position.set((sprite.getX() + sprite.getWidth() / 2) * PIXELS_TO_METERS,
                 (sprite.getY() + sprite.getHeight() / 2) * PIXELS_TO_METERS);
 
         body = world.createBody(bodyDef);
 
         body.setFixedRotation(true);
+        ;
 
         PolygonShape shape = new PolygonShape();
 
 
-        //The minus 3 makes the polygon slighty smaller than the sprite so there are no visible gaps between the world and the player
-        shape.setAsBox((sprite.getWidth() -3) / 2*PIXELS_TO_METERS, (sprite.getHeight()-3) / 2 * PIXELS_TO_METERS);
+        //The minus 3 makes the polygon slightly smaller than the sprite so there are no visible gaps between the world and the player
+        shape.setAsBox((sprite.getWidth() - 3) / 2 * PIXELS_TO_METERS, (sprite.getHeight() - 3) / 2 * PIXELS_TO_METERS);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.1f;
+        fixtureDef.friction = 0.6f;
+        fixtureDef.density = 1000f;
 
         fixture = body.createFixture(fixtureDef);
         shape.dispose();
@@ -97,13 +97,13 @@ public class Player implements ShootMeConstants {
 
         switch (horizontalMovementState) {
             case LEFT:
-                desiredHorizontalVelocity = Math.max(velocity.x - 1f, -5f);
+                desiredHorizontalVelocity = Math.max(velocity.x - 5f, -12.5f);
                 break;
             case STOPPING:
                 desiredHorizontalVelocity = velocity.x;
                 break;
             case RIGHT:
-                desiredHorizontalVelocity = Math.min(velocity.x + 1f, 5f);
+                desiredHorizontalVelocity = Math.min(velocity.x + 5f, 12.5f);
                 break;
             case STOPPED:
                 desiredHorizontalVelocity = 0;
@@ -120,17 +120,18 @@ public class Player implements ShootMeConstants {
                 verticalForce = 0 * body.getMass();
                 break;
             case JUMPING:
-                verticalForce = 20* body.getMass();
+                verticalForce = 50 * body.getMass();
                 verticalMovementState = STANDING;
                 break;
         }
 
 
         body.applyLinearImpulse(new Vector2(horizontalForce, verticalForce), body.getWorldCenter(), true);
+        System.out.println(body.getLinearVelocity().x + "  " + body.getLinearVelocity().y);
     }
 
     public void jump() {
-        if(verticalMovementState != AIRBORN) verticalMovementState = JUMPING;
+        if (verticalMovementState != AIRBORN) verticalMovementState = JUMPING;
     }
 
     public void drawSprite(SpriteBatch batch) {

@@ -34,7 +34,9 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     @Override
     public void show() { //"wie" der Constructor
 
-        camera = new OrthographicCamera(12.8f * 101f, 7.2f * 101); //change factor to 110 for normal view, change to 1.1 for model view
+        camera = new OrthographicCamera(12.8f * 200f, 7.2f * 200); //change factor to 110 for normal view, change to 1.1 for model view
+        camera.translate(0, 360);
+        camera.update();
 
         debugRenderer = new Box2DDebugRenderer();
 
@@ -44,25 +46,25 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         world = new World(new Vector2(0, -98), true);
 
         player = new Player();
-        player.init(new Vector2(0, 50 * PIXELS_TO_METERS), world);
+        player.init(new Vector2(0, 100 * PIXELS_TO_METERS), world);
 
         floorSprite = new Sprite(new Texture("assets/irregular_stone_floor_20130930_1665458395.jpg"));
 
-        floorSprite.setSize(SM.graphics.getWidth(), 50);
+        floorSprite.setSize(SM.graphics.getWidth() *2, 50);
         floorSprite.setOriginCenter();
-        floorSprite.setPosition(-SM.graphics.getWidth()/2,0);
+        floorSprite.setPosition(-SM.graphics.getWidth(), 0);
 
         BodyDef floorBodyDef = new BodyDef();
         floorBodyDef.type = BodyDef.BodyType.StaticBody;
 
-        floorBodyDef.position.set((floorSprite.getX() + floorSprite.getWidth() /2) * PIXELS_TO_METERS,
-                (floorSprite.getY()) + floorSprite.getHeight() /2 * PIXELS_TO_METERS);
+        floorBodyDef.position.set((floorSprite.getX() + floorSprite.getWidth() / 2) * PIXELS_TO_METERS,
+                (floorSprite.getY()) + floorSprite.getHeight() / 2 * PIXELS_TO_METERS);
 
         Body floorBody = world.createBody(floorBodyDef);
 
         PolygonShape floorShape = new PolygonShape();
 
-        floorShape.setAsBox( floorSprite.getWidth()/2* PIXELS_TO_METERS, floorSprite.getHeight() /2 * PIXELS_TO_METERS);
+        floorShape.setAsBox(floorSprite.getWidth() / 2 * PIXELS_TO_METERS, floorSprite.getHeight() / 2 * PIXELS_TO_METERS);
 
 
         FixtureDef floorFixDef = new FixtureDef();
@@ -82,9 +84,9 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
      *
      * */
     private void step(float timeStep) {
-
-        world.step(timeStep, 6, 2);
         player.move();
+        world.step(timeStep, 6, 2);
+
     }
 
     @Override
@@ -101,7 +103,6 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         }
         while (accumulator > 1f / 60f);
         partStep += accumulator;
-
 
 
         Gdx.gl.glClearColor(255, 255, 255, 1);
