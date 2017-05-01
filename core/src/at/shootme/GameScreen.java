@@ -1,17 +1,16 @@
 package at.shootme;
 
+import at.shootme.beans.HorizontalMovementState;
+import at.shootme.beans.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.physics.box2d.utils.Box2DBuild;
 
 /**
  * Created by Alexander Dietrich on 07.04.2017.
@@ -19,14 +18,15 @@ import com.badlogic.gdx.physics.box2d.utils.Box2DBuild;
 public class GameScreen implements Screen, InputProcessor {
 
     private SpriteBatch batch;
-    private Texture img;
-    private Sprite sprite;
     private World world;
-    private Body body;
     private OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
 
+    private Player player;
+
     private static final float PIXELS_TO_METRES = 100f;
+
+    private float partStep;
 
     @Override
     public void show() { //"wie" der Constructor
@@ -38,42 +38,22 @@ public class GameScreen implements Screen, InputProcessor {
         SM.input.setInputProcessor(this);
         batch = new SpriteBatch();
 
-        img = new Texture("assets/badlogic.jpg");
-        sprite = new Sprite(img);
-        sprite.setPosition(0,50);
+        world = new World(new Vector2(0, -98), true);
 
+        player = new Player();
+        player.init(new Vector2(0, 50), world);
 
-        world  = new World(new Vector2(0, -98f), true);
-
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-
-        bodyDef.position.set(sprite.getX() + sprite.getWidth() /2, sprite.getY() + sprite.getHeight() /2);
-
-        body = world.createBody(bodyDef);
-
-        PolygonShape shape = new PolygonShape();
-
-        shape.setAsBox(sprite.getWidth()/2, sprite.getHeight() /2);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
-
-        Fixture fixture = body.createFixture(fixtureDef);
-
-        shape.dispose();
 
         BodyDef floorBodyDef = new BodyDef();
         floorBodyDef.type = BodyDef.BodyType.StaticBody;
 
-        floorBodyDef.position.set(0,0);
+        floorBodyDef.position.set(0, 0);
 
         Body floorBody = world.createBody(floorBodyDef);
 
         PolygonShape floorShape = new PolygonShape();
 
-        floorShape.setAsBox(SM.graphics.getWidth() /2 -1, 5);
+        floorShape.setAsBox(SM.graphics.getWidth() / 2 - 1, 5);
 
 
         FixtureDef floorFixDef = new FixtureDef();
@@ -86,18 +66,42 @@ public class GameScreen implements Screen, InputProcessor {
         floorShape.dispose();
     }
 
+
+    /***
+     *
+     * Custom step method for movement etc
+     *
+     * */
+    private void step(float timeStep) {
+        world.step(timeStep, 6, 2);
+        player.moveHorizontally();
+    }
+
     @Override
     public void render(float delta) { //hier nie Objekte erzeugen
 
-        world.step(1f/60f, 6,2);
-        sprite.setPosition(body.getPosition().x - sprite.getWidth() /2, body.getPosition().y - sprite.getHeight() /2);
+        float accumulator = delta;
+        if (partStep >= 1f / 60f) {
+            step(Math.min(1f / 60f, delta));
+            partStep -= 1f / 60f;
+        }
+        do {
+            step(Math.min(1f / 60f, delta));
+            accumulator -= 1f / 60f;
+        }
+        while (accumulator > 1f / 60f);
+
+        partStep += accumulator;
+
+
+        player.moveSprite();
 
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(sprite, sprite.getX(), sprite.getY());
+        batch.draw(player.getSprite(), player.getSprite().getX(), player.getSprite().getY());
         batch.end();
 
         debugRenderer.render(world, camera.combined);
@@ -121,7 +125,6 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void hide() {
         batch.dispose();
-        img.dispose();
         world.dispose();
         SM.input.setInputProcessor(null);
     }
@@ -134,14 +137,35 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
 
+        switch (keycode) {
+            case Input.Keys.SPACE:
+
+                player.jump();
+                break;
+            case Input.Keys.A:
+                player.setHorizontalMovementState(HorizontalMovementState.LEFT);
+                break;
+            case Input.Keys.D:
+                player.setHorizontalMovementState(HorizontalMovementState.RIGHT);
+                break;
+        }
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        switch (keycode) {
+            case Input.Keys.A:
+            case Input.Keys.D:
+                if (SM.input.isKeyPressed(Input.Keys.A)) {
+                    player.setHorizontalMovementState(HorizontalMovementState.LEFT);
+                } else if (SM.input.isKeyPressed(Input.Keys.D)) {
+                    player.setHorizontalMovementState(HorizontalMovementState.RIGHT);
+                } else
+                    player.setHorizontalMovementState(HorizontalMovementState.STOPPING);
+                break;
 
-
-
+        }
         return false;
     }
 
@@ -175,6 +199,7 @@ public class GameScreen implements Screen, InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
 
 }
 
