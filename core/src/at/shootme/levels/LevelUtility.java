@@ -21,7 +21,7 @@ public class LevelUtility implements ShootMeConstants{
      * @param density
      * @return
      *
-     * This method creates the physics objects for the world.
+     * This method creates the physics objects for the level.
      */
     public static Sprite createLevelObject(World world, Texture texture, Vector2 size, Vector2 position, BodyDef.BodyType bodyType, float density)
     {
