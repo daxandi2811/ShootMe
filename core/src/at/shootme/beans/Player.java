@@ -45,7 +45,6 @@ public class Player implements ShootMeConstants {
         body = world.createBody(bodyDef);
 
         body.setFixedRotation(true);
-        ;
 
         PolygonShape shape = new PolygonShape();
 
@@ -90,11 +89,11 @@ public class Player implements ShootMeConstants {
         Vector2 velocity = body.getLinearVelocity();
 
         //Calculating horizontal movement
-        float desiredHorizontalVelocity = 0;
         if (horizontalMovementState == HorizontalMovementState.STOPPING && Math.abs(velocity.x) < 0.001f) {
             horizontalMovementState = STOPPED;
         }
 
+        float desiredHorizontalVelocity = 0;
         switch (horizontalMovementState) {
             case LEFT:
                 desiredHorizontalVelocity = Math.max(velocity.x - 5f, -14f);

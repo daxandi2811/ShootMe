@@ -2,6 +2,8 @@ package at.shootme;
 
 import at.shootme.beans.HorizontalMovementState;
 import at.shootme.beans.Player;
+import at.shootme.levels.Level;
+import at.shootme.levels.TestLevel;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -24,11 +26,11 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
 
-    private Sprite floorSprite;
-
     private Player player;
 
     private float partStep;
+
+    private Level level;
 
 
     @Override
@@ -48,33 +50,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         player = new Player();
         player.init(new Vector2(0, 100), world);
 
-        floorSprite = new Sprite(new Texture("assets/irregular_stone_floor_20130930_1665458395.jpg"));
-
-        floorSprite.setSize(SM.graphics.getWidth() *2, 50);
-        floorSprite.setOriginCenter();
-        floorSprite.setPosition(-SM.graphics.getWidth(), 0);
-
-        BodyDef floorBodyDef = new BodyDef();
-        floorBodyDef.type = BodyDef.BodyType.StaticBody;
-
-        floorBodyDef.position.set((floorSprite.getX() + floorSprite.getWidth() / 2) * PIXELS_TO_METERS,
-                (floorSprite.getY()) + floorSprite.getHeight() / 2 * PIXELS_TO_METERS);
-
-        Body floorBody = world.createBody(floorBodyDef);
-
-        PolygonShape floorShape = new PolygonShape();
-
-        floorShape.setAsBox(floorSprite.getWidth() / 2 * PIXELS_TO_METERS, floorSprite.getHeight() / 2 * PIXELS_TO_METERS);
-
-
-        FixtureDef floorFixDef = new FixtureDef();
-        floorFixDef.shape = floorShape;
-        floorFixDef.density = 1f;
-
-        Fixture floorFixture = floorBody.createFixture(floorFixDef);
-
-
-        floorShape.dispose();
+        level = new TestLevel(world);
     }
 
 
@@ -110,8 +86,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        level.render(batch);
         player.drawSprite(batch);
-        floorSprite.draw(batch);
         batch.end();
 
         debugRenderer.render(world, camera.combined);
