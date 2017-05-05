@@ -34,7 +34,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     @Override
     public void show() { //"wie" der Constructor
 
-        camera = new OrthographicCamera(12.8f * 200f, 7.2f * 200); //change factor to 110 for normal view, change to 1.1 for model view
+        camera = new OrthographicCamera(12.8f * 200f, 7.2f * 200f); //change factor to 110 for normal view, change to 1.1 for model view
         camera.translate(0, 360);
         camera.update();
 
@@ -46,7 +46,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         world = new World(new Vector2(0, -98), true);
 
         player = new Player();
-        player.init(new Vector2(0, 100 * PIXELS_TO_METERS), world);
+        player.init(new Vector2(0, 100), world);
 
         floorSprite = new Sprite(new Texture("assets/irregular_stone_floor_20130930_1665458395.jpg"));
 

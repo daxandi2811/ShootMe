@@ -97,13 +97,13 @@ public class Player implements ShootMeConstants {
 
         switch (horizontalMovementState) {
             case LEFT:
-                desiredHorizontalVelocity = Math.max(velocity.x - 5f, -12.5f);
+                desiredHorizontalVelocity = Math.max(velocity.x - 5f, -14f);
                 break;
             case STOPPING:
                 desiredHorizontalVelocity = velocity.x;
                 break;
             case RIGHT:
-                desiredHorizontalVelocity = Math.min(velocity.x + 5f, 12.5f);
+                desiredHorizontalVelocity = Math.min(velocity.x + 5f, 14f);
                 break;
             case STOPPED:
                 desiredHorizontalVelocity = 0;
