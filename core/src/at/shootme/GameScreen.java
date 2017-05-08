@@ -2,8 +2,7 @@ package at.shootme;
 
 import at.shootme.beans.HorizontalMovementState;
 import at.shootme.beans.Player;
-import at.shootme.levels.Level;
-import at.shootme.levels.TestLevel;
+import at.shootme.levels.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -36,8 +35,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     @Override
     public void show() { //"wie" der Constructor
 
-        camera = new OrthographicCamera(12.8f * 200f, 7.2f * 200f); //change factor to 110 for normal view, change to 1.1 for model view
-        camera.translate(0, 360);
+        camera = new OrthographicCamera(12.8f * 300, 7.2f * 300); //change factor to 110 for normal view, change to 1.1 for model view
+        camera.translate(0, 640);
         camera.update();
 
         debugRenderer = new Box2DDebugRenderer();
@@ -48,9 +47,9 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         world = new World(new Vector2(0, -98), true);
 
         player = new Player();
-        player.init(new Vector2(0, 100), world);
+        player.init(new Vector2(0, -5), world);
 
-        level = new TestLevel(world);
+        level = new Level1(world);
     }
 
 
