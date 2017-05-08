@@ -23,7 +23,7 @@ public class LevelUtility implements ShootMeConstants{
      *
      * This method creates the physics objects for the level.
      */
-    public static Sprite createLevelObject(World world, Texture texture, Vector2 size, Vector2 position, BodyDef.BodyType bodyType, float density)
+    public static Sprite createLevelObject(Texture texture, Vector2 size, Vector2 position, World world, BodyDef.BodyType bodyType, float density)
     {
         Sprite sprite = new Sprite(texture);
         sprite.setSize(size.x, size.y);
@@ -53,4 +53,16 @@ public class LevelUtility implements ShootMeConstants{
 
         return sprite;
     }
+
+    public static Sprite createLevelSprite(Texture texture, Vector2 size, Vector2 position)
+    {
+        Sprite sprite = new Sprite(texture);
+        sprite.setSize(size.x, size.y);
+        sprite.setOriginCenter();
+        sprite.setPosition(position.x, position.y);
+
+
+        return sprite;
+    }
+
 }
