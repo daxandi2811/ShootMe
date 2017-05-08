@@ -34,7 +34,7 @@ public class LevelUtility implements ShootMeConstants{
         floorBodyDef.type = bodyType;
 
         floorBodyDef.position.set((sprite.getX() + sprite.getWidth() / 2) * PIXELS_TO_METERS,
-                (sprite.getY()) + sprite.getHeight() / 2 * PIXELS_TO_METERS);
+                (sprite.getY() + sprite.getHeight() / 2) * PIXELS_TO_METERS);
 
         Body floorBody = world.createBody(floorBodyDef);
 
