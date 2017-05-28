@@ -1,6 +1,7 @@
 package at.shootme.beans;
 
 import at.shootme.ShootMeConstants;
+import at.shootme.util.vectors.Vector2Util;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,33 +22,28 @@ public class Player implements ShootMeConstants {
     private HorizontalMovementState horizontalMovementState = STOPPED;
     private VerticalMovementState verticalMovementState = STANDING;
 
-    private static final String TEXTUREPATH = "assets/playersprite.png";
+    private String texturepath;
 
     public Player() {
     }
 
     public void init(Vector2 position, World world) {
 
-        Texture texture = new Texture(TEXTUREPATH);
+        Texture texture = new Texture(texturepath);
         sprite = new Sprite(texture);
 
         sprite.setSize(sprite.getWidth() / 2, sprite.getHeight() / 2);
         sprite.setOriginCenter();
 
-        sprite.setPosition(position.x, position.y);
-
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.linearDamping = 3f;
-        bodyDef.position.set((sprite.getX() + sprite.getWidth() / 2) * PIXELS_TO_METERS,
-                (sprite.getY() + sprite.getHeight() / 2) * PIXELS_TO_METERS);
+        bodyDef.position.set(position);
 
         body = world.createBody(bodyDef);
-
         body.setFixedRotation(true);
 
         PolygonShape shape = new PolygonShape();
-
 
         //The minus 3 makes the polygon slightly smaller than the sprite so there are no visible gaps between the world and the player
         shape.setAsBox((sprite.getWidth() - 3) / 2 * PIXELS_TO_METERS, (sprite.getHeight() - 3) / 2 * PIXELS_TO_METERS);
@@ -71,6 +67,10 @@ public class Player implements ShootMeConstants {
 
     public Fixture getFixture() {
         return fixture;
+    }
+
+    public void setTexturepath(String texturepath) {
+        this.texturepath = texturepath;
     }
 
     public HorizontalMovementState getHorizontalMovementState() {
@@ -126,7 +126,23 @@ public class Player implements ShootMeConstants {
 
 
         body.applyLinearImpulse(new Vector2(horizontalForce, verticalForce), body.getWorldCenter(), true);
-        System.out.println(body.getLinearVelocity().x + "  " + body.getLinearVelocity().y);
+//        System.out.println(body.getLinearVelocity().x + "  " + body.getLinearVelocity().y);
+    }
+
+    public StandardShot shootAt(Vector2 clickPosition) {
+        Vector2 playerPosition = body.getPosition();
+        float angle = Vector2Util.getAngleFromAToB(playerPosition, clickPosition);
+        Vector2 directionVector = Vector2Util.degreeToVector2(angle);
+        int initialShotSpeed = 40;
+        Vector2 initialShotVelocity = directionVector.scl(initialShotSpeed);
+        StandardShot shot = new StandardShot(playerPosition, initialShotVelocity, getWorld());
+//        System.out.println("playerPosition: "+ playerPosition + " --- " + "clickPosition: "+ clickPosition + " --- " + "initialShotVelocity: "+ initialShotVelocity);
+//        System.out.println("directionVector: "+ directionVector + " --- " + "angle: "+ angle + " --- ");
+        return shot;
+    }
+
+    private World getWorld() {
+        return body.getWorld();
     }
 
     public void jump() {
