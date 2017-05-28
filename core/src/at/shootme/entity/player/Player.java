@@ -1,6 +1,11 @@
-package at.shootme.beans;
+package at.shootme.entity.player;
 
 import at.shootme.ShootMeConstants;
+import at.shootme.beans.HorizontalMovementState;
+import at.shootme.entity.shot.StandardShot;
+import at.shootme.beans.VerticalMovementState;
+import at.shootme.entity.general.Drawable;
+import at.shootme.entity.general.Entity;
 import at.shootme.util.vectors.Vector2Util;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -14,7 +19,7 @@ import static at.shootme.beans.VerticalMovementState.*;
 /**
  * Created by Alexander Dietrich on 01.05.2017.
  */
-public class Player implements ShootMeConstants {
+public class Player extends Entity implements ShootMeConstants, Drawable {
 
     private Sprite sprite;
     private Body body;
@@ -41,6 +46,7 @@ public class Player implements ShootMeConstants {
         bodyDef.position.set(position);
 
         body = world.createBody(bodyDef);
+        body.setUserData(this);
         body.setFixedRotation(true);
 
         PolygonShape shape = new PolygonShape();
@@ -149,7 +155,8 @@ public class Player implements ShootMeConstants {
         if (verticalMovementState != AIRBORN) verticalMovementState = JUMPING;
     }
 
-    public void drawSprite(SpriteBatch batch) {
+    @Override
+    public void draw(SpriteBatch batch) {
         sprite.setPosition(body.getPosition().x * METERS_TO_PIXELS - sprite.getWidth() / 2, body.getPosition().y * METERS_TO_PIXELS - sprite.getHeight() / 2);
         sprite.draw(batch);
     }

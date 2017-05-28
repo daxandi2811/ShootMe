@@ -1,37 +1,47 @@
 package at.shootme.levels;
 
-import at.shootme.SM;
 import at.shootme.ShootMeConstants;
-import com.badlogic.gdx.graphics.Texture;
+import at.shootme.entity.general.Drawable;
+import at.shootme.entity.general.Entity;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
-import javax.swing.text.StyledEditorKit;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * Created by Alexander Dietrich on 05.05.2017.
  */
 public class Level implements ShootMeConstants {
 
-    protected TreeMap<Integer, Sprite> sprites;
-    protected World world;
-    protected int objectCount = 0;
+    private List<Entity> entities = new ArrayList<>();
+    private List<Drawable> drawables = new ArrayList<>();
+    protected final World world;
 
     public Level(World world) {
         this.world = world;
-        this.sprites = new TreeMap<>();
     }
 
-    public void render(SpriteBatch batch)
-    {
-        for(Sprite sprite : sprites.values())
-        {
-            sprite.draw(batch);
+    public void add(Entity entity) {
+        entities.add(entity);
+        if (entity instanceof Drawable) {
+            drawables.add((Drawable) entity);
+        }
+    }
+
+    public void addCosmetic(Drawable drawable) {
+        if (drawable instanceof Entity) {
+            throw new IllegalArgumentException("cosmetic is not allowed to be an " + Entity.class.getSimpleName());
+        } else {
+            drawables.add(drawable);
+        }
+    }
+
+    public void render(SpriteBatch batch) {
+        for (Drawable drawable : drawables) {
+            drawable.draw(batch);
         }
     }
 
