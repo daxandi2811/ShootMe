@@ -3,6 +3,8 @@ package at.shootme;
 import at.shootme.beans.HorizontalMovementState;
 import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.StandardShot;
+import at.shootme.logic.StepListener;
+import at.shootme.physics.GameContactFilter;
 import at.shootme.physics.GameContactListener;
 import at.shootme.util.vectors.Vector2Util;
 import at.shootme.levels.*;
@@ -19,6 +21,7 @@ import com.badlogic.gdx.physics.box2d.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created by Alexander Dietrich on 07.04.2017.
@@ -33,26 +36,29 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private Player player1;
     private Player player2;
 
-    private List<StandardShot> shots = new ArrayList<>();
-
     private float partStep;
 
     private Level level;
 
+    private TreeMap<Integer, List<StepListener>> stepListenerListsByPriority = new TreeMap<>();
+
+    public GameScreen() {
+        SM.gameScreen = this;
+    }
 
     @Override
     public void show() {
         if (!ShootMeConstants.HIT_BOX_MODE) {
-            camera = new OrthographicCamera(12.8f * 300f, 7.2f * 300f); //change factor to 110 for normal view, change to 1.1 for model view
+            camera = new OrthographicCamera(12.8f * 300f, 7.2f * 300f);
             camera.translate(0, 640);
         } else {
-            camera = new OrthographicCamera(12.8f * 3f, 7.2f * 3f); //change factor to 110 for normal view, change to 1.1 for model view
+            camera = new OrthographicCamera(12.8f * 3f, 7.2f * 3f);
         }
         camera.update();
 
         debugRenderer = new Box2DDebugRenderer();
 
-        SM.input.setInputProcessor(this);
+        Gdx.input.setInputProcessor(this);
         batch = new SpriteBatch();
 
         world = new World(new Vector2(0, -98), true);
@@ -68,8 +74,12 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         player2.init(new Vector2(300, 100).scl(PIXELS_TO_METERS), world);
         level.add(player2);
 
-        world.setContactListener(new GameContactListener());
+        SM.level = level;
 
+        GameContactListener listener = new GameContactListener();
+        registerStepListener(1, listener);
+        world.setContactListener(listener);
+        world.setContactFilter(new GameContactFilter());
     }
 
 
@@ -79,10 +89,27 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
      *
      * */
     private void step(float timeStep) {
+        stepListenerListsByPriority.values().forEach(stepListeners -> stepListeners.forEach(stepListener -> {
+            stepListener.beforeWorldStep(timeStep);
+        }));
+
         player1.move();
         player2.move();
         world.step(timeStep, 6, 2);
 
+        stepListenerListsByPriority.values().forEach(stepListeners -> stepListeners.forEach(stepListener -> {
+            stepListener.afterWorldStep(timeStep);
+        }));
+    }
+
+    /**
+     *
+     * @param priorityIndex lower => earlier
+     * @param stepListener
+     */
+    public void registerStepListener(int priorityIndex, StepListener stepListener){
+        List<StepListener> stepListeners = stepListenerListsByPriority.computeIfAbsent(priorityIndex, integer -> new ArrayList<>());
+        stepListeners.add(stepListener);
     }
 
     @Override
@@ -131,7 +158,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     public void hide() {
         batch.dispose();
         world.dispose();
-        SM.input.setInputProcessor(null);
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
@@ -170,18 +197,18 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         switch (keycode) {
             case Input.Keys.A:
             case Input.Keys.D:
-                if (SM.input.isKeyPressed(Input.Keys.A)) {
+                if (Gdx.input.isKeyPressed(Input.Keys.A)) {
                     player1.setHorizontalMovementState(HorizontalMovementState.LEFT);
-                } else if (SM.input.isKeyPressed(Input.Keys.D)) {
+                } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
                     player1.setHorizontalMovementState(HorizontalMovementState.RIGHT);
                 } else
                     player1.setHorizontalMovementState(HorizontalMovementState.STOPPING);
                 break;
             case Input.Keys.LEFT:
             case Input.Keys.RIGHT:
-                if (SM.input.isKeyPressed(Input.Keys.LEFT)) {
+                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                     player2.setHorizontalMovementState(HorizontalMovementState.LEFT);
-                } else if (SM.input.isKeyPressed(Input.Keys.RIGHT)) {
+                } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                     player2.setHorizontalMovementState(HorizontalMovementState.RIGHT);
                 } else
                     player2.setHorizontalMovementState(HorizontalMovementState.STOPPING);
@@ -201,14 +228,9 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         Vector2 worldClickPoint = Vector2Util.convertVector3To2(camera.unproject(new Vector3(screenX, screenY, 0)));
         StandardShot shot = player1.shootAt(worldClickPoint.scl(PIXELS_TO_METERS));
         if (shot != null) {
-            addShot(shot);
+            level.add(shot);
         }
         return true;
-    }
-
-    private void addShot(StandardShot shot) {
-        shots.add(shot);
-        level.add(shot);
     }
 
     @Override

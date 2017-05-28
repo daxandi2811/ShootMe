@@ -1,10 +1,16 @@
 package at.shootme;
 
-import com.badlogic.gdx.Gdx;
+import at.shootme.levels.Level;
+import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * Created by Alexander Dietrich on 07.04.2017.
+ *
+ * Globally accessible current bean instances.
  */
-public class SM extends Gdx {
+public class SM {
     public static ShootMeGame game;
+    public static GameScreen gameScreen;
+    public static World world;
+    public static Level level;
 }

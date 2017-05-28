@@ -24,21 +24,20 @@ public class Platform extends Entity implements Drawable {
 
     public Platform(Vector2 position, Vector2 size, Texture texture, World world) {
         sprite = new Sprite(texture);
-        sprite.setSize(size.x, size.y);
+        sprite.setSize(size.cpy().scl(METERS_TO_PIXELS).x, size.cpy().scl(METERS_TO_PIXELS).y);
         sprite.setOriginCenter();
-        sprite.setPosition(position.x, position.y);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.StaticBody;
 
-        bodyDef.position.set((sprite.getX() + sprite.getWidth() / 2) * PIXELS_TO_METERS,
-                (sprite.getY() + sprite.getHeight() / 2) * PIXELS_TO_METERS);
+        bodyDef.position.set(position.x + size.x / 2,
+                position.y + size.y / 2);
 
         body = world.createBody(bodyDef);
         body.setUserData(this);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(sprite.getWidth() / 2 * PIXELS_TO_METERS, sprite.getHeight() / 2 * PIXELS_TO_METERS);
+        shape.setAsBox(size.x / 2, size.y / 2);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -56,5 +55,10 @@ public class Platform extends Entity implements Drawable {
     @Override
     public EntityCategory getCategory() {
         return EntityCategory.PLATFORM;
+    }
+
+    @Override
+    public Body getBody() {
+        return body;
     }
 }

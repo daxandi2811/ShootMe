@@ -1,9 +1,8 @@
 package at.shootme.entity.shot;
 
-import at.shootme.entity.EntityCategory;
+import at.shootme.SM;
 import at.shootme.entity.general.Drawable;
 import at.shootme.entity.general.Entity;
-import at.shootme.util.vectors.Vector2Util;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,7 +15,7 @@ import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
 /**
  * Created by Nicole on 05.05.2017.
  */
-public class StandardShot extends Entity implements Drawable {
+public class StandardShot extends Shot implements Drawable {
 
     public static final int TEXTURE_SCALE = 3;
     private Sprite sprite;
@@ -24,7 +23,11 @@ public class StandardShot extends Entity implements Drawable {
     private Fixture fixture;
     private static final String TEXTUREPATH = "assets/standard_bullet.png";
 
-    public StandardShot(Vector2 position, Vector2 initialVelocity, World world){
+    private Entity originator;
+
+    public StandardShot(Vector2 position, Vector2 initialVelocity, Entity originator, World world) {
+        this.originator = originator;
+
         Texture texture = new Texture(TEXTUREPATH);
         sprite = new Sprite(texture);
         sprite.setScale(TEXTURE_SCALE);
@@ -40,6 +43,7 @@ public class StandardShot extends Entity implements Drawable {
         body = world.createBody(bodyDef);
         body.setUserData(this);
         body.setFixedRotation(true);
+        body.setBullet(true);
 
         CircleShape shape = new CircleShape();
         shape.setRadius((sprite.getWidth() / 2) * PIXELS_TO_METERS);
@@ -54,13 +58,23 @@ public class StandardShot extends Entity implements Drawable {
     }
 
     @Override
+    public boolean shouldCollideWith(Entity entity) {
+        return this.originator != entity;
+    }
+
+    @Override
+    public void collidedWith(Entity entity) {
+        SM.level.queueForRemoval(entity);
+    }
+
+    @Override
     public void draw(SpriteBatch batch) {
         sprite.setPosition(body.getPosition().x * METERS_TO_PIXELS - sprite.getWidth() / 2, body.getPosition().y * METERS_TO_PIXELS - sprite.getHeight() / 2);
         sprite.draw(batch);
     }
 
     @Override
-    public EntityCategory getCategory() {
-        return EntityCategory.SHOT;
+    public Body getBody() {
+        return body;
     }
 }

@@ -4,9 +4,12 @@ import com.badlogic.gdx.Game;
 
 public class ShootMeGame extends Game {
 
+	public ShootMeGame() {
+		SM.game = this;
+	}
+
 	@Override
 	public void create() {
-		SM.game = this; //do not change this variable!
 		setScreen(new GameScreen());
 	}
 

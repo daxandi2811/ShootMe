@@ -1,8 +1,10 @@
 package at.shootme.levels;
 
+import at.shootme.SM;
 import at.shootme.ShootMeConstants;
 import at.shootme.entity.general.Drawable;
 import at.shootme.entity.general.Entity;
+import at.shootme.logic.StepListener;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
@@ -14,19 +16,21 @@ import java.util.TreeMap;
 /**
  * Created by Alexander Dietrich on 05.05.2017.
  */
-public class Level implements ShootMeConstants {
+public class Level implements ShootMeConstants, StepListener {
 
-    private List<Entity> entities = new ArrayList<>();
-    private List<Drawable> drawables = new ArrayList<>();
+    private final List<Entity> entities = new ArrayList<>();
+    private final List<Drawable> drawables = new ArrayList<>();
+    private final List<Entity> removalQueue = new ArrayList<>();
     protected final World world;
 
     public Level(World world) {
         this.world = world;
+        SM.gameScreen.registerStepListener(0, this);
     }
 
     public void add(Entity entity) {
         entities.add(entity);
-        if (entity instanceof Drawable) {
+        if (isDrawable(entity)) {
             drawables.add((Drawable) entity);
         }
     }
@@ -39,10 +43,37 @@ public class Level implements ShootMeConstants {
         }
     }
 
+    private boolean isDrawable(Entity entity) {
+        return entity instanceof Drawable;
+    }
+
+    /**
+     * Queues the entity to be removed after the tick.
+     * (During the world step the game state is not allowed to be changed in certain ways, e.g. destroying a body)
+     * @param entity
+     */
+    public void queueForRemoval(Entity entity) {
+        removalQueue.add(entity);
+    }
+
+    private void remove(Entity entity) {
+        entities.remove(entity);
+        if (isDrawable(entity)) {
+            drawables.remove(entity);
+        }
+        Body body = entity.getBody();
+        world.destroyBody(body);
+    }
+
+    @Override
+    public void afterWorldStep(float timeStep) {
+        removalQueue.forEach(this::remove);
+        removalQueue.clear();
+    }
+
     public void render(SpriteBatch batch) {
         for (Drawable drawable : drawables) {
             drawable.draw(batch);
         }
     }
-
 }

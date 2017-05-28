@@ -15,13 +15,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
+import static at.shootme.ShootMeConstants.METERS_TO_PIXELS;
+import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
 import static at.shootme.beans.HorizontalMovementState.*;
 import static at.shootme.beans.VerticalMovementState.*;
 
 /**
  * Created by Alexander Dietrich on 01.05.2017.
  */
-public class Player extends Entity implements ShootMeConstants, Drawable {
+public class Player extends Entity implements Drawable {
+
+    private static final int JUMP_SPEED = 30;
 
     private Sprite sprite;
     private Body body;
@@ -69,10 +73,6 @@ public class Player extends Entity implements ShootMeConstants, Drawable {
 
     public Sprite getSprite() {
         return sprite;
-    }
-
-    public Body getBody() {
-        return body;
     }
 
     public Fixture getFixture() {
@@ -131,7 +131,7 @@ public class Player extends Entity implements ShootMeConstants, Drawable {
         Vector2 directionVector = Vector2Util.degreeToVector2(angle);
         int initialShotSpeed = 40;
         Vector2 initialShotVelocity = directionVector.scl(initialShotSpeed);
-        StandardShot shot = new StandardShot(playerPosition, initialShotVelocity, getWorld());
+        StandardShot shot = new StandardShot(playerPosition, initialShotVelocity, this, getWorld());
 //        System.out.println("playerPosition: "+ playerPosition + " --- " + "clickPosition: "+ clickPosition + " --- " + "initialShotVelocity: "+ initialShotVelocity);
 //        System.out.println("directionVector: "+ directionVector + " --- " + "angle: "+ angle + " --- ");
         return shot;
@@ -150,7 +150,7 @@ public class Player extends Entity implements ShootMeConstants, Drawable {
     private void jump() {
         availableJumps--;
 
-        body.setLinearVelocity(body.getLinearVelocity().x, 30);
+        body.setLinearVelocity(body.getLinearVelocity().x, JUMP_SPEED);
     }
 
 
@@ -167,5 +167,10 @@ public class Player extends Entity implements ShootMeConstants, Drawable {
     @Override
     public EntityCategory getCategory() {
         return EntityCategory.PLAYER;
+    }
+
+    @Override
+    public Body getBody() {
+        return body;
     }
 }

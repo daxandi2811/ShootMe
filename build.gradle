@@ -59,6 +59,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         compile group: 'junit', name: 'junit', version: '4.12'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
     }
 }
 

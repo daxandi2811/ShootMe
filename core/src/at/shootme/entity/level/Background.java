@@ -13,11 +13,11 @@ public class Background implements Drawable {
 
     private final Sprite sprite;
 
-    public Background(Vector2 position, Vector2 size, Texture texture) {
+    public Background(Vector2 pixePosition, Vector2 pixelSize, Texture texture) {
         sprite = new Sprite(texture);
-        sprite.setSize(size.x, size.y);
+        sprite.setSize(pixelSize.x, pixelSize.y);
         sprite.setOriginCenter();
-        sprite.setPosition(position.x, position.y);
+        sprite.setPosition(pixePosition.x, pixePosition.y);
     }
 
     @Override
