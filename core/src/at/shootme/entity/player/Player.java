@@ -2,6 +2,8 @@ package at.shootme.entity.player;
 
 import at.shootme.ShootMeConstants;
 import at.shootme.beans.HorizontalMovementState;
+import at.shootme.entity.EntityCategory;
+import at.shootme.entity.level.Platform;
 import at.shootme.entity.shot.StandardShot;
 import at.shootme.beans.VerticalMovementState;
 import at.shootme.entity.general.Drawable;
@@ -28,6 +30,8 @@ public class Player extends Entity implements ShootMeConstants, Drawable {
     private VerticalMovementState verticalMovementState = STANDING;
 
     private String texturepath;
+
+    private int availableJumps = 2;
 
     public Player() {
     }
@@ -117,21 +121,7 @@ public class Player extends Entity implements ShootMeConstants, Drawable {
         float horizontalVelocityChange = desiredHorizontalVelocity - velocity.x;
         float horizontalForce = body.getMass() * horizontalVelocityChange;
 
-        //Calculating vertical movement
-        float verticalForce = 0;
-        switch (verticalMovementState) {
-            case AIRBORN:
-            case STANDING:
-                verticalForce = 0 * body.getMass();
-                break;
-            case JUMPING:
-                verticalForce = 50 * body.getMass();
-                verticalMovementState = STANDING;
-                break;
-        }
-
-
-        body.applyLinearImpulse(new Vector2(horizontalForce, verticalForce), body.getWorldCenter(), true);
+        body.applyLinearImpulse(new Vector2(horizontalForce, 0), body.getWorldCenter(), true);
 //        System.out.println(body.getLinearVelocity().x + "  " + body.getLinearVelocity().y);
     }
 
@@ -151,13 +141,31 @@ public class Player extends Entity implements ShootMeConstants, Drawable {
         return body.getWorld();
     }
 
-    public void jump() {
-        if (verticalMovementState != AIRBORN) verticalMovementState = JUMPING;
+    public void jumpIfPossible() {
+        if (availableJumps > 0) {
+            jump();
+        }
+    }
+
+    private void jump() {
+        availableJumps--;
+
+        body.setLinearVelocity(body.getLinearVelocity().x, 30);
+    }
+
+
+    public void hitGround(Platform platform) {
+        availableJumps = 2;
     }
 
     @Override
     public void draw(SpriteBatch batch) {
         sprite.setPosition(body.getPosition().x * METERS_TO_PIXELS - sprite.getWidth() / 2, body.getPosition().y * METERS_TO_PIXELS - sprite.getHeight() / 2);
         sprite.draw(batch);
+    }
+
+    @Override
+    public EntityCategory getCategory() {
+        return EntityCategory.PLAYER;
     }
 }

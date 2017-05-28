@@ -144,8 +144,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         switch (keycode) {
             case Input.Keys.SPACE:
-
-                player1.jump();
+                player1.jumpIfPossible();
                 break;
             case Input.Keys.A:
                 player1.setHorizontalMovementState(HorizontalMovementState.LEFT);
@@ -154,7 +153,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
                 player1.setHorizontalMovementState(HorizontalMovementState.RIGHT);
                 break;
             case Input.Keys.UP:
-                player2.jump();
+                player2.jumpIfPossible();
                 break;
             case Input.Keys.LEFT:
                 player2.setHorizontalMovementState(HorizontalMovementState.LEFT);

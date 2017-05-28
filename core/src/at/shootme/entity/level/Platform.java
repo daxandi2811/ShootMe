@@ -1,5 +1,6 @@
 package at.shootme.entity.level;
 
+import at.shootme.entity.EntityCategory;
 import at.shootme.entity.general.Drawable;
 import at.shootme.entity.general.Entity;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,6 +35,7 @@ public class Platform extends Entity implements Drawable {
                 (sprite.getY() + sprite.getHeight() / 2) * PIXELS_TO_METERS);
 
         body = world.createBody(bodyDef);
+        body.setUserData(this);
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(sprite.getWidth() / 2 * PIXELS_TO_METERS, sprite.getHeight() / 2 * PIXELS_TO_METERS);
@@ -49,5 +51,10 @@ public class Platform extends Entity implements Drawable {
     public void draw(SpriteBatch batch) {
         sprite.setPosition(body.getPosition().x * METERS_TO_PIXELS - sprite.getWidth() / 2, body.getPosition().y * METERS_TO_PIXELS - sprite.getHeight() / 2);
         sprite.draw(batch);
+    }
+
+    @Override
+    public EntityCategory getCategory() {
+        return EntityCategory.PLATFORM;
     }
 }

@@ -1,5 +1,6 @@
 package at.shootme.entity.shot;
 
+import at.shootme.entity.EntityCategory;
 import at.shootme.entity.general.Drawable;
 import at.shootme.entity.general.Entity;
 import at.shootme.util.vectors.Vector2Util;
@@ -56,5 +57,10 @@ public class StandardShot extends Entity implements Drawable {
     public void draw(SpriteBatch batch) {
         sprite.setPosition(body.getPosition().x * METERS_TO_PIXELS - sprite.getWidth() / 2, body.getPosition().y * METERS_TO_PIXELS - sprite.getHeight() / 2);
         sprite.draw(batch);
+    }
+
+    @Override
+    public EntityCategory getCategory() {
+        return EntityCategory.SHOT;
     }
 }
