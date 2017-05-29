@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * Created by Alexander Dietrich on 07.04.2017.
- *
+ * <p>
  * Globally accessible current bean instances.
  */
 public class SM {

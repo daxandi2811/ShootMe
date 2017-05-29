@@ -5,7 +5,7 @@ import at.shootme.entity.level.Background;
 import at.shootme.entity.level.Platform;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * Created by Alexander Dietrich on 05.05.2017.
@@ -15,6 +15,7 @@ public class LevelUtility implements ShootMeConstants {
 
     /**
      * Creates a platform
+     *
      * @param pixelPosition
      * @param pixelSize
      * @param texture
@@ -27,6 +28,7 @@ public class LevelUtility implements ShootMeConstants {
 
     /**
      * Creates a level background.
+     *
      * @param position
      * @param size
      * @param texture

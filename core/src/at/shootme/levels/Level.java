@@ -5,13 +5,12 @@ import at.shootme.ShootMeConstants;
 import at.shootme.entity.general.Drawable;
 import at.shootme.entity.general.Entity;
 import at.shootme.logic.StepListener;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Created by Alexander Dietrich on 05.05.2017.

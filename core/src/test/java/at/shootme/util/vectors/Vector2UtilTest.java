@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Nicole on 07.05.2017.

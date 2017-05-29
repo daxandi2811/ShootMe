@@ -1,13 +1,12 @@
 package at.shootme.entity.player;
 
-import at.shootme.ShootMeConstants;
 import at.shootme.beans.HorizontalMovementState;
-import at.shootme.entity.EntityCategory;
-import at.shootme.entity.level.Platform;
-import at.shootme.entity.shot.StandardShot;
 import at.shootme.beans.VerticalMovementState;
+import at.shootme.entity.EntityCategory;
 import at.shootme.entity.general.Drawable;
 import at.shootme.entity.general.Entity;
+import at.shootme.entity.level.Platform;
+import at.shootme.entity.shot.StandardShot;
 import at.shootme.util.vectors.Vector2Util;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -17,8 +16,8 @@ import com.badlogic.gdx.physics.box2d.*;
 
 import static at.shootme.ShootMeConstants.METERS_TO_PIXELS;
 import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
-import static at.shootme.beans.HorizontalMovementState.*;
-import static at.shootme.beans.VerticalMovementState.*;
+import static at.shootme.beans.HorizontalMovementState.STOPPED;
+import static at.shootme.beans.VerticalMovementState.STANDING;
 
 /**
  * Created by Alexander Dietrich on 01.05.2017.

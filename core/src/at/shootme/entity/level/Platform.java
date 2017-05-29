@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 import static at.shootme.ShootMeConstants.METERS_TO_PIXELS;
-import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
 
 /**
  * Created by Nicole on 28.05.2017.

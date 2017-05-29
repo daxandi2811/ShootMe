@@ -3,11 +3,12 @@ package at.shootme;
 import at.shootme.beans.HorizontalMovementState;
 import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.StandardShot;
+import at.shootme.levels.Level;
+import at.shootme.levels.Level1;
 import at.shootme.logic.StepListener;
 import at.shootme.physics.GameContactFilter;
 import at.shootme.physics.GameContactListener;
 import at.shootme.util.vectors.Vector2Util;
-import at.shootme.levels.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -17,7 +18,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,11 +105,10 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     }
 
     /**
-     *
      * @param priorityIndex lower => earlier
      * @param stepListener
      */
-    public void registerStepListener(int priorityIndex, StepListener stepListener){
+    public void registerStepListener(int priorityIndex, StepListener stepListener) {
         List<StepListener> stepListeners = stepListenerListsByPriority.computeIfAbsent(priorityIndex, integer -> new ArrayList<>());
         stepListeners.add(stepListener);
     }

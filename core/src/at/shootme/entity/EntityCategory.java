@@ -8,10 +8,9 @@ import java.util.Arrays;
 public enum EntityCategory {
     PLAYER,
     PLATFORM,
-    SHOT,
-    ;
+    SHOT,;
 
-    public boolean isOneOf(EntityCategory... categories){
+    public boolean isOneOf(EntityCategory... categories) {
         return Arrays.stream(categories).anyMatch(entityCategory -> entityCategory == this);
     }
 }

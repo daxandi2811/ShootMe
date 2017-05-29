@@ -2,16 +2,9 @@ package at.shootme.physics;
 
 import at.shootme.entity.EntityCategory;
 import at.shootme.entity.general.Entity;
-import at.shootme.entity.level.Platform;
-import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.Shot;
-import at.shootme.logic.StepListener;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.badlogic.gdx.physics.box2d.ContactFilter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 
 /**
  * Created by Nicole on 28.05.2017.
