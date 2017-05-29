@@ -48,12 +48,16 @@ public class Level implements ShootMeConstants, StepListener {
     }
 
     /**
-     * Queues the entity to be removed after the tick.
+     * Queues the entity to be removed after the tick. If called twice with the same entity (during the same tick), it is only removed once.
+     * The entities will be removed in the order they have been called here.
      * (During the world step the game state is not allowed to be changed in certain ways, e.g. destroying a body)
+     *
      * @param entity
      */
     public void queueForRemoval(Entity entity) {
-        removalQueue.add(entity);
+        if (!removalQueue.contains(entity)) {
+            removalQueue.add(entity);
+        }
     }
 
     private void remove(Entity entity) {
