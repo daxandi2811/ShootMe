@@ -26,8 +26,7 @@ public class Level2 extends Level {
         //Boden
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth(), 0), new Vector2(Gdx.graphics.getWidth() * 2, 50), floorTexture, world));
 
-
-        //Decke  WIRD NICHT GEZEICHNET
+        //Decke
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth(), backgroundTexture.getHeight() / 2 + 50), new Vector2(Gdx.graphics.getWidth() * 2, 50), floorTexture, world));
 
 
