@@ -71,7 +71,6 @@ public class Level1 extends Level {
         //oben mitte senkrecht
         add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()+400), new Vector2(50, Gdx.graphics.getHeight()/2), floorTexture, world));
 
-
     }
 
 }
