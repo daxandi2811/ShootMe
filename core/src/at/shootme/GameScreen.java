@@ -6,6 +6,7 @@ import at.shootme.entity.shot.StandardShot;
 import at.shootme.levels.Level;
 import at.shootme.levels.Level1;
 import at.shootme.levels.Level2;
+import at.shootme.levels.Level3;
 import at.shootme.logic.StepListener;
 import at.shootme.physics.GameContactFilter;
 import at.shootme.physics.GameContactListener;
@@ -65,7 +66,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         batch = new SpriteBatch();
 
         world = new World(new Vector2(0, -98), true);
-        level = new Level2(world);
+        level = new Level3(world);
 
         player1 = new Player();
         player1.setTexturepath("assets/playersprite1.png");

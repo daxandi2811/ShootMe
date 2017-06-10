@@ -39,5 +39,43 @@ public class Level3 extends Level {
         add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth(), 0), new Vector2(50, Gdx.graphics.getHeight() * 2 + 100), floorTexture, world));
 
 
+
+        // rechts senkrecht
+        add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/3), new Vector2(50 , Gdx.graphics.getHeight()), floorTexture, world));
+
+        // links senkrecht
+        add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/3), new Vector2(50 , Gdx.graphics.getHeight()), floorTexture, world));
+
+
+
+        //oben mitte waagrecht
+        add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()+400), new Vector2(900, 50), floorTexture, world));
+
+        //unten mitte waagrecht
+        add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/3+200, Gdx.graphics.getHeight()/3), new Vector2(500, 50), floorTexture, world));
+
+        //mitte links waagrecht
+        add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/2+50,Gdx.graphics.getHeight()-50  ), new Vector2(300, 50),floorTexture, world));
+
+        //mitte rechts waagrecht
+        add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()/2-300,Gdx.graphics.getHeight()-50  ), new Vector2(300, 50),floorTexture, world));
+
+
+
+
+        //oben links waagrecht
+        add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth(),Gdx.graphics.getHeight()+200), new Vector2(300, 50),floorTexture, world));
+
+        //oben rechts waagrecht
+        add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()-300,Gdx.graphics.getHeight()+200), new Vector2(300, 50),floorTexture, world));
+
+
+
+        //unten links waagrecht
+        add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/2-300,Gdx.graphics.getHeight()-250), new Vector2(300, 50),floorTexture, world));
+
+        //unten rechts waagrecht
+        add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()-600,Gdx.graphics.getHeight()-250), new Vector2(300, 50),floorTexture, world));
+
     }
 }
