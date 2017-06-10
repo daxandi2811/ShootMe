@@ -66,7 +66,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         batch = new SpriteBatch();
 
         world = new World(new Vector2(0, -98), true);
-        level = new Level3(world);
+        level = new Level1(world);
 
         player1 = new Player();
         player1.setTexturepath("assets/playersprite1.png");

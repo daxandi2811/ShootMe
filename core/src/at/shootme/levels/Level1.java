@@ -25,7 +25,7 @@ public class Level1 extends Level {
         addCosmetic(LevelUtility.createLevelBackground(new Vector2(-Gdx.graphics.getWidth(), 50), new Vector2(1280 * 2, 720 * 2), backgroundTexture));
 
         //"Rahmen"
-        Texture floorTexture = new Texture("assets/irregular_stone_floor_20130930_1665458395.jpg");
+        Texture floorTexture = new Texture("assets/greytexture.jpg");
         //Boden
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth(), 0), new Vector2(Gdx.graphics.getWidth() * 2, 50), floorTexture, world));
 
@@ -69,7 +69,7 @@ public class Level1 extends Level {
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/2+400, Gdx.graphics.getHeight()/2-350), new Vector2(50, Gdx.graphics.getHeight()/2), floorTexture, world));
 
         //oben mitte senkrecht
-        add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()+400), new Vector2(50, Gdx.graphics.getHeight()/2), floorTexture, world));
+        add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()+410), new Vector2(50, Gdx.graphics.getHeight()/2), floorTexture, world));
 
     }
 

@@ -22,7 +22,7 @@ public class Level2 extends Level {
         addCosmetic(LevelUtility.createLevelBackground(new Vector2(-Gdx.graphics.getWidth(), 50), new Vector2(1280 * 2, 720 * 2), backgroundTexture));
 
         //"Rahmen"
-        Texture floorTexture = new Texture("assets/irregular_stone_floor_20130930_1665458395.jpg");
+        Texture floorTexture = new Texture("assets/sandtexture.jpg");
         //Boden
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth(), 0), new Vector2(Gdx.graphics.getWidth() * 2, 50), floorTexture, world));
 
