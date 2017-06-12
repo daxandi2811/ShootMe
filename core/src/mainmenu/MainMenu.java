@@ -22,6 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.sun.javafx.scene.control.skin.ButtonSkin;
+import com.sun.javafx.scene.control.skin.LabelSkin;
 import javafx.scene.control.RadioButton;
 
 import javax.swing.*;
@@ -35,7 +37,9 @@ import static at.shootme.SM.world;
  */
 public class MainMenu implements Screen {
 
-    private Skin skin;
+    private Skin buttonskin;
+    private Skin labelskin;
+    private Label.LabelStyle lbStyle;
     private Stage stage;
     private ButtonGroup btGroup;
 
@@ -45,7 +49,27 @@ public class MainMenu implements Screen {
         Gdx.input.setInputProcessor(stage);// Make the stage consume events
 
         createBasicSkin();
-        TextButton btLev1 = new TextButton("Level1", skin); // Use the initialized skin
+
+  /*      Label lbTitle;
+        Label.LabelStyle textStyle;
+        BitmapFont font = new BitmapFont();
+//font.setUseIntegerPositions(false);(Optional)
+
+        textStyle = new Label.LabelStyle();
+        textStyle.font = font;
+
+        lbTitle = new Label("ShootMe",textStyle);
+        lbTitle.setPosition(Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()/8 , 500);
+*/
+
+
+     //   Label lbTitle = new Label("jsdlajdlk", buttonskin);
+     //   lbTitle.setSize(100,100);
+     //   lbTitle.setPosition(100,100);
+
+
+
+        TextButton btLev1 = new TextButton("Level1", buttonskin);
         btLev1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -57,7 +81,7 @@ public class MainMenu implements Screen {
         stage.addActor(btLev1);
 
 
-        TextButton btLev2 = new TextButton("Level2", skin);
+        TextButton btLev2 = new TextButton("Level2", buttonskin);
         btLev2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -69,7 +93,7 @@ public class MainMenu implements Screen {
         stage.addActor(btLev2);
 
 
-        TextButton btLev3 = new TextButton("Level3", skin);
+        TextButton btLev3 = new TextButton("Level3", buttonskin);
         btLev3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -122,23 +146,33 @@ public class MainMenu implements Screen {
     private void createBasicSkin(){
         //Create a font
         BitmapFont font = new BitmapFont();
-        skin = new Skin();
-        skin.add("default", font);
+        buttonskin = new Skin();
+        buttonskin.add("default", font);
+        labelskin = new Skin();
+        labelskin.add("default", font);
 
         //Create a texture
         Pixmap pixmap = new Pixmap((int) Gdx.graphics.getWidth()/4,(int)Gdx.graphics.getHeight()/10, Pixmap.Format.RGB888);
         pixmap.setColor(Color.WHITE);
         pixmap.fill();
-        skin.add("background",new Texture(pixmap));
+        buttonskin.add("background",new Texture(pixmap));
+        labelskin.add("background", new Texture(pixmap));
 
         //Create a button style
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable("background", Color.GRAY);
-        textButtonStyle.down = skin.newDrawable("background", Color.DARK_GRAY);
-        textButtonStyle.checked = skin.newDrawable("background", Color.DARK_GRAY);
-        textButtonStyle.over = skin.newDrawable("background", Color.LIGHT_GRAY);
-        textButtonStyle.font = skin.getFont("default");
-        skin.add("default", textButtonStyle);
+        textButtonStyle.up = buttonskin.newDrawable("background", Color.GRAY);
+        textButtonStyle.down = buttonskin.newDrawable("background", Color.DARK_GRAY);
+        textButtonStyle.checked = buttonskin.newDrawable("background", Color.DARK_GRAY);
+        textButtonStyle.over = buttonskin.newDrawable("background", Color.LIGHT_GRAY);
+        textButtonStyle.font = buttonskin.getFont("default");
+        buttonskin.add("default", textButtonStyle);
+
+        //Create a Label Style
+       /* Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = labelskin.getFont("default");
+        buttonskin.add("default", labelStyle); */
+
 
     }
+
 }

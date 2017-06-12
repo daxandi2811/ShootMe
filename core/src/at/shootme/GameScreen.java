@@ -92,6 +92,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         player2.init(new Vector2(300, 100).scl(PIXELS_TO_METERS), world);
         level.add(player2);
 
+        SM.level = level;
+
         GameContactListener listener = new GameContactListener();
         registerStepListener(1, listener);
         world.setContactListener(listener);
