@@ -125,11 +125,17 @@ public class Player extends Entity implements Drawable {
     }
 
     public StandardShot shootAt(Vector2 clickPosition) {
+
         Vector2 playerPosition = body.getPosition();
+
         float angle = Vector2Util.getAngleFromAToB(playerPosition, clickPosition);
         Vector2 directionVector = Vector2Util.degreeToVector2(angle);
-        int initialShotSpeed = 40;
+
+        float distance = playerPosition.dst(clickPosition);
+        int initialShotSpeed = (int) (Math.min(Math.max(distance * 8.5, 18), 65.0));
+        System.out.println(initialShotSpeed);
         Vector2 initialShotVelocity = directionVector.scl(initialShotSpeed);
+
         StandardShot shot = new StandardShot(playerPosition, initialShotVelocity, this, getWorld());
 //        System.out.println("playerPosition: "+ playerPosition + " --- " + "clickPosition: "+ clickPosition + " --- " + "initialShotVelocity: "+ initialShotVelocity);
 //        System.out.println("directionVector: "+ directionVector + " --- " + "angle: "+ angle + " --- ");

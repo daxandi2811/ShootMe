@@ -53,8 +53,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     @Override
     public void show() {
         if (!ShootMeConstants.HIT_BOX_MODE) {
-            camera = new OrthographicCamera(12.8f * 300f, 7.2f * 300f);
-            camera.translate(0, 640);
+            camera = new OrthographicCamera(12.8f * 205f, 7.2f * 205f);
+            camera.translate(0, 775);
         } else {
             camera = new OrthographicCamera(12.8f * 3f, 7.2f * 3f);
         }
