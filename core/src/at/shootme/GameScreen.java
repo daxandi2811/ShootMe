@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import mainmenu.MainMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private World world;
     private OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
+    private MainMenu menu;
 
     private Player player1;
     private Player player2;
@@ -48,6 +50,21 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
     public GameScreen() {
         SM.gameScreen = this;
+    }
+
+    public GameScreen(Level lev){ this.level = lev; }
+
+    public GameScreen(int levelNr)
+    {
+        this();
+        world = new World(new Vector2(0, -98), true);
+        switch(levelNr)
+        {
+            case 1: level = new Level1(world); break;
+            case 2: level = new Level2(world); break;
+            case 3: level = new Level3(world); break;
+        }
+
     }
 
     @Override
@@ -65,9 +82,6 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         Gdx.input.setInputProcessor(this);
         batch = new SpriteBatch();
 
-        world = new World(new Vector2(0, -98), true);
-        level = new Level1(world);
-
         player1 = new Player();
         player1.setTexturepath("assets/playersprite1.png");
         player1.init(new Vector2(0, 100).scl(PIXELS_TO_METERS), world);
@@ -77,8 +91,6 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         player2.setTexturepath("assets/playersprite2.png");
         player2.init(new Vector2(300, 100).scl(PIXELS_TO_METERS), world);
         level.add(player2);
-
-        SM.level = level;
 
         GameContactListener listener = new GameContactListener();
         registerStepListener(1, listener);
@@ -136,7 +148,10 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+
         level.render(batch);
+
+
         batch.end();
 
         debugRenderer.render(world, camera.combined);
