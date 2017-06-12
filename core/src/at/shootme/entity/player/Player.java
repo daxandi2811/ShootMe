@@ -1,7 +1,7 @@
 package at.shootme.entity.player;
 
-import at.shootme.beans.HorizontalMovementState;
-import at.shootme.beans.VerticalMovementState;
+import at.shootme.beans.*;
+import at.shootme.beans.ViewDirection;
 import at.shootme.entity.EntityCategory;
 import at.shootme.entity.general.Drawable;
 import at.shootme.entity.general.Entity;
@@ -16,8 +16,6 @@ import com.badlogic.gdx.physics.box2d.*;
 
 import static at.shootme.ShootMeConstants.METERS_TO_PIXELS;
 import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
-import static at.shootme.beans.HorizontalMovementState.STOPPED;
-import static at.shootme.beans.VerticalMovementState.STANDING;
 
 /**
  * Created by Alexander Dietrich on 01.05.2017.
@@ -29,8 +27,8 @@ public class Player extends Entity implements Drawable {
     private Sprite sprite;
     private Body body;
     private Fixture fixture;
-    private HorizontalMovementState horizontalMovementState = STOPPED;
-    private VerticalMovementState verticalMovementState = STANDING;
+    private HorizontalMovementState horizontalMovementState = HorizontalMovementState.STOPPED;
+    private ViewDirection viewDirection = ViewDirection.LEFT;
 
     private String texturepath;
 
@@ -99,19 +97,27 @@ public class Player extends Entity implements Drawable {
 
         //Calculating horizontal movement
         if (horizontalMovementState == HorizontalMovementState.STOPPING && Math.abs(velocity.x) < 0.001f) {
-            horizontalMovementState = STOPPED;
+            horizontalMovementState = HorizontalMovementState.STOPPED;
         }
 
         float desiredHorizontalVelocity = 0;
         switch (horizontalMovementState) {
             case LEFT:
                 desiredHorizontalVelocity = Math.max(velocity.x - 5f, -14f);
+                if (viewDirection != ViewDirection.LEFT) {
+                    sprite.flip(true, false);
+                    viewDirection = viewDirection.LEFT;
+                }
                 break;
             case STOPPING:
                 desiredHorizontalVelocity = velocity.x;
                 break;
             case RIGHT:
                 desiredHorizontalVelocity = Math.min(velocity.x + 5f, 14f);
+                if (viewDirection != ViewDirection.RIGHT) {
+                    sprite.flip(true, false);
+                    viewDirection = ViewDirection.RIGHT;
+                }
                 break;
             case STOPPED:
                 desiredHorizontalVelocity = 0;
