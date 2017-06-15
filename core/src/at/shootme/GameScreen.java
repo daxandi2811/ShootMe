@@ -17,11 +17,13 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import mainmenu.MainMenu;
 
 import java.util.ArrayList;
@@ -154,9 +156,30 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         level.render(batch);
 
 
+        displayScore(500);
+        displayTime(123);
+
         batch.end();
 
         debugRenderer.render(world, camera.combined);
+    }
+
+    //Displays the current score at the top right center
+    public void displayScore(int score)
+    {
+        Label.LabelStyle textStyle = new Label.LabelStyle();
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(3);
+        font.draw(batch, "Score: " +score, Gdx.graphics.getWidth()-300, Gdx.graphics.getHeight()*2-50);
+    }
+
+    //Displays the time left at the top right corner
+    public void displayTime(int seconds)
+    {
+        Label.LabelStyle textStyle = new Label.LabelStyle();
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(3);
+        font.draw(batch, "Time: " + String.format("%d:%02d", seconds/60, seconds%60), Gdx.graphics.getWidth()-300, Gdx.graphics.getHeight()*2);
     }
 
     @Override
