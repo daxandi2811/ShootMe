@@ -17,64 +17,56 @@ public class Level3 extends Level {
 
 
     private void loadWorld() {
-        //Hintergrund
+        //Background
         Texture backgroundTexture = new Texture("assets/level3.png");
         addCosmetic(LevelUtility.createLevelBackground(new Vector2(-Gdx.graphics.getWidth(), 50), new Vector2(1280 * 2, 720 * 2), backgroundTexture));
 
-        //"Rahmen"
+
+    //Border
         Texture floorTexture = new Texture("assets/browntexture.jpg");
-        //Boden
+        //Floor
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth(), 0), new Vector2(Gdx.graphics.getWidth() * 2, 50), floorTexture, world));
 
-
-        //Decke  WIRD NICHT GEZEICHNET
+        //Ceiling
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth(), backgroundTexture.getHeight() / 2 + 50), new Vector2(Gdx.graphics.getWidth() * 2, 50), floorTexture, world));
 
-
-        //Wand links
+        //Wall left
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth() - 50, 0), new Vector2(50, Gdx.graphics.getHeight() * 2 + 100), floorTexture, world));
 
-
-        //Wand rechts
+        //Wall right
         add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth(), 0), new Vector2(50, Gdx.graphics.getHeight() * 2 + 100), floorTexture, world));
 
 
 
-        // rechts senkrecht
+    //Plattforms
+        //right vertical
         add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/3), new Vector2(50 , Gdx.graphics.getHeight()), floorTexture, world));
 
-        // links senkrecht
+        //left vertical
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/3), new Vector2(50 , Gdx.graphics.getHeight()), floorTexture, world));
 
-
-
-        //oben mitte waagrecht
+        //top middle horizontally
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()+400), new Vector2(900, 50), floorTexture, world));
 
-        //unten mitte waagrecht
+        //bottom middle horizontally
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/3+200, Gdx.graphics.getHeight()/3), new Vector2(500, 50), floorTexture, world));
 
-        //mitte links waagrecht
+        //middle left horizontally
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/2+50,Gdx.graphics.getHeight()-50  ), new Vector2(300, 50),floorTexture, world));
 
-        //mitte rechts waagrecht
+        //middle right vertically
         add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()/2-300,Gdx.graphics.getHeight()-50  ), new Vector2(300, 50),floorTexture, world));
 
-
-
-
-        //oben links waagrecht
+        //top left horizontally
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth(),Gdx.graphics.getHeight()+200), new Vector2(300, 50),floorTexture, world));
 
-        //oben rechts waagrecht
+        //top right horizontally
         add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()-300,Gdx.graphics.getHeight()+200), new Vector2(300, 50),floorTexture, world));
 
-
-
-        //unten links waagrecht
+        //bottom left horizontally
         add(LevelUtility.createPlatform(new Vector2(-Gdx.graphics.getWidth()/2-300,Gdx.graphics.getHeight()-250), new Vector2(300, 50),floorTexture, world));
 
-        //unten rechts waagrecht
+        //bottom right horizontally
         add(LevelUtility.createPlatform(new Vector2(Gdx.graphics.getWidth()-600,Gdx.graphics.getHeight()-250), new Vector2(300, 50),floorTexture, world));
 
     }
