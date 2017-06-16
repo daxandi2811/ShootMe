@@ -49,6 +49,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private Level level;
 
     private TreeMap<Integer, List<StepListener>> stepListenerListsByPriority = new TreeMap<>();
+    private Label.LabelStyle textStyle;
+    private BitmapFont font;
 
     public GameScreen() {
         SM.gameScreen = this;
@@ -100,6 +102,10 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         registerStepListener(1, listener);
         world.setContactListener(listener);
         world.setContactFilter(new GameContactFilter());
+
+        textStyle = new Label.LabelStyle();
+        font = new BitmapFont();
+        font.getData().setScale(3);
     }
 
 
@@ -167,18 +173,13 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     //Displays the current score at the top right center
     public void displayScore(int score)
     {
-        Label.LabelStyle textStyle = new Label.LabelStyle();
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(3);
+
         font.draw(batch, "Score: " +score, Gdx.graphics.getWidth()-300, Gdx.graphics.getHeight()*2-50);
     }
 
     //Displays the time left at the top right corner
     public void displayTime(int seconds)
     {
-        Label.LabelStyle textStyle = new Label.LabelStyle();
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(3);
         font.draw(batch, "Time: " + String.format("%d:%02d", seconds/60, seconds%60), Gdx.graphics.getWidth()-300, Gdx.graphics.getHeight()*2);
     }
 
