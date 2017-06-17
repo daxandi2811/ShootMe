@@ -13,13 +13,13 @@ import java.util.Objects;
 
 public class ServerClientConnection {
 
-    private Connection connection;
+    private Connection kryonetConnection;
     private EventProcessor eventProcessor;
     private Player player;
     private ConnectionUpdateEventListener connectionUpdateEventListener;
 
-    public ServerClientConnection(Connection connection, EventProcessor eventProcessor) {
-        this.connection = connection;
+    public ServerClientConnection(Connection kryonetConnection, EventProcessor eventProcessor) {
+        this.kryonetConnection = kryonetConnection;
         this.eventProcessor = eventProcessor;
         registerConnectionListener();
     }
@@ -32,24 +32,37 @@ public class ServerClientConnection {
         connectionUpdateEventListener.process();
     }
 
-    public void postStep() {
-        send(new StepCommunicationFlush());
+    public void processReceived() {
+        connectionUpdateEventListener.process();
     }
 
-    public void send(StepCommunicationFlush message) {
-        this.connection.sendTCP(message);
+    public void postStep() {
+        sendFlush();
+    }
+
+    public void sendFlush() {
+        sendTCP(new StepCommunicationFlush());
+    }
+
+    public void sendTCP(Object message) {
+        this.kryonetConnection.sendTCP(message);
+    }
+
+    public void sendTCPWithFlush(Object message) {
+        sendTCP(message);
+        sendFlush();
     }
 
     private void registerConnectionListener() {
         connectionUpdateEventListener = new ConnectionUpdateEventListener(eventProcessor);
         if (ShootMeConstants.SIMULATED_LAG_IN_MS == 0) {
-            connection.addListener(connectionUpdateEventListener);
+            kryonetConnection.addListener(connectionUpdateEventListener);
         } else {
-            connection.addListener(new Listener.LagListener(ShootMeConstants.SIMULATED_LAG_IN_MS, ShootMeConstants.SIMULATED_LAG_IN_MS + ShootMeConstants.SIMULATED_LAG_IN_MS + 30, connectionUpdateEventListener));
+            kryonetConnection.addListener(new Listener.LagListener(ShootMeConstants.SIMULATED_LAG_IN_MS, ShootMeConstants.SIMULATED_LAG_IN_MS + ShootMeConstants.SIMULATED_LAG_IN_MS + 30, connectionUpdateEventListener));
         }
     }
 
-    public void updateReturnTripTimeAndTimeSyncIfNecessary() {
+    private void updateReturnTripTimeAndTimeSyncIfNecessary() {
         // TODO
     }
 
@@ -57,8 +70,12 @@ public class ServerClientConnection {
         this.player = player;
     }
 
-    public Connection getConnection() {
-        return connection;
+    public Connection getKryonetConnection() {
+        return kryonetConnection;
+    }
+
+    public EventProcessor getEventProcessor() {
+        return eventProcessor;
     }
 
     private class ConnectionUpdateEventListener extends Listener {
@@ -66,15 +83,15 @@ public class ServerClientConnection {
         private List<Runnable> queuedConnectionEvents = new ArrayList<>();
         private List<Object> queuedReceivedObjects = new ArrayList<>();
         private List<Object> queuedProcessableReceivedObjects = new ArrayList<>();
-        private final Listener delegateListener;
+        private final EventProcessor eventProcessor;
 
-        public ConnectionUpdateEventListener(Listener delegateListener) {
-            this.delegateListener = Objects.requireNonNull(delegateListener);
+        private ConnectionUpdateEventListener(EventProcessor eventProcessor) {
+            this.eventProcessor = Objects.requireNonNull(eventProcessor);
         }
 
         @Override
         public void disconnected(Connection connection) {
-            queueConnectionEvent(() -> delegateListener.disconnected(connection));
+            queueConnectionEvent(() -> eventProcessor.disconnected(ServerClientConnection.this));
         }
 
         @Override
@@ -92,7 +109,7 @@ public class ServerClientConnection {
 
         @Override
         public void idle(final Connection connection) {
-            queueConnectionEvent(() -> delegateListener.idle(connection));
+            queueConnectionEvent(() -> eventProcessor.idle(ServerClientConnection.this));
         }
 
         private synchronized void queueConnectionEvent(Runnable runnable) {
@@ -101,7 +118,7 @@ public class ServerClientConnection {
 
         public synchronized void process() {
             if (!queuedProcessableReceivedObjects.isEmpty()) {
-                queuedProcessableReceivedObjects.forEach(o -> delegateListener.received(connection, o));
+                queuedProcessableReceivedObjects.forEach(o -> eventProcessor.received(ServerClientConnection.this, o));
                 queuedProcessableReceivedObjects.clear();
             }
             if (!queuedConnectionEvents.isEmpty()) {

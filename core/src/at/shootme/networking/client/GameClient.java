@@ -1,12 +1,23 @@
 package at.shootme.networking.client;
 
 import at.shootme.SM;
+import at.shootme.entity.general.Entity;
+import at.shootme.networking.data.entity.EntityCreationMessage;
+import at.shootme.networking.data.framework.MessageBatch;
 import at.shootme.networking.exceptions.NetworkingRuntimeException;
+import at.shootme.networking.general.EventProcessor;
 import at.shootme.networking.general.NetworkingConstants;
 import at.shootme.networking.general.ServerClientConnection;
 import com.esotericsoftware.kryonet.Client;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static at.shootme.networking.general.NetworkingUtils.createEntityCreationMessages;
 
 public class GameClient {
 
@@ -25,16 +36,39 @@ public class GameClient {
         connection = new ServerClientConnection(kryonetClient, new ClientEventProcessor());
     }
 
+    public void processReceived() {
+        connection.processReceived();
+    }
+
+    private void sendEntityCreationMessagesForNewEntitiesGeneratedAtClient() {
+        List<Entity> addedEntitiesThisTick = SM.level.getAddedEntitiesThisTick();
+        Set<Entity> entitesCreatedByIncomingMessages = Stream.of(connection.getEventProcessor())
+                .map(EventProcessor::getReceivedEntitiesThisTick)
+                .flatMap(entities -> entities.stream())
+                .collect(Collectors.toSet());
+        List<Entity> generatedEntitiesAtClient = addedEntitiesThisTick.stream()
+                .filter(entity -> !entitesCreatedByIncomingMessages.contains(entity))
+                .collect(Collectors.toList());
+        if (!generatedEntitiesAtClient.isEmpty()) {
+            List<EntityCreationMessage> entityCreationMessages = createEntityCreationMessages(generatedEntitiesAtClient);
+            connection.getKryonetConnection().sendTCP(MessageBatch.create(entityCreationMessages));
+        }
+
+        connection.getEventProcessor().getReceivedEntitiesThisTick().clear();
+    }
+
     public void preStep() {
         connection.preStep();
     }
 
-    public void prePhysics(){
+    public void prePhysics() {
         connection.prePhysics();
     }
 
-    public void postStep(){
+    public void postStep() {
         connection.postStep();
+        connection.sendFlush();
+        sendEntityCreationMessagesForNewEntitiesGeneratedAtClient();
     }
 
     public ServerClientConnection getConnection() {

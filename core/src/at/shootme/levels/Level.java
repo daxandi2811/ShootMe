@@ -4,6 +4,7 @@ import at.shootme.SM;
 import at.shootme.ShootMeConstants;
 import at.shootme.entity.general.Drawable;
 import at.shootme.entity.general.Entity;
+import at.shootme.entity.player.Player;
 import at.shootme.logic.StepListener;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -25,10 +26,10 @@ public class Level implements ShootMeConstants, StepListener {
     private final List<Entity> removalQueue = new ArrayList<>();
     protected final World world;
     private final List<Entity> addedEntitiesThisTick = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
     public Level(World world) {
         this.world = world;
-        SM.gameScreen.registerStepListener(0, this);
     }
 
     public void add(Entity entity) {
@@ -39,6 +40,9 @@ public class Level implements ShootMeConstants, StepListener {
             drawables.add((Drawable) entity);
         }
         addedEntitiesThisTick.add(entity);
+        if (entity instanceof Player) {
+            players.add((Player) entity);
+        }
     }
 
     private void initializeIdIfNotSet(Entity entity) {
@@ -78,6 +82,9 @@ public class Level implements ShootMeConstants, StepListener {
         if (isDrawable(entity)) {
             drawables.remove(entity);
         }
+        if (entity instanceof Player) {
+            players.remove(entity);
+        }
         Body body = entity.getBody();
         world.destroyBody(body);
     }
@@ -113,5 +120,9 @@ public class Level implements ShootMeConstants, StepListener {
 
     public List<Entity> getRemovedEntitiesThisTick() {
         return removalQueue;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 }

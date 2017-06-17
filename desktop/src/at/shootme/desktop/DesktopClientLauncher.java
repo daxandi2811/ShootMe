@@ -6,6 +6,7 @@ import at.shootme.ShootMeGame;
 import at.shootme.entity.general.EntityTypeHandlerRegistry;
 import at.shootme.networking.client.GameClient;
 import at.shootme.networking.general.KryoRegistrar;
+import at.shootme.state.manager.GameStateManager;
 import at.shootme.util.entity.EntityIdGenerator;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class DesktopClientLauncher {
     public static void main(String[] arg) {
+        SM.gameStateManager = new GameStateManager();
         SM.entityIdGenerator = new EntityIdGenerator();
         SM.kryoRegistrar = new KryoRegistrar();
         SM.entityTypeHandlerRegistry = new EntityTypeHandlerRegistry();

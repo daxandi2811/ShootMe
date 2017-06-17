@@ -1,6 +1,6 @@
 package mainmenu;
 
-import at.shootme.GameScreen;
+import at.shootme.SM;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -15,8 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import static at.shootme.SM.game;
-
 /**
  * Created by Steffi on 01.06.2017.
  */
@@ -25,7 +23,7 @@ public class MainMenu implements Screen {
     private Skin buttonskin;
     private Stage stage;
 
-//Constructor
+    //Constructor
     public MainMenu() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);// Make the stage consume events
@@ -34,8 +32,7 @@ public class MainMenu implements Screen {
 
 
     //Generates the ShootMe-Label and the 3 Buttons + their skins
-    private void initComponents()
-    {
+    private void initComponents() {
 //Shoot-Me Titel-Label
         //Creates a new Label, which requires a LabelSytle
         //LabelStyle
@@ -47,8 +44,8 @@ public class MainMenu implements Screen {
 
         //Label
         Label lbTitle;
-        lbTitle = new Label("ShootMe",textStyle);
-        lbTitle.setPosition(Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()/8 , 500);
+        lbTitle = new Label("ShootMe", textStyle);
+        lbTitle.setPosition(Gdx.graphics.getWidth() / 2 - Gdx.graphics.getWidth() / 8, 500);
         stage.addActor(lbTitle); //so the label appears on the Stage!!
 
 
@@ -61,12 +58,13 @@ public class MainMenu implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //sets GameScreen as the new Screen, hands over 1, so Level1 is created there
-                game.setScreen( new GameScreen(1) );
-            };
-        });
-        btLev1.setPosition(Gdx.graphics.getWidth()/4 - Gdx.graphics.getWidth()/8 , Gdx.graphics.getHeight()/2);
-        stage.addActor(btLev1); //so the button appears on the Stage!!
+                SM.gameStateManager.requestStartGame("VOLCANO");
+            }
 
+            ;
+        });
+        btLev1.setPosition(Gdx.graphics.getWidth() / 4 - Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2);
+        stage.addActor(btLev1); //so the button appears on the Stage!!
 
 
         TextButton btLev2 = new TextButton("Level 2", buttonskin);
@@ -74,10 +72,12 @@ public class MainMenu implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //sets GameScreen as the new Screen, hands over 2, so Level2 is created there
-                game.setScreen( new GameScreen(2) );
-            };
+                SM.gameStateManager.requestStartGame("COAST");
+            }
+
+            ;
         });
-        btLev2.setPosition(Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()/8 , Gdx.graphics.getHeight()/2);
+        btLev2.setPosition(Gdx.graphics.getWidth() / 2 - Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2);
         stage.addActor(btLev2); //so the button appears on the Stage!!
 
 
@@ -86,26 +86,28 @@ public class MainMenu implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //sets GameScreen as the new Screen, hands over 3, so Level3 is created there
-                game.setScreen( new GameScreen(3) );
-            };
+                SM.gameStateManager.requestStartGame("FOREST");
+            }
+
+            ;
         });
-        btLev3.setPosition(Gdx.graphics.getWidth()*3/4 - Gdx.graphics.getWidth()/8 , Gdx.graphics.getHeight()/2);
+        btLev3.setPosition(Gdx.graphics.getWidth() * 3 / 4 - Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2);
         stage.addActor(btLev3); //so the button appears on the Stage!!
     }
 
 
     //Creates a ButtonStyle for the buttons
-    private void createBasicSkin(){
+    private void createBasicSkin() {
         //Create a font
         BitmapFont font = new BitmapFont();
         buttonskin = new Skin();
         buttonskin.add("default", font);
 
         //Create a texture
-        Pixmap pixmap = new Pixmap((int) Gdx.graphics.getWidth()/4,(int)Gdx.graphics.getHeight()/10, Pixmap.Format.RGB888);
+        Pixmap pixmap = new Pixmap((int) Gdx.graphics.getWidth() / 4, (int) Gdx.graphics.getHeight() / 10, Pixmap.Format.RGB888);
         pixmap.setColor(Color.WHITE);
         pixmap.fill();
-        buttonskin.add("background",new Texture(pixmap));
+        buttonskin.add("background", new Texture(pixmap));
 
         //Create a button style
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
@@ -123,29 +125,40 @@ public class MainMenu implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if (SM.isServer()) {
+            SM.server.processReceived();
+        } else {
+            SM.client.processReceived();
+        }
+
         stage.act();
         stage.draw();
     }
 
 
+    @Override
+    public void resize(int width, int height) {
+    }
 
     @Override
-    public void resize(int width, int height) {    }
+    public void show() {
+    }
 
     @Override
-    public void show() {    }
+    public void pause() {
+    }
 
     @Override
-    public void pause() {    }
+    public void resume() {
+    }
 
     @Override
-    public void resume() {    }
+    public void hide() {
+    }
 
     @Override
-    public void hide() {    }
-
-    @Override
-    public void dispose() {    }
+    public void dispose() {
+    }
 
 
 }

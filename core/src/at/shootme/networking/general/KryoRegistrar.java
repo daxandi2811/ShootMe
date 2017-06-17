@@ -8,6 +8,8 @@ import at.shootme.networking.data.entity.state.EntityBodyGeneralState;
 import at.shootme.networking.data.entity.state.EntityStateChangeMessage;
 import at.shootme.networking.data.framework.MessageBatch;
 import at.shootme.networking.data.framework.StepCommunicationFlush;
+import at.shootme.state.data.GameState;
+import at.shootme.state.data.GameStateType;
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 
@@ -36,6 +38,8 @@ public class KryoRegistrar {
         gameMessageClasses.add(EntityStateChangeMessage.class);
         gameMessageClasses.add(MessageBatch.class);
         gameMessageClasses.add(StepCommunicationFlush.class);
+        gameMessageClasses.add(GameState.class);
+        gameMessageClasses.add(GameStateType.class);
         return gameMessageClasses;
     }
 

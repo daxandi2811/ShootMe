@@ -16,14 +16,16 @@ public class LevelUtility implements ShootMeConstants {
     /**
      * Creates a platform
      *
-     * @param pixelPosition
+     * @param pixelPositionBottomLeftCorner
      * @param pixelSize
-     * @param texture
      * @param world
      * @return
      */
-    public static Platform createPlatform(Vector2 pixelPosition, Vector2 pixelSize, String type, World world) {
-        return new Platform(pixelPosition.scl(PIXELS_TO_METERS), pixelSize.scl(PIXELS_TO_METERS), type, world);
+    public static Platform createPlatform(Vector2 pixelPositionBottomLeftCorner, Vector2 pixelSize, String type, World world) {
+        Vector2 worldSize = pixelSize.scl(PIXELS_TO_METERS);
+        Vector2 worldPosition = pixelPositionBottomLeftCorner.cpy().scl(PIXELS_TO_METERS)
+                .add(worldSize.cpy().scl(0.5f));
+        return new Platform(worldPosition, worldSize, type, world);
     }
 
     /**

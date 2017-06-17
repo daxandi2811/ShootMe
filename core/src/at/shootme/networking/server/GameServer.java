@@ -7,9 +7,12 @@ import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.networking.data.entity.state.EntityBodyGeneralState;
 import at.shootme.networking.data.entity.state.EntityStateChangeMessage;
 import at.shootme.networking.data.framework.MessageBatch;
+import at.shootme.networking.data.framework.StepCommunicationFlush;
 import at.shootme.networking.exceptions.NetworkingRuntimeException;
+import at.shootme.networking.general.EventProcessor;
 import at.shootme.networking.general.NetworkingConstants;
 import at.shootme.networking.general.ServerClientConnection;
+import at.shootme.state.data.GameStateType;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.KryoSerialization;
 import com.esotericsoftware.kryonet.Listener;
@@ -18,15 +21,18 @@ import com.esotericsoftware.kryonet.Server;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static at.shootme.networking.general.NetworkingConstants.TCP_PORT;
 import static at.shootme.networking.general.NetworkingConstants.UDP_PORT;
+import static at.shootme.networking.general.NetworkingUtils.createEntityCreationMessages;
 
 public class GameServer {
 
     private Server kryonetServer;
     private List<ServerClientConnection> connections = new ArrayList<>();
+    private List<Connection> newConnections = new ArrayList<>();
 
     public void open() {
         kryonetServer = new Server(NetworkingConstants.WRITE_BUFFER_SIZE, NetworkingConstants.OBJECT_BUFFER_SIZE, new KryoSerialization());
@@ -41,7 +47,13 @@ public class GameServer {
     }
 
     public void preStep() {
+        handleNewConnections();
         connections.forEach(ServerClientConnection::preStep);
+    }
+
+    private void handleNewConnections() {
+        newConnections.forEach((newConnection) -> handleNewConnection(newConnection));
+        newConnections.clear();
     }
 
     public void prePhysics() {
@@ -50,19 +62,32 @@ public class GameServer {
 
     public void postStep() {
         connections.forEach(ServerClientConnection::postStep);
-        sendEntityCreationMessagesForNewEntities();
+        sendEntityCreationMessagesForNewEntitiesGeneratedAtServer();
         sendStateUpdateMessages();
     }
 
-    private void sendEntityCreationMessagesForNewEntities() {
+    public void processReceived() {
+        handleNewConnections();
+        connections.forEach(ServerClientConnection::processReceived);
+        kryonetServer.sendToAllTCP(new StepCommunicationFlush());
+    }
+
+    private void sendEntityCreationMessagesForNewEntitiesGeneratedAtServer() {
         List<Entity> addedEntitiesThisTick = SM.level.getAddedEntitiesThisTick();
-        if (!addedEntitiesThisTick.isEmpty()) {
-            List<EntityCreationMessage> entityCreationMessages = addedEntitiesThisTick.stream().map(entity -> {
-                EntityTypeHandler handler = SM.entityTypeHandlerRegistry.getHandlerFor(entity);
-                return handler.createEntityCreationMessage(entity);
-            }).collect(Collectors.toList());
-            kryonetServer.sendToAllUDP(MessageBatch.create(entityCreationMessages));
+        Set<Entity> entitesCreatedByIncomingMessages = connections.stream()
+                .map(ServerClientConnection::getEventProcessor)
+                .map(EventProcessor::getReceivedEntitiesThisTick)
+                .flatMap(entities -> entities.stream())
+                .collect(Collectors.toSet());
+        List<Entity> generatedEntitiesAtServer = addedEntitiesThisTick.stream()
+                .filter(entity -> !entitesCreatedByIncomingMessages.contains(entity))
+                .collect(Collectors.toList());
+        if (!generatedEntitiesAtServer.isEmpty()) {
+            List<EntityCreationMessage> entityCreationMessages = createEntityCreationMessages(generatedEntitiesAtServer);
+            kryonetServer.sendToAllTCP(MessageBatch.create(entityCreationMessages));
         }
+
+        connections.forEach(serverClientConnection -> serverClientConnection.getEventProcessor().getReceivedEntitiesThisTick().clear());
     }
 
     private void sendStateUpdateMessages() {
@@ -91,15 +116,25 @@ public class GameServer {
     }
 
     private void handleNewConnection(Connection newConnection) {
-        ServerClientConnection serverClientConnection = new ServerClientConnection(newConnection, new ServerEventProcessor());
-        connections.add(serverClientConnection);
+        ServerClientConnection newServerClientConnection = new ServerClientConnection(newConnection, new ServerEventProcessor());
+        connections.add(newServerClientConnection);
+
+        newServerClientConnection.getKryonetConnection().sendTCP(SM.state);
+        if (SM.state.getStateType() == GameStateType.IN_GAME) {
+            List<EntityCreationMessage> entityCreationMessages = createEntityCreationMessages(SM.level.getEntities());
+            newServerClientConnection.sendTCPWithFlush(MessageBatch.create(entityCreationMessages));
+        }
+    }
+
+    public Server getKryonetServer() {
+        return kryonetServer;
     }
 
     private class NewConnectionListener extends Listener {
 
         @Override
         public void connected(Connection connection) {
-            handleNewConnection(connection);
+            newConnections.add(connection);
         }
     }
 

@@ -26,14 +26,13 @@ public class Platform extends SimpleDrawableEntity {
         this.size = size;
         this.type = type;
         sprite = new Sprite(new Texture(type.equals("stone") ? "assets/greytexture.jpg" : (type.equals("sand") ? "assets/sandtexture.jpg" : "assets/browntexture.jpg")));
-        sprite.setSize(size.cpy().scl(METERS_TO_PIXELS).x, this.size.cpy().scl(METERS_TO_PIXELS).y);
+        sprite.setSize(size.cpy().scl(METERS_TO_PIXELS).x, size.cpy().scl(METERS_TO_PIXELS).y);
         sprite.setOriginCenter();
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.StaticBody;
 
-        bodyDef.position.set(position.x + size.x / 2,
-                position.y + size.y / 2);
+        bodyDef.position.set(position.x, position.y);
 
         body = world.createBody(bodyDef);
         body.setUserData(this);

@@ -1,17 +1,23 @@
 package at.shootme.networking.general;
 
+import at.shootme.entity.general.Entity;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
-public abstract class EventProcessor extends Listener {
+import java.util.LinkedList;
+import java.util.List;
 
-    @Override
-    public abstract void received(Connection connection, Object object);
+public abstract class EventProcessor {
 
-    @Override
-    public abstract void disconnected(Connection connection);
+    protected List<Entity> receivedEntitiesThisTick = new LinkedList<>();
 
-    @Override
-    public abstract void idle(Connection connection);
+    public abstract void received(ServerClientConnection connection, Object object);
 
+    public abstract void disconnected(ServerClientConnection connection);
+
+    public abstract void idle(ServerClientConnection connection);
+
+    public List<Entity> getReceivedEntitiesThisTick() {
+        return receivedEntitiesThisTick;
+    }
 }

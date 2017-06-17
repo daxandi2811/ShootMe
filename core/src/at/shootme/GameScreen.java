@@ -41,8 +41,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private Box2DDebugRenderer debugRenderer;
     private MainMenu menu;
 
-    private Player player1;
-    private Player player2;
+    private Player player;
 
     private float partStep;
 
@@ -52,22 +51,44 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private Label.LabelStyle textStyle;
     private BitmapFont font;
 
-    public GameScreen() {
+    private GameScreen() {
         SM.gameScreen = this;
-    }
-
-    public GameScreen(Level lev){ this.level = lev; }
-
-    public GameScreen(int levelNr)
-    {
-        this();
         world = new World(new Vector2(0, -98), true);
         SM.world = world;
-        switch(levelNr)
-        {
-            case 1: level = new Level1(world); break;
-            case 2: level = new Level2(world); break;
-            case 3: level = new Level3(world); break;
+    }
+
+    public GameScreen(String levelKey) {
+        this();
+        Level level;
+        switch (levelKey) {
+            case "VOLCANO":
+                level = new Level1(SM.world);
+                break;
+            case "COAST":
+                level = new Level2(SM.world);
+                break;
+            case "FOREST":
+                level = new Level3(SM.world);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        this.level = level;
+        registerStepListener(0, level);
+    }
+
+    public GameScreen(int levelNr) {
+        this();
+        switch (levelNr) {
+            case 1:
+                level = new Level1(world);
+                break;
+            case 2:
+                level = new Level2(world);
+                break;
+            case 3:
+                level = new Level3(world);
+                break;
         }
 
     }
@@ -87,15 +108,12 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         Gdx.input.setInputProcessor(this);
         batch = new SpriteBatch();
 
-        player1 = new Player();
-        player1.setTexturepath("assets/playersprite1.png");
-        player1.init(new Vector2(0, 100).scl(PIXELS_TO_METERS), world);
-        level.add(player1);
-
-        player2 = new Player();
-        player2.setTexturepath("assets/playersprite2.png");
-        player2.init(new Vector2(300, 100).scl(PIXELS_TO_METERS), world);
-        level.add(player2);
+        if (SM.isClient()) {
+            player = new Player();
+            player.setTexturepath("assets/playersprite1.png");
+            player.init(new Vector2(0, 100).scl(PIXELS_TO_METERS), world);
+            level.add(player);
+        }
 
         SM.level = level;
 
@@ -134,8 +152,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
             SM.client.prePhysics();
         }
 
-        player1.move();
-        player2.move();
+        SM.level.getPlayers().forEach(Player::move);
         world.step(timeStep, 6, 2);
 
         stepListenerListsByPriority.values().forEach(stepListeners -> stepListeners.forEach(stepListener -> {
@@ -196,16 +213,14 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     }
 
     //Displays the current score at the top right center
-    public void displayScore(int score)
-    {
+    public void displayScore(int score) {
 
-        font.draw(batch, "Score: " +score, Gdx.graphics.getWidth()-300, Gdx.graphics.getHeight()*2-50);
+        font.draw(batch, "Score: " + score, Gdx.graphics.getWidth() - 300, Gdx.graphics.getHeight() * 2 - 50);
     }
 
     //Displays the time left at the top right corner
-    public void displayTime(int seconds)
-    {
-        font.draw(batch, "Time: " + String.format("%d:%02d", seconds/60, seconds%60), Gdx.graphics.getWidth()-300, Gdx.graphics.getHeight()*2);
+    public void displayTime(int seconds) {
+        font.draw(batch, "Time: " + String.format("%d:%02d", seconds / 60, seconds % 60), Gdx.graphics.getWidth() - 300, Gdx.graphics.getHeight() * 2);
     }
 
     @Override
@@ -237,69 +252,57 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
     @Override
     public boolean keyDown(int keycode) {
-
-        switch (keycode) {
-            case Input.Keys.SPACE:
-                player1.jumpIfPossible();
-                break;
-            case Input.Keys.A:
-                player1.setHorizontalMovementState(HorizontalMovementState.LEFT);
-                break;
-            case Input.Keys.D:
-                player1.setHorizontalMovementState(HorizontalMovementState.RIGHT);
-                break;
-            case Input.Keys.UP:
-                player2.jumpIfPossible();
-                break;
-            case Input.Keys.LEFT:
-                player2.setHorizontalMovementState(HorizontalMovementState.LEFT);
-                break;
-            case Input.Keys.RIGHT:
-                player2.setHorizontalMovementState(HorizontalMovementState.RIGHT);
-                break;
+        if (SM.isClient()) {
+            switch (keycode) {
+                case Input.Keys.SPACE:
+                    player.jumpIfPossible();
+                    break;
+                case Input.Keys.A:
+                    player.setHorizontalMovementState(HorizontalMovementState.LEFT);
+                    break;
+                case Input.Keys.D:
+                    player.setHorizontalMovementState(HorizontalMovementState.RIGHT);
+                    break;
+            }
         }
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        switch (keycode) {
-            case Input.Keys.A:
-            case Input.Keys.D:
-                if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                    player1.setHorizontalMovementState(HorizontalMovementState.LEFT);
-                } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                    player1.setHorizontalMovementState(HorizontalMovementState.RIGHT);
-                } else
-                    player1.setHorizontalMovementState(HorizontalMovementState.STOPPING);
-                break;
-            case Input.Keys.LEFT:
-            case Input.Keys.RIGHT:
-                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                    player2.setHorizontalMovementState(HorizontalMovementState.LEFT);
-                } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                    player2.setHorizontalMovementState(HorizontalMovementState.RIGHT);
-                } else
-                    player2.setHorizontalMovementState(HorizontalMovementState.STOPPING);
-                break;
+        if (SM.isClient()) {
+            switch (keycode) {
+                case Input.Keys.A:
+                case Input.Keys.D:
+                    if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                        player.setHorizontalMovementState(HorizontalMovementState.LEFT);
+                    } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                        player.setHorizontalMovementState(HorizontalMovementState.RIGHT);
+                    } else
+                        player.setHorizontalMovementState(HorizontalMovementState.STOPPING);
+                    break;
+            }
         }
         return false;
     }
 
     @Override
     public boolean keyTyped(char character) {
-
         return false;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector2 worldClickPoint = Vector2Util.convertVector3To2(camera.unproject(new Vector3(screenX, screenY, 0)));
-        StandardShot shot = player1.shootAt(worldClickPoint.scl(PIXELS_TO_METERS));
-        if (shot != null) {
-            level.add(shot);
+        if (SM.isClient()) {
+            Vector2 worldClickPoint = Vector2Util.convertVector3To2(camera.unproject(new Vector3(screenX, screenY, 0)));
+            StandardShot shot = player.shootAt(worldClickPoint.scl(PIXELS_TO_METERS));
+            if (shot != null) {
+                level.add(shot);
+            }
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
     @Override
@@ -322,6 +325,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         return false;
     }
 
-
+    public Player getPlayer() {
+        return player;
+    }
 }
 
