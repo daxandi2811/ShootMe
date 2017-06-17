@@ -1,32 +1,27 @@
 package at.shootme.entity.player;
 
-import at.shootme.beans.*;
+import at.shootme.beans.HorizontalMovementState;
 import at.shootme.beans.ViewDirection;
 import at.shootme.entity.EntityCategory;
-import at.shootme.entity.general.Drawable;
-import at.shootme.entity.general.Entity;
+import at.shootme.entity.general.SimpleDrawableEntity;
 import at.shootme.entity.level.Platform;
 import at.shootme.entity.shot.StandardShot;
+import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.util.vectors.Vector2Util;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
-import static at.shootme.ShootMeConstants.METERS_TO_PIXELS;
 import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
 
 /**
  * Created by Alexander Dietrich on 01.05.2017.
  */
-public class Player extends Entity implements Drawable {
+public class Player extends SimpleDrawableEntity {
 
     private static final int JUMP_SPEED = 30;
 
-    private Sprite sprite;
-    private Body body;
-    private Fixture fixture;
     private HorizontalMovementState horizontalMovementState = HorizontalMovementState.STOPPED;
     private ViewDirection viewDirection = ViewDirection.LEFT;
 
@@ -170,12 +165,6 @@ public class Player extends Entity implements Drawable {
     }
 
     @Override
-    public void draw(SpriteBatch batch) {
-        sprite.setPosition(body.getPosition().x * METERS_TO_PIXELS - sprite.getWidth() / 2, body.getPosition().y * METERS_TO_PIXELS - sprite.getHeight() / 2);
-        sprite.draw(batch);
-    }
-
-    @Override
     public EntityCategory getCategory() {
         return EntityCategory.PLAYER;
     }
@@ -183,5 +172,44 @@ public class Player extends Entity implements Drawable {
     @Override
     public Body getBody() {
         return body;
+    }
+
+    public int getAvailableJumps() {
+        return availableJumps;
+    }
+
+    public String getTexturepath() {
+        return texturepath;
+    }
+
+    public static class PlayerCreationMessage extends EntityCreationMessage {
+
+        private int availableJumps;
+        private int number;
+        private String texturepath;
+
+        public int getAvailableJumps() {
+            return availableJumps;
+        }
+
+        public void setAvailableJumps(int availableJumps) {
+            this.availableJumps = availableJumps;
+        }
+
+        public int getNumber() {
+            return number;
+        }
+
+        public void setNumber(int number) {
+            this.number = number;
+        }
+
+        public String getTexturepath() {
+            return texturepath;
+        }
+
+        public void setTexturepath(String texturepath) {
+            this.texturepath = texturepath;
+        }
     }
 }

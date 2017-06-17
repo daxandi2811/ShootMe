@@ -1,6 +1,11 @@
 package at.shootme;
 
+import at.shootme.entity.general.EntityTypeHandlerRegistry;
 import at.shootme.levels.Level;
+import at.shootme.networking.client.GameClient;
+import at.shootme.networking.general.KryoRegistrar;
+import at.shootme.networking.server.GameServer;
+import at.shootme.util.entity.EntityIdGenerator;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
@@ -13,4 +18,17 @@ public class SM {
     public static GameScreen gameScreen;
     public static World world;
     public static Level level;
+    public static EntityIdGenerator entityIdGenerator;
+    public static KryoRegistrar kryoRegistrar;
+    public static EntityTypeHandlerRegistry entityTypeHandlerRegistry;
+    public static GameClient client;
+    public static GameServer server;
+
+    public static boolean isServer() {
+        return server != null;
+    }
+
+    public static boolean isClient() {
+        return client != null;
+    }
 }

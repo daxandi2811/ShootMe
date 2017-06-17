@@ -12,4 +12,6 @@ public interface ShootMeConstants {
     float METERS_TO_PIXELS = 100f; //default: 100f
 
     float PIXELS_TO_METERS = 1 / 100f; //default: 1/100f
+
+    int SIMULATED_LAG_IN_MS = 0;
 }

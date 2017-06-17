@@ -62,6 +62,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     {
         this();
         world = new World(new Vector2(0, -98), true);
+        SM.world = world;
         switch(levelNr)
         {
             case 1: level = new Level1(world); break;
@@ -115,9 +116,23 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
      *
      * */
     private void step(float timeStep) {
+        if (SM.isServer()) {
+            SM.server.preStep();
+        } else {
+            SM.client.preStep();
+        }
+        stepListenerListsByPriority.values().forEach(stepListeners -> stepListeners.forEach(stepListener -> {
+            stepListener.beforeStep(timeStep);
+        }));
         stepListenerListsByPriority.values().forEach(stepListeners -> stepListeners.forEach(stepListener -> {
             stepListener.beforeWorldStep(timeStep);
         }));
+
+        if (SM.isServer()) {
+            SM.server.prePhysics();
+        } else {
+            SM.client.prePhysics();
+        }
 
         player1.move();
         player2.move();
@@ -125,6 +140,16 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         stepListenerListsByPriority.values().forEach(stepListeners -> stepListeners.forEach(stepListener -> {
             stepListener.afterWorldStep(timeStep);
+        }));
+
+        if (SM.isServer()) {
+            SM.server.postStep();
+        } else {
+            SM.client.postStep();
+        }
+
+        stepListenerListsByPriority.values().forEach(stepListeners -> stepListeners.forEach(stepListener -> {
+            stepListener.cleanup();
         }));
     }
 

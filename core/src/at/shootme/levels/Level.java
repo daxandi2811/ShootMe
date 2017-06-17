@@ -10,7 +10,9 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Alexander Dietrich on 05.05.2017.
@@ -18,9 +20,11 @@ import java.util.List;
 public class Level implements ShootMeConstants, StepListener {
 
     private final List<Entity> entities = new ArrayList<>();
+    private final Map<String, Entity> entitiesById = new HashMap<>();
     private final List<Drawable> drawables = new ArrayList<>();
     private final List<Entity> removalQueue = new ArrayList<>();
     protected final World world;
+    private final List<Entity> addedEntitiesThisTick = new ArrayList<>();
 
     public Level(World world) {
         this.world = world;
@@ -28,9 +32,18 @@ public class Level implements ShootMeConstants, StepListener {
     }
 
     public void add(Entity entity) {
+        initializeIdIfNotSet(entity);
         entities.add(entity);
+        entitiesById.put(entity.getId(), entity);
         if (isDrawable(entity)) {
             drawables.add((Drawable) entity);
+        }
+        addedEntitiesThisTick.add(entity);
+    }
+
+    private void initializeIdIfNotSet(Entity entity) {
+        if (entity.getId() == null) {
+            entity.setId(SM.entityIdGenerator.createId(entity));
         }
     }
 
@@ -61,6 +74,7 @@ public class Level implements ShootMeConstants, StepListener {
 
     private void remove(Entity entity) {
         entities.remove(entity);
+        entitiesById.remove(entity.getId());
         if (isDrawable(entity)) {
             drawables.remove(entity);
         }
@@ -68,15 +82,36 @@ public class Level implements ShootMeConstants, StepListener {
         world.destroyBody(body);
     }
 
+    public Entity getEntityById(String id) {
+        return entitiesById.get(id);
+    }
+
+    @Override
+    public void cleanup() {
+        addedEntitiesThisTick.clear();
+        removalQueue.clear();
+    }
+
     @Override
     public void afterWorldStep(float timeStep) {
         removalQueue.forEach(this::remove);
-        removalQueue.clear();
     }
 
     public void render(SpriteBatch batch) {
         for (Drawable drawable : drawables) {
             drawable.draw(batch);
         }
+    }
+
+    public List<Entity> getEntities() {
+        return entities;
+    }
+
+    public List<Entity> getAddedEntitiesThisTick() {
+        return addedEntitiesThisTick;
+    }
+
+    public List<Entity> getRemovedEntitiesThisTick() {
+        return removalQueue;
     }
 }

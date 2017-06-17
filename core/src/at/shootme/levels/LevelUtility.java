@@ -22,8 +22,8 @@ public class LevelUtility implements ShootMeConstants {
      * @param world
      * @return
      */
-    public static Platform createPlatform(Vector2 pixelPosition, Vector2 pixelSize, Texture texture, World world) {
-        return new Platform(pixelPosition.scl(PIXELS_TO_METERS), pixelSize.scl(PIXELS_TO_METERS), texture, world);
+    public static Platform createPlatform(Vector2 pixelPosition, Vector2 pixelSize, String type, World world) {
+        return new Platform(pixelPosition.scl(PIXELS_TO_METERS), pixelSize.scl(PIXELS_TO_METERS), type, world);
     }
 
     /**
