@@ -13,7 +13,8 @@ import at.shootme.networking.general.EventProcessor;
 import at.shootme.networking.general.ServerClientConnection;
 import at.shootme.state.data.GameState;
 import at.shootme.state.data.GameStateType;
-import com.sun.istack.internal.logging.Logger;
+
+import java.util.logging.Logger;
 
 public class ServerEventProcessor extends EventProcessor {
 
@@ -23,7 +24,7 @@ public class ServerEventProcessor extends EventProcessor {
             EntityStateChangeMessage entityStateChangeMessage = (EntityStateChangeMessage) message;
             Entity entity = SM.level.getEntityById(entityStateChangeMessage.getEntityId());
             if (entity == null) {
-                Logger.getLogger(ClientEventProcessor.class).info("entity with ID " + entityStateChangeMessage.getEntityId() + " was requested to be updated but has already been removed");
+                Logger.getLogger(ClientEventProcessor.class.getName()).info("entity with ID " + entityStateChangeMessage.getEntityId() + " was requested to be updated but has already been removed");
             } else {
                 updateEntity(connection, entity, entityStateChangeMessage);
             }

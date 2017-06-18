@@ -15,8 +15,9 @@ import at.shootme.networking.data.entity.PlayerStateChangeMessage;
 import at.shootme.networking.general.EventProcessor;
 import at.shootme.networking.general.ServerClientConnection;
 import at.shootme.state.data.GameState;
-import com.sun.istack.internal.logging.Logger;
 import screens.MainMenu;
+
+import java.util.logging.Logger;
 
 public class ClientEventProcessor extends EventProcessor {
 
@@ -30,7 +31,7 @@ public class ClientEventProcessor extends EventProcessor {
             EntityStateChangeMessage entityStateChangeMessage = (EntityStateChangeMessage) message;
             Entity entity = SM.level.getEntityById(entityStateChangeMessage.getEntityId());
             if (entity == null) {
-                Logger.getLogger(ClientEventProcessor.class).info("entity with ID " + entityStateChangeMessage.getEntityId() + " was requested to be updated but has already been removed");
+                Logger.getLogger(ClientEventProcessor.class.getName()).info("entity with ID " + entityStateChangeMessage.getEntityId() + " was requested to be updated but has already been removed");
             } else {
                 updateEntity(entity, entityStateChangeMessage);
             }
@@ -49,7 +50,7 @@ public class ClientEventProcessor extends EventProcessor {
             String entityId = entityRemovedMessage.getEntityId();
             Entity entity = SM.level.getEntityById(entityId);
             if (entity == null) {
-                Logger.getLogger(ClientEventProcessor.class).info("entity with ID " + entityId + " was requested to be removed but has already been removed");
+                Logger.getLogger(ClientEventProcessor.class.getName()).info("entity with ID " + entityId + " was requested to be removed but has already been removed");
             } else {
                 SM.level.queueForRemoval(entity);
             }
