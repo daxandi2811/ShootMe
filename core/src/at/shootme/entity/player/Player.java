@@ -72,10 +72,6 @@ public class Player extends SimpleDrawableEntity {
         return fixture;
     }
 
-    public void setTexturepath(String texturepath) {
-        this.texturepath = texturepath;
-    }
-
     public HorizontalMovementState getHorizontalMovementState() {
         return horizontalMovementState;
     }
@@ -158,7 +154,6 @@ public class Player extends SimpleDrawableEntity {
         body.setLinearVelocity(body.getLinearVelocity().x, JUMP_SPEED);
     }
 
-
     public void hitGround(Platform platform) {
         availableJumps = 2;
     }
@@ -183,8 +178,16 @@ public class Player extends SimpleDrawableEntity {
         return availableJumps;
     }
 
+    public void setAvailableJumps(int availableJumps) {
+        this.availableJumps = availableJumps;
+    }
+
     public String getTexturepath() {
         return texturepath;
+    }
+
+    public void setTexturepath(String texturepath) {
+        this.texturepath = texturepath;
     }
 
     public ViewDirection getViewDirection() {
@@ -193,10 +196,6 @@ public class Player extends SimpleDrawableEntity {
 
     public void setViewDirection(ViewDirection viewDirection) {
         this.viewDirection = viewDirection;
-    }
-
-    public void setAvailableJumps(int availableJumps) {
-        this.availableJumps = availableJumps;
     }
 
     public static class PlayerCreationMessage extends EntityCreationMessage {

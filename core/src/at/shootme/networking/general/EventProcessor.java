@@ -1,8 +1,6 @@
 package at.shootme.networking.general;
 
 import at.shootme.entity.general.Entity;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 
 import java.util.LinkedList;
 import java.util.List;

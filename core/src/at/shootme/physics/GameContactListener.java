@@ -50,7 +50,7 @@ public class GameContactListener implements ContactListener, StepListener {
                 System.out.println(ReflectionToStringBuilder.toString(contact.getWorldManifold()));
                 Player player = (Player) entityA;
                 if (worldManifoldNormal.y < 0) {
-                     player.hitGround((Platform) entityB);
+                    player.hitGround((Platform) entityB);
                 }
             }
 

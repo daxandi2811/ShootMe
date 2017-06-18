@@ -25,13 +25,13 @@ public abstract class SimpleDrawableEntity implements Entity, Drawable {
     }
 
     @Override
-    public void setId(String id) {
-        if (this.id != null) throw new IllegalArgumentException();
-        this.id = id;
+    public String getId() {
+        return id;
     }
 
     @Override
-    public String getId() {
-        return id;
+    public void setId(String id) {
+        if (this.id != null) throw new IllegalArgumentException();
+        this.id = id;
     }
 }

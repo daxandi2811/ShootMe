@@ -1,11 +1,11 @@
 package at.shootme.networking.general;
 
 import at.shootme.ShootMeConstants;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import at.shootme.entity.player.Player;
 import at.shootme.networking.data.framework.MessageBatch;
 import at.shootme.networking.data.framework.StepCommunicationFlush;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,10 +80,10 @@ public class ServerClientConnection {
 
     private class ConnectionUpdateEventListener extends Listener {
 
+        private final EventProcessor eventProcessor;
         private List<Runnable> queuedConnectionEvents = new ArrayList<>();
         private List<Object> queuedReceivedObjects = new ArrayList<>();
         private List<Object> queuedProcessableReceivedObjects = new ArrayList<>();
-        private final EventProcessor eventProcessor;
 
         private ConnectionUpdateEventListener(EventProcessor eventProcessor) {
             this.eventProcessor = Objects.requireNonNull(eventProcessor);

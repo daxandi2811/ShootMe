@@ -1,7 +1,6 @@
 package at.shootme.levels;
 
 import at.shootme.SM;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -25,7 +24,7 @@ public class Level2 extends Level {
         int levelHeight = 720;
         addCosmetic(LevelUtility.createLevelBackground(new Vector2(-levelWidth, 50), new Vector2(levelWidth * 2, levelHeight * 2), backgroundTexture));
 
-        if(SM.isServer()) {
+        if (SM.isServer()) {
             //Border
             String floorType = "sand";
             //Floor

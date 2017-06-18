@@ -20,11 +20,11 @@ import java.util.Map;
  */
 public class Level implements ShootMeConstants, StepListener {
 
+    protected final World world;
     private final List<Entity> entities = new ArrayList<>();
     private final Map<String, Entity> entitiesById = new HashMap<>();
     private final List<Drawable> drawables = new ArrayList<>();
     private final List<Entity> removalQueue = new ArrayList<>();
-    protected final World world;
     private final List<Entity> addedEntitiesThisTick = new ArrayList<>();
     private final List<Player> players = new ArrayList<>();
 

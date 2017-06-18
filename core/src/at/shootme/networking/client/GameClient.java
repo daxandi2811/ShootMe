@@ -1,6 +1,5 @@
 package at.shootme.networking.client;
 
-import at.shootme.GameScreen;
 import at.shootme.SM;
 import at.shootme.entity.general.Entity;
 import at.shootme.entity.player.Player;
@@ -15,7 +14,6 @@ import at.shootme.networking.general.ServerClientConnection;
 import com.esotericsoftware.kryonet.Client;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
