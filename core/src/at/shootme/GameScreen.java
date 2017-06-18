@@ -8,8 +8,10 @@ import at.shootme.levels.Level1;
 import at.shootme.levels.Level2;
 import at.shootme.levels.Level3;
 import at.shootme.logic.StepListener;
+import at.shootme.networking.GameEndedMessage;
 import at.shootme.physics.GameContactFilter;
 import at.shootme.physics.GameContactListener;
+import at.shootme.state.data.GameStateType;
 import at.shootme.util.vectors.Vector2Util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -24,19 +26,21 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Align;
 import mainmenu.MainMenu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Alexander Dietrich on 07.04.2017.
  */
 public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
+    public static final int GAME_DURATION_SECONDS = 60;
+    public static final int GAME_ENDING_CELEBRATION_DURATION = 5;
     private SpriteBatch batch;
+    private SpriteBatch windowBatch;
     private World world;
     private OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
@@ -52,6 +56,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private BitmapFont bigFont;
     private BitmapFont mediumFont;
     private float gameDurationSeconds = 0;
+    private GameEndedMessage gameEndedMessage;
 
     private GameScreen() {
         SM.gameScreen = this;
@@ -93,6 +98,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         Gdx.input.setInputProcessor(this);
         batch = new SpriteBatch();
+        windowBatch = new SpriteBatch();
 
         if (SM.isClient()) {
             player = new Player();
@@ -194,9 +200,35 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         } else {
             mediumFont.setColor(Color.BLACK);
             batch.begin();
-            mediumFont.draw(batch, "Server is running. " + SM.server.getConnections().size() + " players connected.", 50, Gdx.graphics.getHeight()-50);
-            mediumFont.draw(batch, "Match running.", 50, Gdx.graphics.getHeight()-100);
+            mediumFont.draw(batch, "Server is running. " + SM.server.getConnections().size() + " players connected.", 50, Gdx.graphics.getHeight() - 50);
+            mediumFont.draw(batch, "Match running.", 50, Gdx.graphics.getHeight() - 100);
             batch.end();
+        }
+
+        if (SM.isServer() && gameEndedMessage == null) {
+            if (gameDurationSeconds > GAME_DURATION_SECONDS) {
+                gameEndedMessage = new GameEndedMessage();
+                List<Player> players = level.getPlayers();
+                if (players.isEmpty()) {
+                    SM.gameStateManager.requestSwitchToLevelSelection();
+                } else {
+                    List<Player> playersSortedByScoreDesc = players.stream()
+                            .sorted(Comparator.comparingInt(Player::getScore).reversed())
+                            .collect(Collectors.toList());
+                    Player winningPlayer = playersSortedByScoreDesc.get(0);
+                    gameEndedMessage.setWinningScore(winningPlayer.getScore());
+                    gameEndedMessage.setWinningPlayerEntityId(winningPlayer.getId());
+                }
+                SM.server.getKryonetServer().sendToAllTCP(gameEndedMessage);
+            }
+        }
+        if (SM.isServer() && gameEndedMessage != null) {
+            if (gameDurationSeconds > GAME_DURATION_SECONDS + GAME_ENDING_CELEBRATION_DURATION) {
+                if (SM.state.getStateType() != GameStateType.LEVEL_SELECTION) {
+                    SM.gameStateManager.requestSwitchToLevelSelection();
+                }
+            }
+
         }
     }
 
@@ -206,13 +238,20 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         level.render(batch);
 
-
-        if (SM.isClient()) {
-            displayScore(getPlayer().getScore());
-            displayTime(Math.max(60 - (int) gameDurationSeconds, 0));
-        }
+        displayScore(getPlayer().getScore());
+        displayTime(Math.max(GAME_DURATION_SECONDS - (int) gameDurationSeconds, 0));
 
         batch.end();
+
+        if (gameEndedMessage != null) {
+            windowBatch.begin();
+            Player winningPlayer = (Player) SM.level.getEntityById(gameEndedMessage.getWinningPlayerEntityId());
+            if (winningPlayer != null) {
+                bigFont.draw(windowBatch, "Player " + winningPlayer.getName() + " has won with a score of " + gameEndedMessage.getWinningScore() + "!", 50, Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() - 100, Align.center, true);
+            }
+            windowBatch.end();
+        }
+
 
         debugRenderer.render(world, camera.combined);
     }
@@ -245,14 +284,13 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
     @Override
     public void hide() {
-        batch.dispose();
-        world.dispose();
-        Gdx.input.setInputProcessor(null);
     }
 
     @Override
     public void dispose() {
-
+        batch.dispose();
+        world.dispose();
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
@@ -348,6 +386,14 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
     public BitmapFont getMediumFont() {
         return mediumFont;
+    }
+
+    public GameEndedMessage getGameEndedMessage() {
+        return gameEndedMessage;
+    }
+
+    public void setGameEndedMessage(GameEndedMessage gameEndedMessage) {
+        this.gameEndedMessage = gameEndedMessage;
     }
 }
 

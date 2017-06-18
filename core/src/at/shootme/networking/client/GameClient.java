@@ -33,6 +33,9 @@ public class GameClient {
         connection = new ServerClientConnection(kryonetClient, new ClientEventProcessor());
         try {
             kryonetClient.connect(1000, "localhost", NetworkingConstants.TCP_PORT, NetworkingConstants.UDP_PORT);
+            kryonetClient.setKeepAliveUDP(5000);
+            kryonetClient.setKeepAliveTCP(5000);
+            kryonetClient.setTimeout(10000);
         } catch (IOException e) {
             throw new NetworkingRuntimeException(e);
         }

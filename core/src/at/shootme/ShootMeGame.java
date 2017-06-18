@@ -1,7 +1,8 @@
 package at.shootme;
 
+import at.shootme.state.data.GameState;
+import at.shootme.state.data.GameStateType;
 import com.badlogic.gdx.Game;
-import mainmenu.MainMenu;
 
 public class ShootMeGame extends Game {
 
@@ -11,8 +12,9 @@ public class ShootMeGame extends Game {
 
     @Override
     public void create() {
-        //Sets the MainMenu as the current Screen
-        setScreen(new MainMenu());
+        GameState gameState = new GameState();
+        gameState.setStateType(GameStateType.LEVEL_SELECTION);
+        SM.gameStateManager.apply(gameState);
     }
 
 }

@@ -12,18 +12,22 @@ import mainmenu.MainMenu;
 public class GameStateManager {
 
     public void requestSwitchToLevelSelection() {
-        GameState requestedState = new GameState();
-        requestedState.setStateType(GameStateType.LEVEL_SELECTION);
-        sendStateRequest(requestedState);
+        if (SM.isClient()) {
+            GameState requestedState = new GameState();
+            requestedState.setStateType(GameStateType.LEVEL_SELECTION);
+            sendStateRequest(requestedState);
+        } else {
+            switchToLevelSelection();
+        }
     }
 
     private void switchToLevelSelection() {
-        if (SM.isClient()) {
-            SM.game.setScreen(new MainMenu());
-        }
+        SM.state = new GameState();
+        SM.state.setStateType(GameStateType.LEVEL_SELECTION);
         if (SM.isServer()) {
             SM.server.getKryonetServer().sendToAllTCP(SM.state);
         }
+        SM.game.setScreen(new MainMenu());
     }
 
     public void requestStartGame(String levelKey) {
@@ -59,7 +63,6 @@ public class GameStateManager {
     public void apply(GameState gameState) {
         switch (gameState.getStateType()) {
             case LEVEL_SELECTION:
-                SM.state = gameState;
                 switchToLevelSelection();
                 break;
             case IN_GAME:

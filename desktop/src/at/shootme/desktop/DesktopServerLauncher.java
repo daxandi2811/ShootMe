@@ -34,9 +34,5 @@ public class DesktopServerLauncher {
         GameServer gameServer = new GameServer();
         SM.server = gameServer;
         gameServer.open();
-
-        GameState gameState = new GameState();
-        gameState.setStateType(GameStateType.LEVEL_SELECTION);
-        SM.gameStateManager.apply(gameState);
     }
 }

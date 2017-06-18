@@ -5,6 +5,7 @@ import at.shootme.entity.general.Entity;
 import at.shootme.entity.general.EntityTypeHandler;
 import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.StandardShot;
+import at.shootme.networking.GameEndedMessage;
 import at.shootme.networking.data.PlayerSkin;
 import at.shootme.networking.data.ServerTick;
 import at.shootme.networking.data.entity.EntityCreationMessage;
@@ -55,6 +56,9 @@ public class ClientEventProcessor extends EventProcessor {
         } else if (message instanceof ServerTick) {
             ServerTick serverTick = (ServerTick) message;
             SM.gameScreen.setGameDurationSeconds(serverTick.getCurrentGameDurationSeconds());
+        } else if (message instanceof GameEndedMessage) {
+            GameEndedMessage gameEndedMessage = (GameEndedMessage) message;
+            SM.gameScreen.setGameEndedMessage(gameEndedMessage);
         }
     }
 
