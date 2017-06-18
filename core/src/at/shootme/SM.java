@@ -32,6 +32,7 @@ public class SM {
     public static GameState state;
     public static PlayerSkin nextPlayerSkin = PlayerSkin.PLAYER_1;
     public static TextureStore textureStore = new TextureStore();
+    public static String playerName = "";
 
     public static boolean isServer() {
         return server != null;

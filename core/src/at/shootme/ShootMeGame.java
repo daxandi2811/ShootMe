@@ -12,9 +12,15 @@ public class ShootMeGame extends Game {
 
     @Override
     public void create() {
-        GameState gameState = new GameState();
-        gameState.setStateType(GameStateType.LEVEL_SELECTION);
-        SM.gameStateManager.apply(gameState);
+        if (SM.isServer()) {
+            GameState gameState = new GameState();
+            gameState.setStateType(GameStateType.LEVEL_SELECTION);
+            SM.gameStateManager.apply(gameState);
+        } else {
+            GameState gameState = new GameState();
+            gameState.setStateType(GameStateType.SERVER_SELECTION);
+            SM.gameStateManager.apply(gameState);
+        }
     }
 
 }

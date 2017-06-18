@@ -71,6 +71,7 @@ public class GameStateManager {
                 break;
             case SERVER_SELECTION:
                 SM.state = gameState;
+                SM.game.setScreen(new ConnectingScreen());
                 break;
         }
     }

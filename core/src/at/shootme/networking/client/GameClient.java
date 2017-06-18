@@ -26,13 +26,13 @@ public class GameClient {
     private ServerClientConnection connection;
     private Client kryonetClient;
 
-    public void connect() {
+    public void connect(String host) {
         kryonetClient = new Client(NetworkingConstants.WRITE_BUFFER_SIZE, NetworkingConstants.OBJECT_BUFFER_SIZE);
         SM.kryoRegistrar.registerClasses(kryonetClient.getKryo());
         kryonetClient.start();
         connection = new ServerClientConnection(kryonetClient, new ClientEventProcessor());
         try {
-            kryonetClient.connect(1000, "localhost", NetworkingConstants.TCP_PORT, NetworkingConstants.UDP_PORT);
+            kryonetClient.connect(1000, host, NetworkingConstants.TCP_PORT, NetworkingConstants.UDP_PORT);
             kryonetClient.setKeepAliveUDP(5000);
             kryonetClient.setKeepAliveTCP(5000);
             kryonetClient.setTimeout(10000);

@@ -1,6 +1,10 @@
 package screens;
 
 import at.shootme.SM;
+import at.shootme.networking.client.GameClient;
+import at.shootme.networking.exceptions.NetworkingRuntimeException;
+import at.shootme.state.data.GameState;
+import at.shootme.state.data.GameStateType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -16,9 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
-import java.time.format.TextStyle;
 
 /**
  * Created by Steffi on 18.06.2017.
@@ -30,6 +31,7 @@ public class ConnectingScreen implements Screen {
     private Stage stage;
     private BitmapFont mediumFont;
     private SpriteBatch batch;
+    private Label lbError;
 
     //Constructor
     public ConnectingScreen() {
@@ -38,11 +40,10 @@ public class ConnectingScreen implements Screen {
         initComponents();
     }
 
-    private void initComponents()
-    {
+    private void initComponents() {
         createBasicSkin();
 
- //Playername-Label
+        //Playername-Label
         //Creates a new Label, which requires a LabelSytle
         //LabelStyle
         Label.LabelStyle labelStyle = new Label.LabelStyle();
@@ -62,10 +63,10 @@ public class ConnectingScreen implements Screen {
         textStyle.font = font;
         textStyle.fontColor = Color.CORAL;
 
-        TextField tfPlayername = new TextField("", textStyle);
+        TextField tfPlayername = new TextField(SM.playerName, textStyle);
         tfPlayername.setWidth(300);
         tfPlayername.setMessageText("*enter name here*");
-        tfPlayername.setPosition(Gdx.graphics.getWidth()/2, 500);
+        tfPlayername.setPosition(Gdx.graphics.getWidth() / 2, 500);
         stage.addActor(tfPlayername);
 
 //Ip-add
@@ -79,8 +80,14 @@ public class ConnectingScreen implements Screen {
         TextField tfIP = new TextField("", textStyle);
         tfIP.setWidth(300);
         tfIP.setMessageText("*enter ip here*");
-        tfIP.setPosition(Gdx.graphics.getWidth()/2, 400);
+        tfIP.setPosition(Gdx.graphics.getWidth() / 2, 400);
         stage.addActor(tfIP);
+
+        lbError = new Label("", labelStyle);
+        lbError.setWrap(true);
+        lbError.setWidth(Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 4) - 100);
+        lbError.setPosition(Gdx.graphics.getWidth() / 4, 300);
+        stage.addActor(lbError);
 
 //Submit Button
         //Skin for Buttons
@@ -90,17 +97,36 @@ public class ConnectingScreen implements Screen {
         btSubmit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                String playerName = tfPlayername.getText();
+                SM.playerName = playerName;
+                String host = tfIP.getText();
 
-                //Do SUBMIT here
-                String playername = tfPlayername.getText();
-                String ipadd = tfIP.getText();
-                System.out.println(playername + " " + ipadd);
+                if (playerName.trim().isEmpty()) {
+                    lbError.setText("Please enter a player name!");
+                    return;
+                }
+                if (playerName.length() > 10) {
+                    lbError.setText("Please only enter 10 or less characters for the name!");
+                    return;
+                }
 
+                try {
+                    GameClient gameClient = new GameClient();
+                    SM.client = gameClient;
+                    gameClient.connect(host);
+                } catch (NetworkingRuntimeException ex) {
+                    lbError.setText("Could not connect! (" + ex.getMessage() + ")");
+                    return;
+                }
+
+                GameState gameState = new GameState();
+                gameState.setStateType(GameStateType.LEVEL_SELECTION);
+                SM.gameStateManager.apply(gameState);
             }
 
             ;
         });
-        btSubmit.setPosition(Gdx.graphics.getWidth()/3 , 200 );
+        btSubmit.setPosition(Gdx.graphics.getWidth() / 3, 150);
         stage.addActor(btSubmit); //so the button appears on the Stage!!
     }
 
@@ -115,21 +141,8 @@ public class ConnectingScreen implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (SM.isServer()) {
-            SM.server.processReceivedWithoutGameEntities();
-        } else {
-            SM.client.processReceivedWithoutGameEntities();
-        }
-
-        if (SM.isClient()) {
-            stage.act();
-            stage.draw();
-        } else {
-            mediumFont.setColor(Color.BLACK);
-            batch.begin();
-            mediumFont.draw(batch, "Server is running. " + SM.server.getConnections().size() + " players connected.", 50, Gdx.graphics.getHeight()-50);
-            batch.end();
-        }
+        stage.act();
+        stage.draw();
     }
 
     @Override

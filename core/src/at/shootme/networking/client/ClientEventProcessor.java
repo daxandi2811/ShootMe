@@ -15,6 +15,7 @@ import at.shootme.networking.data.entity.PlayerStateChangeMessage;
 import at.shootme.networking.general.EventProcessor;
 import at.shootme.networking.general.ServerClientConnection;
 import at.shootme.state.data.GameState;
+import screens.ConnectingScreen;
 import screens.MainMenu;
 
 import java.util.logging.Logger;
@@ -87,7 +88,7 @@ public class ClientEventProcessor extends EventProcessor {
 
     @Override
     public void disconnected(ServerClientConnection connection) {
-        SM.game.setScreen(new MainMenu());
+        SM.game.setScreen(new ConnectingScreen());
     }
 
     @Override

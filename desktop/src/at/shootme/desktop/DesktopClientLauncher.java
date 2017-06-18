@@ -28,11 +28,6 @@ public class DesktopClientLauncher {
         config.addIcon("assets/guenter_icon16px.png", Files.FileType.Internal);
         config.resizable = false;
 
-
-        GameClient gameClient = new GameClient();
-        SM.client = gameClient;
-        gameClient.connect();
-
         new LwjglApplication(new ShootMeGame(), config);
     }
 }

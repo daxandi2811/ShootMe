@@ -105,7 +105,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         if (SM.isClient()) {
             player = new Player();
-            String name = "" + new Random().nextInt(500);
+            String name = SM.playerName;
             player.setName(name);
             player.setTexturepath(SM.nextPlayerSkin.getTextureFilePath());
             player.init(new Vector2(0, 100).scl(PIXELS_TO_METERS), world);
