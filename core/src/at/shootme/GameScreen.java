@@ -28,6 +28,7 @@ import mainmenu.MainMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.TreeMap;
 
 /**
@@ -48,8 +49,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private Level level;
 
     private TreeMap<Integer, List<StepListener>> stepListenerListsByPriority = new TreeMap<>();
-    private Label.LabelStyle textStyle;
-    private BitmapFont font;
+    private BitmapFont bigFont;
+    private BitmapFont mediumFont;
     private float gameDurationSeconds = 0;
 
     private GameScreen() {
@@ -95,6 +96,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         if (SM.isClient()) {
             player = new Player();
+            String name = "" + new Random().nextInt(500);
+            player.setName(name);
             player.setTexturepath(SM.nextPlayerSkin.getTextureFilePath());
             player.init(new Vector2(0, 100).scl(PIXELS_TO_METERS), world);
             level.add(player);
@@ -107,9 +110,10 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         world.setContactListener(listener);
         world.setContactFilter(new GameContactFilter());
 
-        textStyle = new Label.LabelStyle();
-        font = new BitmapFont();
-        font.getData().setScale(3);
+        bigFont = new BitmapFont();
+        bigFont.getData().setScale(3);
+        mediumFont = new BitmapFont();
+        mediumFont.getData().setScale(2);
     }
 
 
@@ -205,12 +209,12 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     //Displays the current score at the top right center
     public void displayScore(int score) {
 
-        font.draw(batch, "Score: " + score, Gdx.graphics.getWidth() - 300, Gdx.graphics.getHeight() * 2 - 50);
+        bigFont.draw(batch, "Score: " + score, Gdx.graphics.getWidth() - 300, Gdx.graphics.getHeight() * 2 - 50);
     }
 
     //Displays the time left at the top right corner
     public void displayTime(int seconds) {
-        font.draw(batch, "Time: " + String.format("%d:%02d", seconds / 60, seconds % 60), Gdx.graphics.getWidth() - 300, Gdx.graphics.getHeight() * 2);
+        bigFont.draw(batch, "Time: " + String.format("%d:%02d", seconds / 60, seconds % 60), Gdx.graphics.getWidth() - 300, Gdx.graphics.getHeight() * 2);
     }
 
     @Override
@@ -325,6 +329,14 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
     public void setGameDurationSeconds(float gameDurationSeconds) {
         this.gameDurationSeconds = gameDurationSeconds;
+    }
+
+    public BitmapFont getBigFont() {
+        return bigFont;
+    }
+
+    public BitmapFont getMediumFont() {
+        return mediumFont;
     }
 }
 

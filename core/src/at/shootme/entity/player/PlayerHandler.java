@@ -21,6 +21,7 @@ public class PlayerHandler extends AbstractEntityTypeHandler {
     protected void setCustomProperties(Entity entity, EntityCreationMessage message) {
         PlayerCreationMessage playerCreationMessage = (PlayerCreationMessage) message;
         playerCreationMessage.setAvailableJumps(((Player) entity).getAvailableJumps());
+        playerCreationMessage.setName(((Player) entity).getName());
         playerCreationMessage.setScore(((Player) entity).getScore());
         playerCreationMessage.setTexturepath(((Player) entity).getTexturepath());
     }
@@ -31,6 +32,7 @@ public class PlayerHandler extends AbstractEntityTypeHandler {
         Player player = new Player();
         player.setScore(playerCreationMessage.getScore());
         player.setTexturepath(playerCreationMessage.getTexturepath());
+        player.setName(playerCreationMessage.getName());
         player.init(entityCreationMessage.getBodyGeneralState().getPosition(), SM.world);
         entityCreationMessage.getBodyGeneralState().applyTo(player.getBody());
         return player;

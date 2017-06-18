@@ -31,6 +31,7 @@ public class Player extends SimpleDrawableEntity {
 
     private int availableJumps = 2;
     private int score = 0;
+    private String name;
 
     public Player() {
     }
@@ -64,14 +65,6 @@ public class Player extends SimpleDrawableEntity {
 
         fixture = body.createFixture(fixtureDef);
         shape.dispose();
-    }
-
-    public Sprite getSprite() {
-        return sprite;
-    }
-
-    public Fixture getFixture() {
-        return fixture;
     }
 
     public HorizontalMovementState getHorizontalMovementState() {
@@ -164,6 +157,7 @@ public class Player extends SimpleDrawableEntity {
     public void draw(SpriteBatch batch) {
         sprite.setFlip(viewDirection == ViewDirection.RIGHT, false);
         super.draw(batch);
+        SM.gameScreen.getMediumFont().draw(batch, name, sprite.getX() + sprite.getWidth() / 2 - 30, sprite.getY() + sprite.getHeight() + 20);
     }
 
     @Override
@@ -206,6 +200,14 @@ public class Player extends SimpleDrawableEntity {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public static class PlayerCreationMessage extends EntityCreationMessage {
