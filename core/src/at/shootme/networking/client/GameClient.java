@@ -38,8 +38,8 @@ public class GameClient {
         }
     }
 
-    public void processReceived() {
-        connection.processReceived();
+    public void processReceivedWithoutGameEntities() {
+        connection.processReceivedWithoutGameEntities();
     }
 
     private void sendEntityCreationMessagesForNewEntitiesGeneratedAtClient() {

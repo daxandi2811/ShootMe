@@ -50,6 +50,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private TreeMap<Integer, List<StepListener>> stepListenerListsByPriority = new TreeMap<>();
     private Label.LabelStyle textStyle;
     private BitmapFont font;
+    private float gameDurationSeconds = 0;
 
     private GameScreen() {
         SM.gameScreen = this;
@@ -165,6 +166,9 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
     @Override
     public void render(float delta) { //hier nie Objekte erzeugen
+        if (SM.isServer()) {
+            gameDurationSeconds += delta;
+        }
 
         float accumulator = delta;
         if (partStep >= 1f / 60f) {
@@ -188,9 +192,9 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         level.render(batch);
 
 
-        if(SM.isClient()) {
+        if (SM.isClient()) {
             displayScore(getPlayer().getScore());
-            displayTime(123);
+            displayTime(Math.max(60 - (int) gameDurationSeconds, 0));
         }
 
         batch.end();
@@ -313,6 +317,14 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public float getGameDurationSeconds() {
+        return gameDurationSeconds;
+    }
+
+    public void setGameDurationSeconds(float gameDurationSeconds) {
+        this.gameDurationSeconds = gameDurationSeconds;
     }
 }
 

@@ -6,6 +6,7 @@ import at.shootme.entity.general.EntityTypeHandler;
 import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.StandardShot;
 import at.shootme.networking.data.PlayerSkin;
+import at.shootme.networking.data.ServerTick;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.networking.data.entity.EntityRemovedMessage;
 import at.shootme.networking.data.entity.EntityStateChangeMessage;
@@ -51,6 +52,9 @@ public class ClientEventProcessor extends EventProcessor {
             } else {
                 SM.level.queueForRemoval(entity);
             }
+        } else if (message instanceof ServerTick) {
+            ServerTick serverTick = (ServerTick) message;
+            SM.gameScreen.setGameDurationSeconds(serverTick.getCurrentGameDurationSeconds());
         }
     }
 

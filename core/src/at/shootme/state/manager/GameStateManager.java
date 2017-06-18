@@ -43,6 +43,12 @@ public class GameStateManager {
     }
 
     private void startGame(String levelKey) {
+        if (SM.state != null && SM.state.getStateType() == GameStateType.IN_GAME) {
+            return;
+        }
+        SM.state = new GameState();
+        SM.state.setStateType(GameStateType.IN_GAME);
+        SM.state.setLevelKey(levelKey);
         // TODO server diffferent screen
         if (SM.isServer()) {
             SM.server.getKryonetServer().sendToAllTCP(SM.state);
@@ -51,15 +57,16 @@ public class GameStateManager {
     }
 
     public void apply(GameState gameState) {
-        SM.state = gameState;
         switch (gameState.getStateType()) {
             case LEVEL_SELECTION:
+                SM.state = gameState;
                 switchToLevelSelection();
                 break;
             case IN_GAME:
                 startGame(gameState.getLevelKey());
                 break;
             case SERVER_SELECTION:
+                SM.state = gameState;
                 break;
         }
     }

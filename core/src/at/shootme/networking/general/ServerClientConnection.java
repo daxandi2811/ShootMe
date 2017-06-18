@@ -2,14 +2,18 @@ package at.shootme.networking.general;
 
 import at.shootme.ShootMeConstants;
 import at.shootme.entity.player.Player;
+import at.shootme.networking.data.entity.EntityCreationMessage;
+import at.shootme.networking.data.entity.EntityStateChangeMessage;
 import at.shootme.networking.data.framework.MessageBatch;
 import at.shootme.networking.data.framework.StepCommunicationFlush;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ServerClientConnection {
 
@@ -32,8 +36,8 @@ public class ServerClientConnection {
         connectionUpdateEventListener.process();
     }
 
-    public void processReceived() {
-        connectionUpdateEventListener.process();
+    public void processReceivedWithoutGameEntities() {
+        connectionUpdateEventListener.processReceivedWithoutGameEntities();
     }
 
     public void postStep() {
@@ -100,14 +104,14 @@ public class ServerClientConnection {
 
         @Override
         public synchronized void received(Connection connection, final Object object) {
-            if (object instanceof MessageBatch) {
-                queuedReceivedObjects.addAll(((MessageBatch) object).getMessages());
-            } else {
-                queuedReceivedObjects.add(object);
-            }
             if (object instanceof StepCommunicationFlush) {
                 queuedProcessableReceivedObjects.addAll(queuedReceivedObjects);
                 queuedReceivedObjects.clear();
+            } else if (object instanceof MessageBatch) {
+                queuedReceivedObjects.addAll(((MessageBatch) object).getMessages());
+            } else if (object instanceof FrameworkMessage) {
+            } else {
+                queuedReceivedObjects.add(object);
             }
         }
 
@@ -120,15 +124,54 @@ public class ServerClientConnection {
             queuedConnectionEvents.add(runnable);
         }
 
-        public synchronized void process() {
-            if (!queuedProcessableReceivedObjects.isEmpty()) {
+        public void process() {
+            List<Object> queuedProcessableReceivedObjects = getAndResetQueuedProcessableReceivedObjects();
+            if (queuedProcessableReceivedObjects != null) {
                 queuedProcessableReceivedObjects.forEach(o -> eventProcessor.received(ServerClientConnection.this, o));
-                queuedProcessableReceivedObjects.clear();
             }
-            if (!queuedConnectionEvents.isEmpty()) {
+            List<Runnable> queuedConnectionEvents = getAndResetQueuedConnectionEvents();
+            if (queuedConnectionEvents != null) {
                 queuedConnectionEvents.forEach(Runnable::run);
-                queuedConnectionEvents.clear();
             }
+        }
+
+
+        public void processReceivedWithoutGameEntities() {
+            List<Object> messagesToProcess = null;
+            synchronized (this) {
+                if (!queuedProcessableReceivedObjects.isEmpty()) {
+                    messagesToProcess = this.queuedProcessableReceivedObjects.stream()
+                            .filter(o -> !(o instanceof EntityCreationMessage || o instanceof EntityStateChangeMessage))
+                            .collect(Collectors.toList());
+                    this.queuedProcessableReceivedObjects.removeAll(messagesToProcess);
+                }
+            }
+            if (messagesToProcess != null) {
+                messagesToProcess.forEach(o -> eventProcessor.received(ServerClientConnection.this, o));
+            }
+
+            List<Runnable> queuedConnectionEvents = getAndResetQueuedConnectionEvents();
+            if (queuedConnectionEvents != null) {
+                queuedConnectionEvents.forEach(Runnable::run);
+            }
+        }
+
+        private synchronized List<Runnable> getAndResetQueuedConnectionEvents() {
+            List<Runnable> queuedConnectionEvents = null;
+            if (!this.queuedConnectionEvents.isEmpty()) {
+                queuedConnectionEvents = this.queuedConnectionEvents;
+                this.queuedConnectionEvents = new ArrayList<>();
+            }
+            return queuedConnectionEvents;
+        }
+
+        private synchronized List<Object> getAndResetQueuedProcessableReceivedObjects() {
+            List<Object> queuedProcessableReceivedObjects = null;
+            if (!this.queuedProcessableReceivedObjects.isEmpty()) {
+                queuedProcessableReceivedObjects = this.queuedProcessableReceivedObjects;
+                this.queuedProcessableReceivedObjects = new ArrayList<>();
+            }
+            return queuedProcessableReceivedObjects;
         }
     }
 }

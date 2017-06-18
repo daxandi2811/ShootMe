@@ -3,6 +3,7 @@ package at.shootme.networking.server;
 import at.shootme.SM;
 import at.shootme.entity.general.Entity;
 import at.shootme.networking.data.PlayerSkin;
+import at.shootme.networking.data.ServerTick;
 import at.shootme.networking.data.entity.EntityBodyGeneralState;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.networking.data.entity.EntityStateChangeMessage;
@@ -66,11 +67,18 @@ public class GameServer {
         connections.forEach(ServerClientConnection::postStep);
         sendEntityCreationMessagesForNewEntitiesGeneratedAtServer();
         sendStateUpdateMessages();
+        sendGameTick();
     }
 
-    public void processReceived() {
+    private void sendGameTick() {
+        ServerTick serverTick = new ServerTick();
+        serverTick.setCurrentGameDurationSeconds(SM.gameScreen.getGameDurationSeconds());
+        getKryonetServer().sendToAllUDP(serverTick);
+    }
+
+    public void processReceivedWithoutGameEntities() {
         handleNewConnections();
-        connections.forEach(ServerClientConnection::processReceived);
+        connections.forEach(ServerClientConnection::processReceivedWithoutGameEntities);
         kryonetServer.sendToAllTCP(new StepCommunicationFlush());
     }
 

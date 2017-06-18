@@ -126,9 +126,9 @@ public class MainMenu implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (SM.isServer()) {
-            SM.server.processReceived();
+            SM.server.processReceivedWithoutGameEntities();
         } else {
-            SM.client.processReceived();
+            SM.client.processReceivedWithoutGameEntities();
         }
 
         stage.act();
