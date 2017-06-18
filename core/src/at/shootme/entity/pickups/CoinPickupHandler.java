@@ -4,8 +4,15 @@ import at.shootme.entity.general.AbstractEntityTypeHandler;
 import at.shootme.entity.general.Entity;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 
+/**
+ * Created by Nicole on 18.06.2017.
+ */
 public class CoinPickupHandler extends AbstractEntityTypeHandler {
 
+    /**
+     * returns the name of the entity
+     * @return
+     */
     public String getEntityName() {
         return CoinPickup.class.getSimpleName();
     }

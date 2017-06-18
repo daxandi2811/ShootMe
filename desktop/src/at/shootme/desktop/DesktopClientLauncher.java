@@ -4,14 +4,12 @@ package at.shootme.desktop;
 import at.shootme.SM;
 import at.shootme.ShootMeGame;
 import at.shootme.entity.general.EntityTypeHandlerRegistry;
-import at.shootme.networking.client.GameClient;
 import at.shootme.networking.general.KryoRegistrar;
 import at.shootme.state.manager.GameStateManager;
 import at.shootme.util.entity.EntityIdGenerator;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import screens.ConnectingScreen;
 
 public class DesktopClientLauncher {
     public static void main(String[] arg) {

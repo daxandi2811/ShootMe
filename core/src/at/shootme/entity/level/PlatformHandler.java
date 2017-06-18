@@ -7,6 +7,9 @@ import at.shootme.entity.general.Entity;
 import at.shootme.entity.level.Platform.PlatformCreationMessage;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class PlatformHandler extends AbstractEntityTypeHandler {
 
     @Override

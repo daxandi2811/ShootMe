@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class TextureStore {
 
     private Map<String, Texture> textureByFilePath = new HashMap<>();

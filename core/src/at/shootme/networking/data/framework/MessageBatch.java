@@ -2,6 +2,9 @@ package at.shootme.networking.data.framework;
 
 import java.util.List;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class MessageBatch {
 
     private List<?> messages;

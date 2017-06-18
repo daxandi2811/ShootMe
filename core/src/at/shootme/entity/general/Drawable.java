@@ -7,5 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 public interface Drawable {
 
+    /**
+     * draws the sprite on the game screen
+     * @param batch
+     */
     void draw(SpriteBatch batch);
 }

@@ -18,19 +18,34 @@ import com.esotericsoftware.kryo.Kryo;
 
 import java.util.*;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class KryoRegistrar {
 
+    /**
+     * register classes for kryo registrar
+     * @param kryo
+     */
     public void registerClasses(Kryo kryo) {
         registerUtilityClasses(kryo);
         registerGameMessages(kryo);
     }
 
 
+    /**
+     * registers all the game messages
+     * @param kryo
+     */
     private void registerGameMessages(Kryo kryo) {
         List<Class> gameMessageClasses = getGameMessages();
         gameMessageClasses.forEach((type) -> kryo.register(type));
     }
 
+    /**
+     * all game messages
+     * @return
+     */
     private List<Class> getGameMessages() {
         List<Class> gameMessageClasses = new LinkedList<>();
         gameMessageClasses.add(EntityCreationMessage.class);
@@ -53,6 +68,10 @@ public class KryoRegistrar {
         return gameMessageClasses;
     }
 
+    /**
+     * registers all utility classes
+     * @param kryo
+     */
     private void registerUtilityClasses(Kryo kryo) {
         kryo.register(ArrayList.class);
         kryo.register(HashSet.class);

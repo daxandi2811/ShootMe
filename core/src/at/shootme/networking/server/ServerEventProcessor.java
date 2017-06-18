@@ -16,6 +16,9 @@ import at.shootme.state.data.GameStateType;
 
 import java.util.logging.Logger;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class ServerEventProcessor extends EventProcessor {
 
     @Override

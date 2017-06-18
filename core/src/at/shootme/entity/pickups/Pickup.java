@@ -10,6 +10,10 @@ import at.shootme.entity.player.Player;
  */
 public interface Pickup extends Entity, Drawable {
 
+    /**
+     * player picks item up
+     * @param player
+     */
     void pickedUpBy(Player player);
 
     default EntityCategory getCategory() {

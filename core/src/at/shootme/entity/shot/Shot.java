@@ -14,7 +14,16 @@ public interface Shot extends Entity, Drawable {
         return EntityCategory.SHOT;
     }
 
+    /**
+     * determines if the given entity should collide with this shot
+     * @param entity
+     * @return
+     */
     boolean shouldCollideWith(Entity entity);
 
+    /**
+     * shot collided with given entity
+     * @param entity
+     */
     void collidedWith(Entity entity);
 }

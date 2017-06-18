@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public abstract class SimpleDrawableEntity implements Entity, Drawable {
 
     protected String id;
@@ -18,6 +21,10 @@ public abstract class SimpleDrawableEntity implements Entity, Drawable {
         return body;
     }
 
+    /**
+     * draws the given Sprite on the gamescreen with the body position
+     * @param batch
+     */
     @Override
     public void draw(SpriteBatch batch) {
         sprite.setPosition(body.getPosition().x * ShootMeConstants.METERS_TO_PIXELS - sprite.getWidth() / 2, body.getPosition().y * ShootMeConstants.METERS_TO_PIXELS - sprite.getHeight() / 2);
@@ -29,6 +36,10 @@ public abstract class SimpleDrawableEntity implements Entity, Drawable {
         return id;
     }
 
+    /**
+     * can't create an id when id is already set
+     * @param id
+     */
     @Override
     public void setId(String id) {
         if (this.id != null) throw new IllegalArgumentException();

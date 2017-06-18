@@ -3,6 +3,9 @@ package at.shootme.networking.data.entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class EntityBodyGeneralState {
     private Vector2 position;
     private Vector2 linearVelocity;

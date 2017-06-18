@@ -1,5 +1,8 @@
 package at.shootme.networking.general;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class NetworkingConstants {
 
     public static final int WRITE_BUFFER_SIZE = 10000;

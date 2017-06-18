@@ -21,6 +21,9 @@ import java.util.stream.Stream;
 
 import static at.shootme.networking.general.NetworkingUtils.createEntityCreationMessages;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class GameClient {
 
     private ServerClientConnection connection;

@@ -16,6 +16,11 @@ public class RandomPositionGenerator {
     public static final int MAX_ITERATIONS = 50;
     private static Random random = new Random();
 
+    /**
+     * searches for a viable position for the coin
+     * @param entitySize
+     * @return
+     */
     public static Vector2 getRandomPositionWithMaxGroundGap(Vector2 entitySize) {
         Vector2 position = null;
         int iterations = 0;
@@ -45,6 +50,10 @@ public class RandomPositionGenerator {
         return position;
     }
 
+    /**
+     * creates a random position that is reachable for the player
+     * @return
+     */
     public static Vector2 generateRandomPositionInLevel() {
         Vector2 bottomLeftCornerPosition = SM.level.getBottomLeftCornerPixelPosition().scl(ShootMeConstants.PIXELS_TO_METERS);
         Vector2 size = SM.level.getPixelSize().scl(ShootMeConstants.PIXELS_TO_METERS);

@@ -18,6 +18,10 @@ public class PickupGenerator implements StepListener {
     public static final float COIN_GENERATION_INTERVAL = 5f;
     private float lastTimeGeneratedCoinGameSeconds = 0;
 
+    /**
+     * generates a new coin every Coin_geneartion_Intervall
+     * @param timeStep
+     */
     @Override
     public void beforeWorldStep(float timeStep) {
         float gameDurationSeconds = SM.gameScreen.getGameDurationSeconds();
@@ -27,6 +31,10 @@ public class PickupGenerator implements StepListener {
         }
     }
 
+    /**
+     * generates a new pickup coin at a random position on the map
+     * the position is reachable for the player
+     */
     private void generateCoin() {
         Vector2 position = RandomPositionGenerator.getRandomPositionWithMaxGroundGap(CoinPickup.SIZE);
         if (position != null) {

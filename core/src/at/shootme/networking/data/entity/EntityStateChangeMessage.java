@@ -1,6 +1,8 @@
 package at.shootme.networking.data.entity;
 
-
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class EntityStateChangeMessage {
     private String entityId;
 

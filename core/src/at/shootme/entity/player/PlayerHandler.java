@@ -6,6 +6,9 @@ import at.shootme.entity.general.Entity;
 import at.shootme.entity.player.Player.PlayerCreationMessage;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class PlayerHandler extends AbstractEntityTypeHandler {
 
     public String getEntityName() {

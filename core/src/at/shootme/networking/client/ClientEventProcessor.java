@@ -15,11 +15,13 @@ import at.shootme.networking.data.entity.PlayerStateChangeMessage;
 import at.shootme.networking.general.EventProcessor;
 import at.shootme.networking.general.ServerClientConnection;
 import at.shootme.state.data.GameState;
-import screens.ConnectingScreen;
-import screens.MainMenu;
+import at.shootme.screens.ConnectingScreen;
 
 import java.util.logging.Logger;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class ClientEventProcessor extends EventProcessor {
 
     @Override

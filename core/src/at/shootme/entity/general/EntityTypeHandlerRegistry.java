@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class EntityTypeHandlerRegistry {
 
     private HashMap<String, EntityTypeHandler> handlerByEntityName = new HashMap<>();

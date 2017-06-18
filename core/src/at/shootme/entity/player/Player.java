@@ -78,7 +78,6 @@ public class Player extends SimpleDrawableEntity {
     /**
      * This method is called during rendering to move the sprite to the new position determined by the physics engine
      */
-
     public void move() {
         Vector2 velocity = body.getLinearVelocity();
 
@@ -137,18 +136,28 @@ public class Player extends SimpleDrawableEntity {
         return body.getWorld();
     }
 
+    /**
+     * see, if double jump is available
+     */
     public void jumpIfPossible() {
         if (availableJumps > 0) {
             jump();
         }
     }
 
+    /**
+     * jump method
+     */
     private void jump() {
         availableJumps--;
 
         body.setLinearVelocity(body.getLinearVelocity().x, JUMP_SPEED);
     }
 
+    /**
+     * resets double jump when touching a ground-platform
+     * @param platform
+     */
     public void hitGround(Platform platform) {
         availableJumps = 2;
     }

@@ -1,17 +1,20 @@
 package at.shootme.state.manager;
 
-import screens.ConnectingScreen;
-import screens.GameScreen;
+import at.shootme.screens.ConnectingScreen;
+import at.shootme.screens.GameScreen;
 import at.shootme.SM;
 import at.shootme.state.data.GameState;
 import at.shootme.state.data.GameStateType;
-import screens.MainMenu;
+import at.shootme.screens.MainMenu;
 
 /**
  * Created by Nicole on 17.06.2017.
  */
 public class GameStateManager {
 
+    /**
+     * requests to switch to level Selection menu
+     */
     public void requestSwitchToLevelSelection() {
         if (SM.isClient()) {
             GameState requestedState = new GameState();
@@ -22,6 +25,9 @@ public class GameStateManager {
         }
     }
 
+    /**
+     * switch to level Selection menu
+     */
     private void switchToLevelSelection() {
         SM.state = new GameState();
         SM.state.setStateType(GameStateType.LEVEL_SELECTION);
@@ -31,6 +37,10 @@ public class GameStateManager {
         SM.game.setScreen(new MainMenu());
     }
 
+    /**
+     * request to start the game
+     * @param levelKey
+     */
     public void requestStartGame(String levelKey) {
         if (SM.isClient()) {
             GameState requestedState = new GameState();
@@ -43,10 +53,18 @@ public class GameStateManager {
         }
     }
 
+    /**
+     * state request
+     * @param requestedState
+     */
     private void sendStateRequest(GameState requestedState) {
         SM.client.getConnection().sendTCPWithFlush(requestedState);
     }
 
+    /**
+     * starts a round of a the game
+     * @param levelKey
+     */
     private void startGame(String levelKey) {
         if (SM.state != null && SM.state.getStateType() == GameStateType.IN_GAME) {
             return;
@@ -54,7 +72,6 @@ public class GameStateManager {
         SM.state = new GameState();
         SM.state.setStateType(GameStateType.IN_GAME);
         SM.state.setLevelKey(levelKey);
-        // TODO server diffferent screen
         if (SM.isServer()) {
             SM.server.getKryonetServer().sendToAllTCP(SM.state);
         }

@@ -30,12 +30,18 @@ import static at.shootme.networking.general.NetworkingConstants.TCP_PORT;
 import static at.shootme.networking.general.NetworkingConstants.UDP_PORT;
 import static at.shootme.networking.general.NetworkingUtils.createEntityCreationMessages;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class GameServer {
 
     private Server kryonetServer;
     private List<ServerClientConnection> connections = new ArrayList<>();
     private List<Connection> newConnections = new ArrayList<>();
 
+    /**
+     * starts the kryonetServer and adds the ConnectionListener
+     */
     public void open() {
         kryonetServer = new Server(NetworkingConstants.WRITE_BUFFER_SIZE, NetworkingConstants.OBJECT_BUFFER_SIZE, new KryoSerialization());
         SM.kryoRegistrar.registerClasses(kryonetServer.getKryo());
@@ -53,6 +59,9 @@ public class GameServer {
         connections.forEach(ServerClientConnection::preStep);
     }
 
+    /**
+     * handles the new connected clients
+     */
     private void handleNewConnections() {
         newConnections.forEach((newConnection) -> handleNewConnection(newConnection));
         newConnections.clear();
@@ -62,6 +71,9 @@ public class GameServer {
         connections.forEach(ServerClientConnection::prePhysics);
     }
 
+    /**
+     * clear all disconnected clients and sends updates
+     */
     public void postStep() {
         removeDisconnected();
         connections.forEach(ServerClientConnection::postStep);
@@ -70,10 +82,16 @@ public class GameServer {
         sendGameTick();
     }
 
+    /**
+     * removes the disconnected client
+     */
     private void removeDisconnected() {
         connections.removeIf(serverClientConnection -> !serverClientConnection.getKryonetConnection().isConnected());
     }
 
+    /**
+     * creates a new ServerTick and updates the time
+     */
     private void sendGameTick() {
         ServerTick serverTick = new ServerTick();
         serverTick.setCurrentGameDurationSeconds(SM.gameScreen.getGameDurationSeconds());
@@ -87,6 +105,9 @@ public class GameServer {
         removeDisconnected();
     }
 
+    /**
+     * sends a message to all clients that new entities were created
+     */
     private void sendEntityCreationMessagesForNewEntitiesGeneratedAtServer() {
         List<Entity> addedEntitiesThisTick = SM.level.getAddedEntitiesThisTick();
         Set<Entity> entitesCreatedByIncomingMessages = connections.stream()
@@ -105,6 +126,9 @@ public class GameServer {
         connections.forEach(serverClientConnection -> serverClientConnection.getEventProcessor().getReceivedEntitiesThisTick().clear());
     }
 
+    /**
+     * updates the State of the Game and informs all clients
+     */
     private void sendStateUpdateMessages() {
         List<Entity> entities = SM.level.getEntities();
         List<Entity> addedEntitiesThisTick = SM.level.getAddedEntitiesThisTick();
@@ -123,6 +147,11 @@ public class GameServer {
         kryonetServer.sendToAllUDP(MessageBatch.create(entityStateChangeMessages));
     }
 
+    /**
+     * sends the new state of an entity
+     * @param entity
+     * @return
+     */
     private EntityStateChangeMessage createEntityStateChangeMessage(Entity entity) {
         EntityStateChangeMessage message = new EntityStateChangeMessage();
         message.setEntityId(entity.getId());
@@ -130,6 +159,10 @@ public class GameServer {
         return message;
     }
 
+    /**
+     * gives the client a player skin and handles the new connection
+     * @param newConnection
+     */
     private void handleNewConnection(Connection newConnection) {
         ServerClientConnection newServerClientConnection = new ServerClientConnection(newConnection, new ServerEventProcessor());
         connections.add(newServerClientConnection);
@@ -144,6 +177,9 @@ public class GameServer {
         newServerClientConnection.sendFlush();
     }
 
+    /**
+     * defines the next skin for the next client who is connecting
+     */
     private void setNextPlayerSkin() {
         int currentIndex = Arrays.asList(PlayerSkin.values()).indexOf(SM.nextPlayerSkin);
         SM.nextPlayerSkin = PlayerSkin.values()[(currentIndex + 1) % (PlayerSkin.values().length)];

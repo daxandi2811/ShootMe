@@ -5,8 +5,16 @@ import at.shootme.entity.level.Platform;
 
 import java.util.UUID;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class EntityIdGenerator {
 
+    /**
+     * creates a random, unique id for the entity
+     * @param entity
+     * @return
+     */
     public String createId(Entity entity) {
         if (entity instanceof Platform) {
 

@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class ServerClientConnection {
 
     private Connection kryonetConnection;
@@ -31,11 +34,17 @@ public class ServerClientConnection {
     public void preStep() {
     }
 
+    /**
+     * processes everything before the Physics
+     */
     public void prePhysics() {
         updateReturnTripTimeAndTimeSyncIfNecessary();
         connectionUpdateEventListener.process();
     }
 
+    /**
+     *
+     */
     public void processReceivedWithoutGameEntities() {
         connectionUpdateEventListener.processReceivedWithoutGameEntities();
     }
@@ -57,6 +66,9 @@ public class ServerClientConnection {
         sendFlush();
     }
 
+    /**
+     * registers an connection listener to the kryonetConnection
+     */
     private void registerConnectionListener() {
         connectionUpdateEventListener = new ConnectionUpdateEventListener(eventProcessor);
         if (ShootMeConstants.SIMULATED_LAG_IN_MS == 0) {
@@ -66,8 +78,11 @@ public class ServerClientConnection {
         }
     }
 
+    /**
+     * updates the RTT
+     */
     private void updateReturnTripTimeAndTimeSyncIfNecessary() {
-        // TODO
+        // not implemented yet
     }
 
     public void setPlayer(Player player) {
@@ -85,6 +100,7 @@ public class ServerClientConnection {
     public EventProcessor getEventProcessor() {
         return eventProcessor;
     }
+
 
     private class ConnectionUpdateEventListener extends Listener {
 
@@ -124,6 +140,9 @@ public class ServerClientConnection {
             queuedConnectionEvents.add(runnable);
         }
 
+        /**
+         * processes all recieved messages and connection events
+         */
         public void process() {
             List<Object> queuedProcessableReceivedObjects = getAndResetQueuedProcessableReceivedObjects();
             if (queuedProcessableReceivedObjects != null) {
@@ -136,6 +155,9 @@ public class ServerClientConnection {
         }
 
 
+        /**
+         * doesn't process messages impacting the level because it may not be loaded yet
+         */
         public void processReceivedWithoutGameEntities() {
             List<Object> messagesToProcess = null;
             synchronized (this) {

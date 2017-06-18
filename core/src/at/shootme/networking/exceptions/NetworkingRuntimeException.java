@@ -1,5 +1,8 @@
 package at.shootme.networking.exceptions;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class NetworkingRuntimeException extends RuntimeException {
     public NetworkingRuntimeException() {
     }

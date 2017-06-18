@@ -6,6 +6,9 @@ import at.shootme.entity.general.Entity;
 import at.shootme.entity.shot.StandardShot.StandardShotCreationMessage;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 
+/**
+ * Created by Nicole on 17.06.2017.
+ */
 public class StandardShotHandler extends AbstractEntityTypeHandler {
 
     @Override
