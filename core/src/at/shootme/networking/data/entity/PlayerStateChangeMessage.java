@@ -9,6 +9,7 @@ import at.shootme.beans.ViewDirection;
 public class PlayerStateChangeMessage extends EntityStateChangeMessage {
 
     private int availableJumps;
+    private int score;
     private ViewDirection viewDirection;
     private HorizontalMovementState horizontalMovementState;
 
@@ -34,5 +35,13 @@ public class PlayerStateChangeMessage extends EntityStateChangeMessage {
 
     public void setHorizontalMovementState(HorizontalMovementState horizontalMovementState) {
         this.horizontalMovementState = horizontalMovementState;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

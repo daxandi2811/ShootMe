@@ -3,6 +3,7 @@ package at.shootme.entity.shot;
 import at.shootme.SM;
 import at.shootme.entity.general.Entity;
 import at.shootme.entity.general.SimpleDrawableEntity;
+import at.shootme.entity.player.Player;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -59,7 +60,15 @@ public class StandardShot extends SimpleDrawableEntity implements Shot {
 
     @Override
     public void collidedWith(Entity entity) {
-        SM.level.queueForRemoval(entity);
+        SM.level.queueForRemoval(this);
+        if (SM.isClient()) {
+            if (entity instanceof Player) {
+                if (originator instanceof Player) {
+                    Player originatorPlayer = (Player) originator;
+                    originatorPlayer.setScore(originatorPlayer.getScore() + 10);
+                }
+            }
+        }
     }
 
     @Override

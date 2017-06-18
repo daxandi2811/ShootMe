@@ -30,6 +30,7 @@ public class Player extends SimpleDrawableEntity {
     private String texturepath;
 
     private int availableJumps = 2;
+    private int score = 0;
 
     public Player() {
     }
@@ -199,11 +200,20 @@ public class Player extends SimpleDrawableEntity {
         this.viewDirection = viewDirection;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     public static class PlayerCreationMessage extends EntityCreationMessage {
 
         private int availableJumps;
-        private int number;
+        private String name;
         private String texturepath;
+        private int score;
 
         public int getAvailableJumps() {
             return availableJumps;
@@ -213,20 +223,28 @@ public class Player extends SimpleDrawableEntity {
             this.availableJumps = availableJumps;
         }
 
-        public int getNumber() {
-            return number;
-        }
-
-        public void setNumber(int number) {
-            this.number = number;
-        }
-
         public String getTexturepath() {
             return texturepath;
         }
 
         public void setTexturepath(String texturepath) {
             this.texturepath = texturepath;
+        }
+
+        public int getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+            this.score = score;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }

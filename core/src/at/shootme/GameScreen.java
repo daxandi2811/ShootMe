@@ -188,8 +188,10 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         level.render(batch);
 
 
-        displayScore(500);
-        displayTime(123);
+        if(SM.isClient()) {
+            displayScore(getPlayer().getScore());
+            displayTime(123);
+        }
 
         batch.end();
 

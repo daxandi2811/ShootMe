@@ -72,6 +72,7 @@ public class ClientEventProcessor extends EventProcessor {
             player.setViewDirection(playerStateChangeMessage.getViewDirection());
             player.setHorizontalMovementState(playerStateChangeMessage.getHorizontalMovementState());
             player.setAvailableJumps(playerStateChangeMessage.getAvailableJumps());
+            player.setScore(playerStateChangeMessage.getScore());
         }
     }
 

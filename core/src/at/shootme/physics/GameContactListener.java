@@ -57,7 +57,7 @@ public class GameContactListener implements ContactListener, StepListener {
 
             if (categoryA.isOneOf(EntityCategory.PLAYER, EntityCategory.PLATFORM) && categoryB == EntityCategory.SHOT) {
                 Shot shot = (Shot) entityB;
-                shot.collidedWith(entityB);
+                shot.collidedWith(entityA);
             }
         }
     }

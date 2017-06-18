@@ -50,6 +50,7 @@ public class ServerEventProcessor extends EventProcessor {
             player.setViewDirection(playerStateChangeMessage.getViewDirection());
             player.setHorizontalMovementState(playerStateChangeMessage.getHorizontalMovementState());
             player.setAvailableJumps(playerStateChangeMessage.getAvailableJumps());
+            player.setScore(playerStateChangeMessage.getScore());
             SM.server.getKryonetServer().sendToAllExceptUDP(connection.getKryonetConnection().getID(), playerStateChangeMessage);
         }
     }
