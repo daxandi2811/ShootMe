@@ -11,6 +11,7 @@ import at.shootme.state.manager.GameStateManager;
 import at.shootme.texture.TextureStore;
 import at.shootme.util.entity.EntityIdGenerator;
 import com.badlogic.gdx.physics.box2d.World;
+import screens.GameScreen;
 
 /**
  * Created by Alexander Dietrich on 07.04.2017.

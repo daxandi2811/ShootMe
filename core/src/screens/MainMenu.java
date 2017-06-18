@@ -1,4 +1,4 @@
-package mainmenu;
+package screens;
 
 import at.shootme.SM;
 import com.badlogic.gdx.Gdx;

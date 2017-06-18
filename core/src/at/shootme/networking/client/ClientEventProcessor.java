@@ -16,7 +16,7 @@ import at.shootme.networking.general.EventProcessor;
 import at.shootme.networking.general.ServerClientConnection;
 import at.shootme.state.data.GameState;
 import com.sun.istack.internal.logging.Logger;
-import mainmenu.MainMenu;
+import screens.MainMenu;
 
 public class ClientEventProcessor extends EventProcessor {
 

@@ -1,5 +1,7 @@
-package at.shootme;
+package screens;
 
+import at.shootme.SM;
+import at.shootme.ShootMeConstants;
 import at.shootme.beans.HorizontalMovementState;
 import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.StandardShot;
@@ -28,7 +30,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
-import mainmenu.MainMenu;
+import screens.MainMenu;
 
 import java.util.*;
 import java.util.stream.Collectors;

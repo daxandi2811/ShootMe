@@ -1,10 +1,11 @@
 package at.shootme.state.manager;
 
-import at.shootme.GameScreen;
+import screens.ConnectingScreen;
+import screens.GameScreen;
 import at.shootme.SM;
 import at.shootme.state.data.GameState;
 import at.shootme.state.data.GameStateType;
-import mainmenu.MainMenu;
+import screens.MainMenu;
 
 /**
  * Created by Nicole on 17.06.2017.
