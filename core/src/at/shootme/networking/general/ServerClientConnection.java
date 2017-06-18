@@ -70,6 +70,10 @@ public class ServerClientConnection {
         this.player = player;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     public Connection getKryonetConnection() {
         return kryonetConnection;
     }
@@ -109,7 +113,7 @@ public class ServerClientConnection {
 
         @Override
         public void idle(final Connection connection) {
-            queueConnectionEvent(() -> eventProcessor.idle(ServerClientConnection.this));
+//            queueConnectionEvent(() -> eventProcessor.idle(ServerClientConnection.this));
         }
 
         private synchronized void queueConnectionEvent(Runnable runnable) {

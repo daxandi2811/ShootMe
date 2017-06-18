@@ -6,10 +6,7 @@ import at.shootme.entity.level.Platform.PlatformCreationMessage;
 import at.shootme.entity.player.Player.PlayerCreationMessage;
 import at.shootme.entity.shot.StandardShot.StandardShotCreationMessage;
 import at.shootme.networking.data.PlayerSkin;
-import at.shootme.networking.data.entity.EntityBodyGeneralState;
-import at.shootme.networking.data.entity.EntityCreationMessage;
-import at.shootme.networking.data.entity.EntityStateChangeMessage;
-import at.shootme.networking.data.entity.PlayerStateChangeMessage;
+import at.shootme.networking.data.entity.*;
 import at.shootme.networking.data.framework.MessageBatch;
 import at.shootme.networking.data.framework.StepCommunicationFlush;
 import at.shootme.state.data.GameState;
@@ -48,6 +45,7 @@ public class KryoRegistrar {
         gameMessageClasses.add(ViewDirection.class);
         gameMessageClasses.add(HorizontalMovementState.class);
         gameMessageClasses.add(PlayerSkin.class);
+        gameMessageClasses.add(EntityRemovedMessage.class);
         return gameMessageClasses;
     }
 

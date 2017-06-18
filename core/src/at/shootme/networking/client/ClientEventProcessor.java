@@ -7,12 +7,14 @@ import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.StandardShot;
 import at.shootme.networking.data.PlayerSkin;
 import at.shootme.networking.data.entity.EntityCreationMessage;
+import at.shootme.networking.data.entity.EntityRemovedMessage;
 import at.shootme.networking.data.entity.EntityStateChangeMessage;
 import at.shootme.networking.data.entity.PlayerStateChangeMessage;
 import at.shootme.networking.general.EventProcessor;
 import at.shootme.networking.general.ServerClientConnection;
 import at.shootme.state.data.GameState;
 import com.sun.istack.internal.logging.Logger;
+import mainmenu.MainMenu;
 
 public class ClientEventProcessor extends EventProcessor {
 
@@ -40,6 +42,15 @@ public class ClientEventProcessor extends EventProcessor {
             SM.gameStateManager.apply((GameState) message);
         } else if (message instanceof PlayerSkin) {
             SM.nextPlayerSkin = (PlayerSkin) message;
+        } else if (message instanceof EntityRemovedMessage) {
+            EntityRemovedMessage entityRemovedMessage = (EntityRemovedMessage) message;
+            String entityId = entityRemovedMessage.getEntityId();
+            Entity entity = SM.level.getEntityById(entityId);
+            if (entity == null) {
+                Logger.getLogger(ClientEventProcessor.class).info("entity with ID " + entityId + " was requested to be removed but has already been removed");
+            } else {
+                SM.level.queueForRemoval(entity);
+            }
         }
     }
 
@@ -66,7 +77,7 @@ public class ClientEventProcessor extends EventProcessor {
 
     @Override
     public void disconnected(ServerClientConnection connection) {
-
+        SM.game.setScreen(new MainMenu());
     }
 
     @Override

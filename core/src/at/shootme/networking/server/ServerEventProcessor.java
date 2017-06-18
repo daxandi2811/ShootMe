@@ -6,11 +6,13 @@ import at.shootme.entity.general.EntityTypeHandler;
 import at.shootme.entity.player.Player;
 import at.shootme.networking.client.ClientEventProcessor;
 import at.shootme.networking.data.entity.EntityCreationMessage;
+import at.shootme.networking.data.entity.EntityRemovedMessage;
 import at.shootme.networking.data.entity.EntityStateChangeMessage;
 import at.shootme.networking.data.entity.PlayerStateChangeMessage;
 import at.shootme.networking.general.EventProcessor;
 import at.shootme.networking.general.ServerClientConnection;
 import at.shootme.state.data.GameState;
+import at.shootme.state.data.GameStateType;
 import com.sun.istack.internal.logging.Logger;
 
 public class ServerEventProcessor extends EventProcessor {
@@ -54,7 +56,14 @@ public class ServerEventProcessor extends EventProcessor {
 
     @Override
     public void disconnected(ServerClientConnection connection) {
-
+        if (SM.state.getStateType() == GameStateType.IN_GAME) {
+            if (connection.getPlayer() != null) {
+                SM.level.queueForRemoval(connection.getPlayer());
+                EntityRemovedMessage entityRemovedMessage = new EntityRemovedMessage();
+                entityRemovedMessage.setEntityId(connection.getPlayer().getId());
+                SM.server.getKryonetServer().sendToAllExceptTCP(connection.getKryonetConnection().getID(), entityRemovedMessage);
+            }
+        }
     }
 
     @Override

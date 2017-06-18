@@ -62,6 +62,7 @@ public class GameServer {
     }
 
     public void postStep() {
+        connections.removeIf(serverClientConnection -> !serverClientConnection.getKryonetConnection().isConnected());
         connections.forEach(ServerClientConnection::postStep);
         sendEntityCreationMessagesForNewEntitiesGeneratedAtServer();
         sendStateUpdateMessages();
@@ -121,13 +122,18 @@ public class GameServer {
         connections.add(newServerClientConnection);
 
         newServerClientConnection.sendTCP(SM.nextPlayerSkin);
-        SM.nextPlayerSkin = PlayerSkin.values()[Arrays.asList(PlayerSkin.values()).indexOf(SM.nextPlayerSkin) + 1 % (PlayerSkin.values().length - 1)];
+        setNextPlayerSkin();
         newServerClientConnection.getKryonetConnection().sendTCP(SM.state);
         if (SM.state.getStateType() == GameStateType.IN_GAME) {
             List<EntityCreationMessage> entityCreationMessages = createEntityCreationMessages(SM.level.getEntities());
             newServerClientConnection.sendTCP(MessageBatch.create(entityCreationMessages));
         }
         newServerClientConnection.sendFlush();
+    }
+
+    private void setNextPlayerSkin() {
+        int currentIndex = Arrays.asList(PlayerSkin.values()).indexOf(SM.nextPlayerSkin);
+        SM.nextPlayerSkin = PlayerSkin.values()[(currentIndex + 1) % (PlayerSkin.values().length)];
     }
 
     public Server getKryonetServer() {
