@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -22,6 +23,8 @@ public class MainMenu implements Screen {
 
     private Skin buttonskin;
     private Stage stage;
+    private BitmapFont mediumFont;
+    private SpriteBatch batch;
 
     //Constructor
     public MainMenu() {
@@ -93,6 +96,12 @@ public class MainMenu implements Screen {
         });
         btLev3.setPosition(Gdx.graphics.getWidth() * 3 / 4 - Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2);
         stage.addActor(btLev3); //so the button appears on the Stage!!
+
+
+        mediumFont = new BitmapFont();
+        mediumFont.getData().setScale(2);
+
+        batch = new SpriteBatch();
     }
 
 
@@ -131,8 +140,15 @@ public class MainMenu implements Screen {
             SM.client.processReceivedWithoutGameEntities();
         }
 
+        if (SM.isClient()) {
         stage.act();
         stage.draw();
+        } else {
+            mediumFont.setColor(Color.BLACK);
+            batch.begin();
+            mediumFont.draw(batch, "Server is running. " + SM.server.getConnections().size() + " players connected.", 50, Gdx.graphics.getHeight()-50);
+            batch.end();
+        }
     }
 
 

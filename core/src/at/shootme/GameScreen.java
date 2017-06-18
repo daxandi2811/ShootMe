@@ -15,6 +15,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -23,7 +24,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import mainmenu.MainMenu;
 
 import java.util.ArrayList;
@@ -186,10 +186,21 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         while (accumulator > 1f / 60f);
         partStep += accumulator;
 
-
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if (SM.isClient()) {
+            renderGame();
+        } else {
+            mediumFont.setColor(Color.BLACK);
+            batch.begin();
+            mediumFont.draw(batch, "Server is running. " + SM.server.getConnections().size() + " players connected.", 50, Gdx.graphics.getHeight()-50);
+            mediumFont.draw(batch, "Match running.", 50, Gdx.graphics.getHeight()-100);
+            batch.end();
+        }
+    }
+
+    private void renderGame() {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 

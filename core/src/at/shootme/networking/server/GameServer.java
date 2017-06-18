@@ -63,11 +63,15 @@ public class GameServer {
     }
 
     public void postStep() {
-        connections.removeIf(serverClientConnection -> !serverClientConnection.getKryonetConnection().isConnected());
+        removeDisconnected();
         connections.forEach(ServerClientConnection::postStep);
         sendEntityCreationMessagesForNewEntitiesGeneratedAtServer();
         sendStateUpdateMessages();
         sendGameTick();
+    }
+
+    private void removeDisconnected() {
+        connections.removeIf(serverClientConnection -> !serverClientConnection.getKryonetConnection().isConnected());
     }
 
     private void sendGameTick() {
@@ -80,6 +84,7 @@ public class GameServer {
         handleNewConnections();
         connections.forEach(ServerClientConnection::processReceivedWithoutGameEntities);
         kryonetServer.sendToAllTCP(new StepCommunicationFlush());
+        removeDisconnected();
     }
 
     private void sendEntityCreationMessagesForNewEntitiesGeneratedAtServer() {
@@ -146,6 +151,10 @@ public class GameServer {
 
     public Server getKryonetServer() {
         return kryonetServer;
+    }
+
+    public List<ServerClientConnection> getConnections() {
+        return connections;
     }
 
     private class NewConnectionListener extends Listener {

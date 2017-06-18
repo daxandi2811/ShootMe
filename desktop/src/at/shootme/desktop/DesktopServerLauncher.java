@@ -24,7 +24,7 @@ public class DesktopServerLauncher {
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "ShootMe Server";
-        config.width = 300;
+        config.width = 700;
         config.height = 200;
         config.addIcon("assets/guenter_icon32px.png", Files.FileType.Internal);
         config.addIcon("assets/guenter_icon16px.png", Files.FileType.Internal);
