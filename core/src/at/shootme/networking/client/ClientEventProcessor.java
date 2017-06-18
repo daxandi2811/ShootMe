@@ -19,6 +19,10 @@ public class ClientEventProcessor extends EventProcessor {
     @Override
     public void received(ServerClientConnection connection, Object message) {
         if (message instanceof EntityStateChangeMessage) {
+            if(SM.level == null){
+                // in the rare case of receiving something before the level has been loaded when joining mid-game -> ignore
+                return;
+            }
             EntityStateChangeMessage entityStateChangeMessage = (EntityStateChangeMessage) message;
             Entity entity = SM.level.getEntityById(entityStateChangeMessage.getEntityId());
             if (entity == null) {

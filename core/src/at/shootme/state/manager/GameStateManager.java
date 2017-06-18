@@ -44,10 +44,10 @@ public class GameStateManager {
 
     private void startGame(String levelKey) {
         // TODO server diffferent screen
-        SM.game.setScreen(new GameScreen(levelKey));
         if (SM.isServer()) {
             SM.server.getKryonetServer().sendToAllTCP(SM.state);
         }
+        SM.game.setScreen(new GameScreen(levelKey));
     }
 
     public void apply(GameState gameState) {
