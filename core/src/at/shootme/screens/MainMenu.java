@@ -56,7 +56,7 @@ public class MainMenu implements Screen {
         //Skin for Buttons
         createBasicSkin();
 
-        TextButton btLev1 = new TextButton("Level 1", buttonskin);
+        TextButton btLev1 = new TextButton("Level 1 - Volcano", buttonskin);
         btLev1.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -70,7 +70,7 @@ public class MainMenu implements Screen {
         stage.addActor(btLev1); //so the button appears on the Stage!!
 
 
-        TextButton btLev2 = new TextButton("Level 2", buttonskin);
+        TextButton btLev2 = new TextButton("Level 2 - Coast", buttonskin);
         btLev2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -84,7 +84,7 @@ public class MainMenu implements Screen {
         stage.addActor(btLev2); //so the button appears on the Stage!!
 
 
-        TextButton btLev3 = new TextButton("Level 3", buttonskin);
+        TextButton btLev3 = new TextButton("Level 3 - Forest", buttonskin);
         btLev3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
