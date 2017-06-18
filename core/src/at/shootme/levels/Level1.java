@@ -19,8 +19,8 @@ public class Level1 extends Level {
     private void loadWorld() {
         //Pictures as Background
         Texture backgroundTexture = SM.textureStore.getOrLoadTexture("assets/level1.png");
-        int levelWidth = 1280;
-        int levelHeight = 720;
+        int levelWidth = (int) getPixelSize().x / 2;
+        int levelHeight = (int) getPixelSize().y / 2;
         addCosmetic(LevelUtility.createLevelBackground(new Vector2(-levelWidth, 50), new Vector2(levelWidth * 2, levelHeight * 2), backgroundTexture));
 
         if (SM.isServer()) {

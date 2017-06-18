@@ -3,6 +3,7 @@ package at.shootme.physics;
 import at.shootme.entity.EntityCategory;
 import at.shootme.entity.general.Entity;
 import at.shootme.entity.level.Platform;
+import at.shootme.entity.pickups.Pickup;
 import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.Shot;
 import at.shootme.logic.StepListener;
@@ -60,6 +61,12 @@ public class GameContactListener implements ContactListener, StepListener {
             if (categoryA.isOneOf(EntityCategory.PLAYER, EntityCategory.PLATFORM) && categoryB == EntityCategory.SHOT) {
                 Shot shot = (Shot) entityB;
                 shot.collidedWith(entityA);
+            }
+
+            if (categoryA.isOneOf(EntityCategory.PLAYER) && categoryB.isOneOf(EntityCategory.PICKUP)) {
+                Pickup pickup = (Pickup) entityB;
+                pickup.pickedUpBy((Player) entityA);
+                contact.setEnabled(false);
             }
         }
     }

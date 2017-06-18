@@ -7,6 +7,7 @@ import at.shootme.entity.general.Entity;
 import at.shootme.entity.player.Player;
 import at.shootme.logic.StepListener;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -108,6 +109,14 @@ public class Level implements ShootMeConstants, StepListener {
         for (Drawable drawable : drawables) {
             drawable.draw(batch);
         }
+    }
+
+    public Vector2 getBottomLeftCornerPixelPosition() {
+        return getPixelSize().cpy().scl(-0.5f, 0);
+    }
+
+    public Vector2 getPixelSize() {
+        return new Vector2(1280, 720).scl(2);
     }
 
     public List<Entity> getEntities() {

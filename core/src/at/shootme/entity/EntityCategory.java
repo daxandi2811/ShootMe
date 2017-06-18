@@ -8,6 +8,7 @@ import java.util.Arrays;
 public enum EntityCategory {
     PLAYER,
     PLATFORM,
+    PICKUP,
     SHOT,;
 
     public boolean isOneOf(EntityCategory... categories) {
