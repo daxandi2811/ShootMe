@@ -1,8 +1,12 @@
 package at.shootme.networking.client;
 
+import at.shootme.GameScreen;
 import at.shootme.SM;
 import at.shootme.entity.general.Entity;
+import at.shootme.entity.player.Player;
+import at.shootme.networking.data.entity.EntityBodyGeneralState;
 import at.shootme.networking.data.entity.EntityCreationMessage;
+import at.shootme.networking.data.entity.PlayerStateChangeMessage;
 import at.shootme.networking.data.framework.MessageBatch;
 import at.shootme.networking.exceptions.NetworkingRuntimeException;
 import at.shootme.networking.general.EventProcessor;
@@ -67,8 +71,20 @@ public class GameClient {
 
     public void postStep() {
         connection.postStep();
-        connection.sendFlush();
         sendEntityCreationMessagesForNewEntitiesGeneratedAtClient();
+        sendPlayerUpdate();
+        connection.sendFlush();
+    }
+
+    private void sendPlayerUpdate() {
+        Player player = SM.gameScreen.getPlayer();
+        PlayerStateChangeMessage playerStateChangeMessage = new PlayerStateChangeMessage();
+        playerStateChangeMessage.setEntityId(player.getId());
+        playerStateChangeMessage.setEntityBodyGeneralState(new EntityBodyGeneralState(player.getBody()));
+        playerStateChangeMessage.setAvailableJumps(player.getAvailableJumps());
+        playerStateChangeMessage.setHorizontalMovementState(player.getHorizontalMovementState());
+        playerStateChangeMessage.setViewDirection(player.getViewDirection());
+        connection.getKryonetConnection().sendUDP(playerStateChangeMessage);
     }
 
     public ServerClientConnection getConnection() {

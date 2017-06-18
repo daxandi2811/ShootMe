@@ -1,4 +1,4 @@
-package at.shootme.networking.data.entity.state;
+package at.shootme.networking.data.entity;
 
 
 public class EntityStateChangeMessage {

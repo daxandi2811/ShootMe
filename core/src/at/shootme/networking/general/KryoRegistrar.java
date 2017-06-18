@@ -1,11 +1,14 @@
 package at.shootme.networking.general;
 
+import at.shootme.beans.HorizontalMovementState;
+import at.shootme.beans.ViewDirection;
 import at.shootme.entity.level.Platform.PlatformCreationMessage;
 import at.shootme.entity.player.Player.PlayerCreationMessage;
 import at.shootme.entity.shot.StandardShot.StandardShotCreationMessage;
 import at.shootme.networking.data.entity.EntityCreationMessage;
-import at.shootme.networking.data.entity.state.EntityBodyGeneralState;
-import at.shootme.networking.data.entity.state.EntityStateChangeMessage;
+import at.shootme.networking.data.entity.EntityBodyGeneralState;
+import at.shootme.networking.data.entity.EntityStateChangeMessage;
+import at.shootme.networking.data.entity.PlayerStateChangeMessage;
 import at.shootme.networking.data.framework.MessageBatch;
 import at.shootme.networking.data.framework.StepCommunicationFlush;
 import at.shootme.state.data.GameState;
@@ -40,6 +43,9 @@ public class KryoRegistrar {
         gameMessageClasses.add(StepCommunicationFlush.class);
         gameMessageClasses.add(GameState.class);
         gameMessageClasses.add(GameStateType.class);
+        gameMessageClasses.add(PlayerStateChangeMessage.class);
+        gameMessageClasses.add(ViewDirection.class);
+        gameMessageClasses.add(HorizontalMovementState.class);
         return gameMessageClasses;
     }
 

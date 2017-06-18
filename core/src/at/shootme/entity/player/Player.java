@@ -10,6 +10,7 @@ import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.util.vectors.Vector2Util;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
@@ -100,7 +101,6 @@ public class Player extends SimpleDrawableEntity {
             case LEFT:
                 desiredHorizontalVelocity = Math.max(velocity.x - 5f, -14f);
                 if (viewDirection != ViewDirection.LEFT) {
-                    sprite.flip(true, false);
                     viewDirection = viewDirection.LEFT;
                 }
                 break;
@@ -110,7 +110,6 @@ public class Player extends SimpleDrawableEntity {
             case RIGHT:
                 desiredHorizontalVelocity = Math.min(velocity.x + 5f, 14f);
                 if (viewDirection != ViewDirection.RIGHT) {
-                    sprite.flip(true, false);
                     viewDirection = ViewDirection.RIGHT;
                 }
                 break;
@@ -165,6 +164,12 @@ public class Player extends SimpleDrawableEntity {
     }
 
     @Override
+    public void draw(SpriteBatch batch) {
+        sprite.setFlip(viewDirection == ViewDirection.RIGHT, false);
+        super.draw(batch);
+    }
+
+    @Override
     public EntityCategory getCategory() {
         return EntityCategory.PLAYER;
     }
@@ -180,6 +185,18 @@ public class Player extends SimpleDrawableEntity {
 
     public String getTexturepath() {
         return texturepath;
+    }
+
+    public ViewDirection getViewDirection() {
+        return viewDirection;
+    }
+
+    public void setViewDirection(ViewDirection viewDirection) {
+        this.viewDirection = viewDirection;
+    }
+
+    public void setAvailableJumps(int availableJumps) {
+        this.availableJumps = availableJumps;
     }
 
     public static class PlayerCreationMessage extends EntityCreationMessage {

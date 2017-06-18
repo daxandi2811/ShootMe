@@ -1,6 +1,6 @@
 package at.shootme.networking.entity;
 
-import at.shootme.networking.data.entity.state.EntityStateChangeMessage;
+import at.shootme.networking.data.entity.EntityStateChangeMessage;
 
 public class StateChangeMessageProcessor {
 

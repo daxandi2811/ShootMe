@@ -2,10 +2,9 @@ package at.shootme.networking.server;
 
 import at.shootme.SM;
 import at.shootme.entity.general.Entity;
-import at.shootme.entity.general.EntityTypeHandler;
 import at.shootme.networking.data.entity.EntityCreationMessage;
-import at.shootme.networking.data.entity.state.EntityBodyGeneralState;
-import at.shootme.networking.data.entity.state.EntityStateChangeMessage;
+import at.shootme.networking.data.entity.EntityBodyGeneralState;
+import at.shootme.networking.data.entity.EntityStateChangeMessage;
 import at.shootme.networking.data.framework.MessageBatch;
 import at.shootme.networking.data.framework.StepCommunicationFlush;
 import at.shootme.networking.exceptions.NetworkingRuntimeException;

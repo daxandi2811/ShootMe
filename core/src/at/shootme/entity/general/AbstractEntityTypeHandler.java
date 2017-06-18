@@ -1,7 +1,7 @@
 package at.shootme.entity.general;
 
 import at.shootme.networking.data.entity.EntityCreationMessage;
-import at.shootme.networking.data.entity.state.EntityBodyGeneralState;
+import at.shootme.networking.data.entity.EntityBodyGeneralState;
 
 public abstract class AbstractEntityTypeHandler implements EntityTypeHandler {
 

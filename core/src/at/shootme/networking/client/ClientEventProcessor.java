@@ -3,9 +3,11 @@ package at.shootme.networking.client;
 import at.shootme.SM;
 import at.shootme.entity.general.Entity;
 import at.shootme.entity.general.EntityTypeHandler;
+import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.StandardShot;
 import at.shootme.networking.data.entity.EntityCreationMessage;
-import at.shootme.networking.data.entity.state.EntityStateChangeMessage;
+import at.shootme.networking.data.entity.EntityStateChangeMessage;
+import at.shootme.networking.data.entity.PlayerStateChangeMessage;
 import at.shootme.networking.general.EventProcessor;
 import at.shootme.networking.general.ServerClientConnection;
 import at.shootme.state.data.GameState;
@@ -36,7 +38,7 @@ public class ClientEventProcessor extends EventProcessor {
 
     private void updateEntity(Entity entity, EntityStateChangeMessage entityStateChangeMessage) {
         if (entity == SM.gameScreen.getPlayer()) {
-            // TODO check if way too far from server
+            // ignore owned player to not port around player
             return;
         }
         if (entity instanceof StandardShot) {
@@ -46,6 +48,13 @@ public class ClientEventProcessor extends EventProcessor {
             }
         }
         entityStateChangeMessage.getEntityBodyGeneralState().applyTo(entity.getBody());
+        if (entityStateChangeMessage instanceof PlayerStateChangeMessage) {
+            Player player = (Player) entity;
+            PlayerStateChangeMessage playerStateChangeMessage = (PlayerStateChangeMessage) entityStateChangeMessage;
+            player.setViewDirection(playerStateChangeMessage.getViewDirection());
+            player.setHorizontalMovementState(playerStateChangeMessage.getHorizontalMovementState());
+            player.setAvailableJumps(playerStateChangeMessage.getAvailableJumps());
+        }
     }
 
     @Override

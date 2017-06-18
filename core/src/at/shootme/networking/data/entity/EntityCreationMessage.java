@@ -1,7 +1,5 @@
 package at.shootme.networking.data.entity;
 
-import at.shootme.networking.data.entity.state.EntityBodyGeneralState;
-
 public class EntityCreationMessage {
 
     private String entityName;
