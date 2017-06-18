@@ -47,10 +47,12 @@ public class GameContactListener implements ContactListener, StepListener {
             }
 
             if (categoryA == EntityCategory.PLAYER && categoryB == EntityCategory.PLATFORM) {
-                System.out.println(ReflectionToStringBuilder.toString(contact.getWorldManifold()));
+//                System.out.println(ReflectionToStringBuilder.toString(contact.getWorldManifold()));
                 Player player = (Player) entityA;
                 if (worldManifoldNormal.y < 0) {
                     player.hitGround((Platform) entityB);
+                } else if (worldManifoldNormal.x != 0) {
+                    contact.setFriction(0);
                 }
             }
 
