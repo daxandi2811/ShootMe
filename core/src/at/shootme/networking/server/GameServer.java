@@ -2,6 +2,7 @@ package at.shootme.networking.server;
 
 import at.shootme.SM;
 import at.shootme.entity.general.Entity;
+import at.shootme.networking.data.PlayerSkin;
 import at.shootme.networking.data.entity.EntityBodyGeneralState;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.networking.data.entity.EntityStateChangeMessage;
@@ -19,6 +20,7 @@ import com.esotericsoftware.kryonet.Server;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -118,11 +120,14 @@ public class GameServer {
         ServerClientConnection newServerClientConnection = new ServerClientConnection(newConnection, new ServerEventProcessor());
         connections.add(newServerClientConnection);
 
+        newServerClientConnection.sendTCP(SM.nextPlayerSkin);
+        SM.nextPlayerSkin = PlayerSkin.values()[Arrays.asList(PlayerSkin.values()).indexOf(SM.nextPlayerSkin) + 1 % (PlayerSkin.values().length - 1)];
         newServerClientConnection.getKryonetConnection().sendTCP(SM.state);
         if (SM.state.getStateType() == GameStateType.IN_GAME) {
             List<EntityCreationMessage> entityCreationMessages = createEntityCreationMessages(SM.level.getEntities());
-            newServerClientConnection.sendTCPWithFlush(MessageBatch.create(entityCreationMessages));
+            newServerClientConnection.sendTCP(MessageBatch.create(entityCreationMessages));
         }
+        newServerClientConnection.sendFlush();
     }
 
     public Server getKryonetServer() {

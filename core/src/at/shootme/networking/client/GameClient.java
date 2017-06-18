@@ -30,12 +30,12 @@ public class GameClient {
         kryonetClient = new Client(NetworkingConstants.WRITE_BUFFER_SIZE, NetworkingConstants.OBJECT_BUFFER_SIZE);
         SM.kryoRegistrar.registerClasses(kryonetClient.getKryo());
         kryonetClient.start();
+        connection = new ServerClientConnection(kryonetClient, new ClientEventProcessor());
         try {
             kryonetClient.connect(1000, "localhost", NetworkingConstants.TCP_PORT, NetworkingConstants.UDP_PORT);
         } catch (IOException e) {
             throw new NetworkingRuntimeException(e);
         }
-        connection = new ServerClientConnection(kryonetClient, new ClientEventProcessor());
     }
 
     public void processReceived() {

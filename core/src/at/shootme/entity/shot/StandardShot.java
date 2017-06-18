@@ -23,7 +23,7 @@ public class StandardShot extends SimpleDrawableEntity implements Shot {
     public StandardShot(Vector2 position, Vector2 initialVelocity, Entity originator, World world) {
         this.originator = originator;
 
-        Texture texture = new Texture(TEXTUREPATH);
+        Texture texture = SM.textureStore.getOrLoadTexture(TEXTUREPATH);
         sprite = new Sprite(texture);
         sprite.setScale(TEXTURE_SCALE);
 

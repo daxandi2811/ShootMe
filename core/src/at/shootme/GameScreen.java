@@ -77,22 +77,6 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         registerStepListener(0, level);
     }
 
-    public GameScreen(int levelNr) {
-        this();
-        switch (levelNr) {
-            case 1:
-                level = new Level1(world);
-                break;
-            case 2:
-                level = new Level2(world);
-                break;
-            case 3:
-                level = new Level3(world);
-                break;
-        }
-
-    }
-
     @Override
     public void show() {
         if (!ShootMeConstants.HIT_BOX_MODE) {
@@ -110,7 +94,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         if (SM.isClient()) {
             player = new Player();
-            player.setTexturepath("assets/playersprite1.png");
+            player.setTexturepath(SM.nextPlayerSkin.getTextureFilePath());
             player.init(new Vector2(0, 100).scl(PIXELS_TO_METERS), world);
             level.add(player);
         }

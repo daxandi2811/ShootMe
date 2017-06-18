@@ -1,5 +1,6 @@
 package at.shootme.entity.player;
 
+import at.shootme.SM;
 import at.shootme.beans.HorizontalMovementState;
 import at.shootme.beans.ViewDirection;
 import at.shootme.entity.EntityCategory;
@@ -35,7 +36,7 @@ public class Player extends SimpleDrawableEntity {
 
     public void init(Vector2 position, World world) {
 
-        Texture texture = new Texture(texturepath);
+        Texture texture = SM.textureStore.getOrLoadTexture(texturepath);
         sprite = new Sprite(texture);
 
         sprite.setSize(sprite.getWidth() / 2, sprite.getHeight() / 2);

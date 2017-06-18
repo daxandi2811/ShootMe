@@ -5,6 +5,7 @@ import at.shootme.beans.ViewDirection;
 import at.shootme.entity.level.Platform.PlatformCreationMessage;
 import at.shootme.entity.player.Player.PlayerCreationMessage;
 import at.shootme.entity.shot.StandardShot.StandardShotCreationMessage;
+import at.shootme.networking.data.PlayerSkin;
 import at.shootme.networking.data.entity.EntityBodyGeneralState;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.networking.data.entity.EntityStateChangeMessage;
@@ -46,6 +47,7 @@ public class KryoRegistrar {
         gameMessageClasses.add(PlayerStateChangeMessage.class);
         gameMessageClasses.add(ViewDirection.class);
         gameMessageClasses.add(HorizontalMovementState.class);
+        gameMessageClasses.add(PlayerSkin.class);
         return gameMessageClasses;
     }
 

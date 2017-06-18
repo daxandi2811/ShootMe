@@ -5,6 +5,7 @@ import at.shootme.entity.general.Entity;
 import at.shootme.entity.general.EntityTypeHandler;
 import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.StandardShot;
+import at.shootme.networking.data.PlayerSkin;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.networking.data.entity.EntityStateChangeMessage;
 import at.shootme.networking.data.entity.PlayerStateChangeMessage;
@@ -33,6 +34,8 @@ public class ClientEventProcessor extends EventProcessor {
             receivedEntitiesThisTick.add(entity);
         } else if (message instanceof GameState) {
             SM.gameStateManager.apply((GameState) message);
+        } else if (message instanceof PlayerSkin) {
+            SM.nextPlayerSkin = (PlayerSkin) message;
         }
     }
 

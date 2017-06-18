@@ -1,5 +1,6 @@
 package at.shootme.entity.level;
 
+import at.shootme.SM;
 import at.shootme.entity.EntityCategory;
 import at.shootme.entity.general.SimpleDrawableEntity;
 import at.shootme.networking.data.entity.EntityCreationMessage;
@@ -25,7 +26,7 @@ public class Platform extends SimpleDrawableEntity {
     public Platform(Vector2 position, Vector2 size, String type, World world) {
         this.size = size;
         this.type = type;
-        sprite = new Sprite(new Texture(type.equals("stone") ? "assets/greytexture.jpg" : (type.equals("sand") ? "assets/sandtexture.jpg" : "assets/browntexture.jpg")));
+        sprite = new Sprite(SM.textureStore.getOrLoadTexture(type.equals("stone") ? "assets/greytexture.jpg" : (type.equals("sand") ? "assets/sandtexture.jpg" : "assets/browntexture.jpg")));
         sprite.setSize(size.cpy().scl(METERS_TO_PIXELS).x, size.cpy().scl(METERS_TO_PIXELS).y);
         sprite.setOriginCenter();
 
