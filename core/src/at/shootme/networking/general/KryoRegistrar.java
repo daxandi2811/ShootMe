@@ -11,6 +11,7 @@ import at.shootme.networking.data.ServerTick;
 import at.shootme.networking.data.entity.*;
 import at.shootme.networking.data.framework.MessageBatch;
 import at.shootme.networking.data.framework.StepCommunicationFlush;
+import at.shootme.state.data.GameMode;
 import at.shootme.state.data.GameState;
 import at.shootme.state.data.GameStateType;
 import com.badlogic.gdx.math.Vector2;
@@ -58,6 +59,7 @@ public class KryoRegistrar {
         gameMessageClasses.add(StepCommunicationFlush.class);
         gameMessageClasses.add(GameState.class);
         gameMessageClasses.add(GameStateType.class);
+        gameMessageClasses.add(GameMode.class);
         gameMessageClasses.add(PlayerStateChangeMessage.class);
         gameMessageClasses.add(ViewDirection.class);
         gameMessageClasses.add(HorizontalMovementState.class);

@@ -5,7 +5,16 @@ package at.shootme.state.data;
  */
 public class GameState {
     private GameStateType stateType;
+    private GameMode gameMode;
     private String levelKey;
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
 
     public GameStateType getStateType() {
         return stateType;

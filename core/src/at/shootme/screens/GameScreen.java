@@ -46,7 +46,6 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private World world;
     private OrthographicCamera camera;
     private Box2DDebugRenderer debugRenderer;
-    private MainMenu menu;
 
     private Player player;
 
@@ -216,7 +215,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
                 gameEndedMessage = new GameEndedMessage();
                 List<Player> players = level.getPlayers();
                 if (players.isEmpty()) {
-                    SM.gameStateManager.requestSwitchToLevelSelection();
+                    SM.gameStateManager.switchToGameModeSelection();
                 } else {
                     List<Player> playersSortedByScoreDesc = players.stream()
                             .sorted(Comparator.comparingInt(Player::getScore).reversed())
@@ -230,8 +229,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         }
         if (SM.isServer() && gameEndedMessage != null) {
             if (gameDurationSeconds > GAME_DURATION_SECONDS + GAME_ENDING_CELEBRATION_DURATION) {
-                if (SM.state.getStateType() != GameStateType.LEVEL_SELECTION) {
-                    SM.gameStateManager.requestSwitchToLevelSelection();
+                if (SM.state.getStateType() != GameStateType.GAME_MODE_SELECTION) {
+                    SM.gameStateManager.switchToGameModeSelection();
                 }
             }
 

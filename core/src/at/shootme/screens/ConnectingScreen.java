@@ -120,7 +120,7 @@ public class ConnectingScreen implements Screen {
                 }
 
                 GameState gameState = new GameState();
-                gameState.setStateType(GameStateType.LEVEL_SELECTION);
+                gameState.setStateType(GameStateType.GAME_MODE_SELECTION);
                 SM.gameStateManager.apply(gameState);
             }
 

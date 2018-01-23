@@ -14,7 +14,7 @@ public class ShootMeGame extends Game {
     public void create() {
         if (SM.isServer()) {
             GameState gameState = new GameState();
-            gameState.setStateType(GameStateType.LEVEL_SELECTION);
+            gameState.setStateType(GameStateType.GAME_MODE_SELECTION);
             SM.gameStateManager.apply(gameState);
         } else {
             GameState gameState = new GameState();

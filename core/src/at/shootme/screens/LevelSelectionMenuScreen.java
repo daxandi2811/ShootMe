@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 /**
  * Created by Steffi on 01.06.2017.
  */
-public class MainMenu implements Screen {
+public class LevelSelectionMenuScreen implements Screen {
 
     private Skin buttonskin;
     private Stage stage;
@@ -27,7 +27,7 @@ public class MainMenu implements Screen {
     private SpriteBatch batch;
 
     //Constructor
-    public MainMenu() {
+    public LevelSelectionMenuScreen() {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);// Make the stage consume events
         initComponents();

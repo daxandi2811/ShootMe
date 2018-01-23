@@ -5,6 +5,7 @@ package at.shootme.state.data;
  */
 public enum GameStateType {
     SERVER_SELECTION,
+    GAME_MODE_SELECTION,
     LEVEL_SELECTION,
     IN_GAME,
 }
