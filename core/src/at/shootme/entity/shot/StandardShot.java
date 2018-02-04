@@ -5,6 +5,10 @@ import at.shootme.entity.general.Entity;
 import at.shootme.entity.general.SimpleDrawableEntity;
 import at.shootme.entity.player.Player;
 import at.shootme.networking.data.entity.EntityCreationMessage;
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -20,6 +24,7 @@ public class StandardShot extends SimpleDrawableEntity implements Shot {
     private static final int TEXTURE_SCALE = 3;
     private static final String TEXTUREPATH = "assets/standard_bullet.png";
     private Entity originator;
+    private Sound shotSound = Gdx.audio.newSound(Gdx.files.internal("assets/shot.wav"));
 
     public StandardShot(Vector2 position, Vector2 initialVelocity, Entity originator, World world) {
         this.originator = originator;
@@ -51,6 +56,8 @@ public class StandardShot extends SimpleDrawableEntity implements Shot {
 
 
         fixture = body.createFixture(fixtureDef);
+        shotSound.play();
+
     }
 
     @Override
@@ -91,5 +98,11 @@ public class StandardShot extends SimpleDrawableEntity implements Shot {
         public void setOriginatorEntityId(String originatorEntityId) {
             this.originatorEntityId = originatorEntityId;
         }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        shotSound.dispose();
+        super.finalize();
     }
 }

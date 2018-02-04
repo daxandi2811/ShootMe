@@ -9,6 +9,8 @@ import at.shootme.entity.level.Platform;
 import at.shootme.entity.shot.StandardShot;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.util.vectors.Vector2Util;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,6 +34,8 @@ public class Player extends SimpleDrawableEntity {
     private int availableJumps = 2;
     private int score = 0;
     private String name;
+
+    private Sound jumpSound = Gdx.audio.newSound(Gdx.files.internal("assets/jump.wav"));
 
     public Player() {
     }
@@ -91,7 +95,7 @@ public class Player extends SimpleDrawableEntity {
             case LEFT:
                 desiredHorizontalVelocity = Math.max(velocity.x - 5f, -14f);
                 if (viewDirection != ViewDirection.LEFT) {
-                    viewDirection = viewDirection.LEFT;
+                    viewDirection = ViewDirection.LEFT;
                 }
                 break;
             case STOPPING:
@@ -150,7 +154,7 @@ public class Player extends SimpleDrawableEntity {
      */
     private void jump() {
         availableJumps--;
-
+        jumpSound.play();
         body.setLinearVelocity(body.getLinearVelocity().x, JUMP_SPEED);
     }
 
@@ -257,5 +261,11 @@ public class Player extends SimpleDrawableEntity {
         public void setName(String name) {
             this.name = name;
         }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        jumpSound.dispose();
+        super.finalize();
     }
 }
