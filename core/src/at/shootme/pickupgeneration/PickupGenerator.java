@@ -3,6 +3,7 @@ package at.shootme.pickupgeneration;
 import at.shootme.SM;
 import at.shootme.ShootMeConstants;
 import at.shootme.entity.level.Platform;
+import at.shootme.entity.pickups.CoinBagPickup;
 import at.shootme.entity.pickups.CoinPickup;
 import at.shootme.logic.StepListener;
 import com.badlogic.gdx.math.Vector2;
@@ -16,7 +17,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PickupGenerator implements StepListener {
 
     public static final float COIN_GENERATION_INTERVAL = 5f;
+    public static final float COINBAG_GENERATION_INTERVAL = 21f;
     private float lastTimeGeneratedCoinGameSeconds = 0;
+    private float lastTimeGeneratedCoinBagGameSeconds = 0;
 
     /**
      * generates a new coin every Coin_geneartion_Intervall
@@ -29,6 +32,12 @@ public class PickupGenerator implements StepListener {
             lastTimeGeneratedCoinGameSeconds = gameDurationSeconds;
             generateCoin();
         }
+
+        if (gameDurationSeconds > lastTimeGeneratedCoinBagGameSeconds + COINBAG_GENERATION_INTERVAL) {
+            lastTimeGeneratedCoinBagGameSeconds = gameDurationSeconds;
+            //TODO: find a solution?
+            /**generateCoinBag();*/
+        }
     }
 
     /**
@@ -40,6 +49,14 @@ public class PickupGenerator implements StepListener {
         if (position != null) {
             CoinPickup coinPickup = new CoinPickup(position);
             SM.level.add(coinPickup);
+        }
+    }
+
+    private void generateCoinBag() {
+        Vector2 position = RandomPositionGenerator.getRandomPositionWithMaxGroundGap(CoinBagPickup.SIZE);
+        if (position != null) {
+            CoinBagPickup coinBagPickup = new CoinBagPickup(position);
+            SM.level.add(coinBagPickup);
         }
     }
 }

@@ -22,6 +22,10 @@ public class NetworkingUtils {
     public static List<EntityCreationMessage> createEntityCreationMessages(List<Entity> entities) {
         return entities.stream().map(entity -> {
             EntityTypeHandler handler = SM.entityTypeHandlerRegistry.getHandlerFor(entity);
+            if(handler == null)
+            {
+                System.out.println("HELP");
+            }
             return handler.createEntityCreationMessage(entity);
         }).collect(Collectors.toList());
     }

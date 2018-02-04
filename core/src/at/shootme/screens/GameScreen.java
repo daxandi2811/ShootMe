@@ -5,10 +5,7 @@ import at.shootme.ShootMeConstants;
 import at.shootme.beans.HorizontalMovementState;
 import at.shootme.entity.player.Player;
 import at.shootme.entity.shot.StandardShot;
-import at.shootme.levels.Level;
-import at.shootme.levels.Level1;
-import at.shootme.levels.Level2;
-import at.shootme.levels.Level3;
+import at.shootme.levels.*;
 import at.shootme.logic.StepListener;
 import at.shootme.networking.GameEndedMessage;
 import at.shootme.physics.GameContactFilter;
@@ -77,6 +74,12 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
                 break;
             case "FOREST":
                 level = new Level3(SM.world);
+                break;
+            case "CITY":
+                level = new Level4(SM.world);
+                break;
+            case "DESSERT":
+                level = new Level5(SM.world);
                 break;
             default:
                 throw new IllegalArgumentException();

@@ -35,6 +35,7 @@ public class GameModeSelectionMenuScreen implements Screen {
 
 
     private void initComponents() {
+        /* Title */
         Label.LabelStyle textStyle = new Label.LabelStyle();
         BitmapFont font = new BitmapFont();
         font.getData().setScale(5);
@@ -46,8 +47,21 @@ public class GameModeSelectionMenuScreen implements Screen {
         lbTitle.setPosition(Gdx.graphics.getWidth() / 2 - Gdx.graphics.getWidth() / 8, 500);
         stage.addActor(lbTitle);
 
+        /* Subtitle */
+        Label.LabelStyle subTitleStyle = new Label.LabelStyle();
+        BitmapFont subFont = new BitmapFont();
+        subFont.getData().setScale(3);
+        subTitleStyle.font = subFont;
+        subTitleStyle.fontColor = Color.BLACK;
+
+        Label lbSubTitle;
+        lbSubTitle = new Label("Choose a Game Mode", subTitleStyle);
+        lbSubTitle.setPosition(Gdx.graphics.getWidth() / 2 - Gdx.graphics.getWidth() /6, 400);
+        stage.addActor(lbSubTitle);
 
         createBasicSkin();
+
+
 
         TextButton btLev1 = new TextButton("Last Man Standing", buttonskin);
         btLev1.addListener(new ClickListener() {
@@ -56,8 +70,8 @@ public class GameModeSelectionMenuScreen implements Screen {
                 SM.gameStateManager.requestGameMode(GameMode.LAST_MAN_STANDING);
             }
         });
-        btLev1.setPosition(Gdx.graphics.getWidth() / 4 - Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2);
-        stage.addActor(btLev1); //so the button appears on the Stage!!
+        btLev1.setPosition(Gdx.graphics.getWidth() / 4 , Gdx.graphics.getHeight() / 4);
+        stage.addActor(btLev1);
 
 
         TextButton btLev2 = new TextButton("Time", buttonskin);
@@ -67,7 +81,7 @@ public class GameModeSelectionMenuScreen implements Screen {
                 SM.gameStateManager.requestGameMode(GameMode.TIME);
             }
         });
-        btLev2.setPosition(Gdx.graphics.getWidth() / 2 - Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2);
+        btLev2.setPosition(Gdx.graphics.getWidth() / 2 , Gdx.graphics.getHeight() / 4);
         stage.addActor(btLev2);
 
 

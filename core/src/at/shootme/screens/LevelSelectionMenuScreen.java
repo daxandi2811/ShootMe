@@ -98,6 +98,33 @@ public class LevelSelectionMenuScreen implements Screen {
         stage.addActor(btLev3); //so the button appears on the Stage!!
 
 
+        TextButton btLev4 = new TextButton("Level 4 - City", buttonskin);
+        btLev4.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                //sets GameScreen as the new Screen, hands over 4, so Level4 is created there
+                SM.gameStateManager.requestStartGame("CITY");
+            }
+
+            ;
+        });
+        btLev4.setPosition(Gdx.graphics.getWidth() * 2/5 - Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 4);
+        stage.addActor(btLev4); //so the button appears on the Stage!!
+
+
+        TextButton btLev5 = new TextButton("Level 5 - Dessert", buttonskin);
+        btLev5.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                //sets GameScreen as the new Screen, hands over 5, so Level5 is created there
+                SM.gameStateManager.requestStartGame("DESSERT");
+            }
+
+            ;
+        });
+        btLev5.setPosition(Gdx.graphics.getWidth() *13/20 - Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 4);
+        stage.addActor(btLev5); //so the button appears on the Stage!!
+
         mediumFont = new BitmapFont();
         mediumFont.getData().setScale(2);
 
