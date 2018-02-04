@@ -36,6 +36,8 @@ public class SM {
     public static PlayerSkin nextPlayerSkin = PlayerSkin.PLAYER_1;
     public static TextureStore textureStore = new TextureStore();
     public static String playerName = "";
+    public static Audio audio;
+    public static Files files;
 
     public static boolean isServer() {
         return server != null;

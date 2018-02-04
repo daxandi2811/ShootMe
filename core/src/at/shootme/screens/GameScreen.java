@@ -17,6 +17,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -56,10 +58,15 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private float gameDurationSeconds = 0;
     private GameEndedMessage gameEndedMessage;
 
+    //private Music music = Gdx.audio.newMusic(Gdx.files.absolute("E:/Musik/AS1/02 I Want To Break Free.mp3"));
+    private Sound ohYeahSound = Gdx.audio.newSound(Gdx.files.internal("assets/ohyeah.wav"));
+
     private GameScreen() {
         SM.gameScreen = this;
         world = new World(new Vector2(0, -98), true);
         SM.world = world;
+        //music.setLooping(true);
+        //music.play();
     }
 
     public GameScreen(String levelKey) {
@@ -299,6 +306,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         batch.dispose();
         world.dispose();
         Gdx.input.setInputProcessor(null);
+        //music.dispose();
+        ohYeahSound.dispose();
     }
 
     @Override
@@ -402,6 +411,9 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
     public void setGameEndedMessage(GameEndedMessage gameEndedMessage) {
         this.gameEndedMessage = gameEndedMessage;
+
+        //music.stop();
+        ohYeahSound.play();
     }
 }
 
