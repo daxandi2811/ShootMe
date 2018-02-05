@@ -112,12 +112,12 @@ public class LevelSelectionMenuScreen implements Screen {
         stage.addActor(btLev4); //so the button appears on the Stage!!
 
 
-        TextButton btLev5 = new TextButton("Level 5 - Dessert", buttonskin);
+        TextButton btLev5 = new TextButton("Level 5 - Desert", buttonskin);
         btLev5.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //sets GameScreen as the new Screen, hands over 5, so Level5 is created there
-                SM.gameStateManager.requestStartGame("DESSERT");
+                SM.gameStateManager.requestStartGame("DESERT");
             }
 
             ;

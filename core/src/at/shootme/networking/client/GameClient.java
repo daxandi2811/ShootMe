@@ -87,6 +87,8 @@ public class GameClient {
         playerStateChangeMessage.setEntityBodyGeneralState(new EntityBodyGeneralState(player.getBody()));
         playerStateChangeMessage.setAvailableJumps(player.getAvailableJumps());
         playerStateChangeMessage.setScore(player.getScore());
+        playerStateChangeMessage.setHealth(player.getHealth());
+        playerStateChangeMessage.setRemainingLives(player.getRemainingLives());
         playerStateChangeMessage.setHorizontalMovementState(player.getHorizontalMovementState());
         playerStateChangeMessage.setViewDirection(player.getViewDirection());
         connection.getKryonetConnection().sendUDP(playerStateChangeMessage);

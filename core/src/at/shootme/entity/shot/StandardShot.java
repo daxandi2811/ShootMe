@@ -5,10 +5,8 @@ import at.shootme.entity.general.Entity;
 import at.shootme.entity.general.SimpleDrawableEntity;
 import at.shootme.entity.player.Player;
 import at.shootme.networking.data.entity.EntityCreationMessage;
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -23,7 +21,7 @@ import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
 public class StandardShot extends SimpleDrawableEntity implements Shot {
 
     private static final String TEXTUREPATH = "assets/standard_bullet.png";
-    private static final int SCORE_FOR_KILLING_HIT = 100;
+    private static final int SCORE_FOR_KILLING_HIT = 500;
     public static final Vector2 SIZE = new Vector2(30, 30).scl(PIXELS_TO_METERS);
     private Entity originator;
     private Sound shotSound = Gdx.audio.newSound(Gdx.files.internal("assets/shot.wav"));
@@ -77,10 +75,11 @@ public class StandardShot extends SimpleDrawableEntity implements Shot {
     }
 
     private void hitPlayer(Player playerBeingHit, int damage) {
-        if(!playerBeingHit.isDead()) {
+        if (!playerBeingHit.isDead()) {
             receiveScoreIfOriginatorIsPlayer(damage);
             playerBeingHit.receiveDamage(damage);
             if (playerBeingHit.isDead()) {
+                System.out.println("player " + playerBeingHit.getName() + " diedeled");
                 receiveScoreIfOriginatorIsPlayer(SCORE_FOR_KILLING_HIT);
             }
         }
@@ -89,7 +88,9 @@ public class StandardShot extends SimpleDrawableEntity implements Shot {
     private void receiveScoreIfOriginatorIsPlayer(int score) {
         if (originator instanceof Player) {
             Player originatorPlayer = (Player) originator;
-            originatorPlayer.receiveScore(score);
+//            if (SM.gameScreen.getPlayer() == originatorPlayer) {
+                originatorPlayer.receiveScore(score);
+//            }
         }
     }
 

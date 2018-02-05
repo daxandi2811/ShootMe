@@ -13,6 +13,7 @@ import at.shootme.physics.GameContactListener;
 import at.shootme.pickupgeneration.DeadPlayerRespawner;
 import at.shootme.pickupgeneration.PickupGenerator;
 import at.shootme.pickupgeneration.StatsUpRemover;
+import at.shootme.state.data.GameMode;
 import at.shootme.state.data.GameStateType;
 import at.shootme.util.vectors.Vector2Util;
 import com.badlogic.gdx.Gdx;
@@ -62,6 +63,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private BitmapFont mediumFont;
     private float gameDurationSeconds = 0;
     private GameEndedMessage gameEndedMessage;
+    private float gameEndedTime;
 
     private Music music = Gdx.audio.newMusic(Gdx.files.internal("assets/music.ogg"));
     private Sound ohYeahSound = Gdx.audio.newSound(Gdx.files.internal("assets/ohyeah.wav"));
@@ -97,7 +99,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
                 level = new Level5(SM.world);
                 break;
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("illegal levelKey: " + levelKey);
         }
         this.level = level;
         registerStepListener(0, level);
@@ -137,8 +139,8 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         if (SM.isServer()) {
             registerStepListener(10, new PickupGenerator());
-            registerStepListener(20, new DeadPlayerRespawner());
         } else {
+            registerStepListener(20, new DeadPlayerRespawner());
             registerStepListener(30, new StatsUpRemover());
         }
 
@@ -232,24 +234,50 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         }
 
         if (SM.isServer() && gameEndedMessage == null) {
-            if (gameDurationSeconds > GAME_DURATION_SECONDS) {
-                gameEndedMessage = new GameEndedMessage();
-                List<Player> players = level.getPlayers();
-                if (players.isEmpty()) {
-                    SM.gameStateManager.switchToGameModeSelection();
-                } else {
-                    List<Player> playersSortedByScoreDesc = players.stream()
-                            .sorted(Comparator.comparingInt(Player::getScore).reversed())
-                            .collect(Collectors.toList());
-                    Player winningPlayer = playersSortedByScoreDesc.get(0);
-                    gameEndedMessage.setWinningScore(winningPlayer.getScore());
-                    gameEndedMessage.setWinningPlayerEntityId(winningPlayer.getId());
+            if (SM.state.getGameMode() == GameMode.TIME) {
+                if (gameDurationSeconds > GAME_DURATION_SECONDS) {
+                    gameEndedMessage = new GameEndedMessage();
+                    List<Player> players = level.getPlayers();
+                    if (players.isEmpty()) {
+                        SM.gameStateManager.switchToGameModeSelection();
+                    } else {
+                        gameEndedTime = gameDurationSeconds;
+                        List<Player> playersSortedByScoreDesc = players.stream()
+                                .sorted(Comparator.comparingInt(Player::getScore).reversed())
+                                .collect(Collectors.toList());
+                        Player winningPlayer = playersSortedByScoreDesc.get(0);
+                        gameEndedMessage.setWinningScore(winningPlayer.getScore());
+                        gameEndedMessage.setWinningPlayerEntityId(winningPlayer.getId());
+                    }
+                    SM.server.getKryonetServer().sendToAllTCP(gameEndedMessage);
                 }
-                SM.server.getKryonetServer().sendToAllTCP(gameEndedMessage);
+            } else if (SM.state.getGameMode() == GameMode.LAST_MAN_STANDING) {
+                if (gameDurationSeconds > 2) {
+                    if (level.getPlayers().isEmpty()) {
+                        SM.gameStateManager.switchToGameModeSelection();
+                    }
+                    List<Player> alivePlayers = SM.level.getPlayers().stream()
+                            .filter(player1 -> !isAlive(player1))
+                            .collect(Collectors.toList());
+                    if (alivePlayers.size() <= 1) {
+                        gameEndedMessage = new GameEndedMessage();
+                        gameEndedTime = gameDurationSeconds;
+                        if (alivePlayers.size() == 0) {
+                            gameEndedMessage.setWinningPlayerEntityId(null);
+                            gameEndedMessage.setWinningScore(0);
+                        } else {
+                            Player winningPlayer = alivePlayers.get(0);
+                            gameEndedMessage.setWinningPlayerEntityId(winningPlayer.getId());
+                            gameEndedMessage.setWinningRemainingLives(winningPlayer.getRemainingLives());
+                        }
+                        SM.server.getKryonetServer().sendToAllTCP(gameEndedMessage);
+                    }
+                }
             }
         }
         if (SM.isServer() && gameEndedMessage != null) {
-            if (gameDurationSeconds > GAME_DURATION_SECONDS + GAME_ENDING_CELEBRATION_DURATION) {
+            if (gameDurationSeconds > gameEndedTime + GAME_ENDING_CELEBRATION_DURATION) {
+                System.out.println("closing time after celebration");
                 if (SM.state.getStateType() != GameStateType.GAME_MODE_SELECTION) {
                     SM.gameStateManager.switchToGameModeSelection();
                 }
@@ -258,14 +286,25 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         }
     }
 
+    private boolean isAlive(Player player1) {
+        return player1.getRemainingLives() <= 0;
+    }
+
     private void renderGame() {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
         level.render(batch);
 
-        displayScore(getPlayer().getScore());
-        displayTime(Math.max(GAME_DURATION_SECONDS - (int) gameDurationSeconds, 0));
+        int timeToDisplay;
+        if (SM.state.getGameMode() == GameMode.TIME) {
+            timeToDisplay = Math.max(GAME_DURATION_SECONDS - (int) gameDurationSeconds, 0);
+            displayScore(getPlayer().getScore());
+        } else {
+            timeToDisplay = (int) gameDurationSeconds;
+            displayRemainingLives(getPlayer().getRemainingLives());
+        }
+        displayTime(timeToDisplay);
 
         batch.end();
 
@@ -273,7 +312,11 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
             windowBatch.begin();
             Player winningPlayer = (Player) SM.level.getEntityById(gameEndedMessage.getWinningPlayerEntityId());
             if (winningPlayer != null) {
-                bigFont.draw(windowBatch, "Player " + winningPlayer.getName() + " has won with a score of " + gameEndedMessage.getWinningScore() + "!", 50, Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() - 100, Align.center, true);
+                if (SM.state.getGameMode() == GameMode.TIME) {
+                    bigFont.draw(windowBatch, "Player " + winningPlayer.getName() + " has won with a score of " + gameEndedMessage.getWinningScore() + "!", 50, Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() - 100, Align.center, true);
+                } else {
+                    bigFont.draw(windowBatch, "Player " + winningPlayer.getName() + " has won with " + gameEndedMessage.getWinningRemainingLives() + " lives left!", 50, Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() - 100, Align.center, true);
+                }
             }
             windowBatch.end();
         }
@@ -285,12 +328,16 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     //Displays the current score at the top right center
     public void displayScore(int score) {
 
-        bigFont.draw(batch, "Score: " + score, Gdx.graphics.getWidth() - 300, Gdx.graphics.getHeight() * 2 - 50);
+        bigFont.draw(batch, "Score: " + score, Gdx.graphics.getWidth() - 360, Gdx.graphics.getHeight() * 2 - 50);
+    }
+
+    public void displayRemainingLives(int remainingLives) {
+        bigFont.draw(batch, "Lives: " + remainingLives, Gdx.graphics.getWidth() - 360, Gdx.graphics.getHeight() * 2 - 50);
     }
 
     //Displays the time left at the top right corner
     public void displayTime(int seconds) {
-        bigFont.draw(batch, "Time: " + String.format("%d:%02d", seconds / 60, seconds % 60), Gdx.graphics.getWidth() - 300, Gdx.graphics.getHeight() * 2);
+        bigFont.draw(batch, "Time: " + String.format("%d:%02d", seconds / 60, seconds % 60), Gdx.graphics.getWidth() - 360, Gdx.graphics.getHeight() * 2);
     }
 
     @Override

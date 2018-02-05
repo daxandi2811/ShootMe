@@ -48,6 +48,7 @@ public class GameStateManager {
         if (SM.isClient()) {
             GameState requestedState = new GameState();
             requestedState.setLevelKey(levelKey);
+            requestedState.setGameMode(SM.state.getGameMode());
             requestedState.setStateType(GameStateType.IN_GAME);
             sendStateRequest(requestedState);
         }

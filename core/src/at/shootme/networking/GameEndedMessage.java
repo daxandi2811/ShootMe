@@ -7,6 +7,7 @@ public class GameEndedMessage {
 
     private String winningPlayerEntityId;
     private int winningScore;
+    private int winningRemainingLives;
 
     /**
      * returns the player who won the round
@@ -30,5 +31,13 @@ public class GameEndedMessage {
 
     public void setWinningScore(int winningScore) {
         this.winningScore = winningScore;
+    }
+
+    public int getWinningRemainingLives() {
+        return winningRemainingLives;
+    }
+
+    public void setWinningRemainingLives(int winningRemainingLives) {
+        this.winningRemainingLives = winningRemainingLives;
     }
 }

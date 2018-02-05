@@ -9,6 +9,7 @@ import at.shootme.entity.pickups.SpeedUpPickup;
 import at.shootme.entity.pickups.TripleJumpPickup;
 import at.shootme.entity.player.Player;
 import at.shootme.logic.StepListener;
+import at.shootme.state.data.GameMode;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.Random;
@@ -28,19 +29,21 @@ public class PickupGenerator implements StepListener {
 
     /**
      * generates a new coin every Coin_geneartion_Intervall
+     *
      * @param timeStep
      */
     @Override
     public void beforeWorldStep(float timeStep) {
         float gameDurationSeconds = SM.gameScreen.getGameDurationSeconds();
-        if (gameDurationSeconds > lastTimeGeneratedCoinGameSeconds + COIN_GENERATION_INTERVAL) {
-            lastTimeGeneratedCoinGameSeconds = gameDurationSeconds;
-            generateCoin();
-        }
-
-        if (gameDurationSeconds > lastTimeGeneratedCoinBagGameSeconds + COINBAG_GENERATION_INTERVAL) {
-            lastTimeGeneratedCoinBagGameSeconds = gameDurationSeconds;
-            generateCoinBag();
+        if (SM.state.getGameMode() == GameMode.TIME) {
+            if (gameDurationSeconds > lastTimeGeneratedCoinGameSeconds + COIN_GENERATION_INTERVAL) {
+                lastTimeGeneratedCoinGameSeconds = gameDurationSeconds;
+                generateCoin();
+            }
+            if (gameDurationSeconds > lastTimeGeneratedCoinBagGameSeconds + COINBAG_GENERATION_INTERVAL) {
+                lastTimeGeneratedCoinBagGameSeconds = gameDurationSeconds;
+                generateCoinBag();
+            }
         }
         if (gameDurationSeconds > lastTimeGeneratedStatsUpSeconds + STATS_UP_GENERATION_INTERVAL) {
             lastTimeGeneratedStatsUpSeconds = gameDurationSeconds;
@@ -73,7 +76,7 @@ public class PickupGenerator implements StepListener {
         Random rand = new Random();
         if (position != null) {
             int pickupNumber = rand.nextInt(2);
-            switch(pickupNumber){
+            switch (pickupNumber) {
                 case 0:
                     SpeedUpPickup speedUpPickup = new SpeedUpPickup(position);
                     SM.level.add(speedUpPickup);

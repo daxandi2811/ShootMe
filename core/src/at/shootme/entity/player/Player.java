@@ -1,6 +1,7 @@
 package at.shootme.entity.player;
 
 import at.shootme.SM;
+import at.shootme.ShootMeConstants;
 import at.shootme.beans.HorizontalMovementState;
 import at.shootme.beans.ViewDirection;
 import at.shootme.entity.EntityCategory;
@@ -9,10 +10,13 @@ import at.shootme.entity.level.Platform;
 import at.shootme.entity.pickups.PickupType;
 import at.shootme.entity.shot.StandardShot;
 import at.shootme.networking.data.entity.EntityCreationMessage;
+import at.shootme.state.data.GameMode;
 import at.shootme.util.vectors.Vector2Util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -26,6 +30,7 @@ import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
 public class Player extends SimpleDrawableEntity {
 
     private static final int JUMP_SPEED = 30;
+    public static final int AVAILABLE_LIVES = 3;
 
     private HorizontalMovementState horizontalMovementState = HorizontalMovementState.STOPPED;
     private ViewDirection viewDirection = ViewDirection.LEFT;
@@ -42,6 +47,8 @@ public class Player extends SimpleDrawableEntity {
     private float lastStatsUpAcquiredInGameSeconds;
     private Vector2 size;
     private PickupType currentPickup;
+    private float lastTimeShot;
+    private int remainingLives = AVAILABLE_LIVES;
 
     private Sound jumpSound = Gdx.audio.newSound(Gdx.files.internal("assets/jump.wav"));
 
@@ -108,7 +115,7 @@ public class Player extends SimpleDrawableEntity {
         switch (horizontalMovementState) {
             case LEFT:
                 //desiredHorizontalVelocity = Math.max(velocity.x - 5f, -14f);
-                desiredHorizontalVelocity = Math.max(velocity.x - 5f*speed, -14f*speed);
+                desiredHorizontalVelocity = Math.max(velocity.x - 5f * speed, -14f * speed);
                 if (viewDirection != ViewDirection.LEFT) {
                     viewDirection = ViewDirection.LEFT;
                 }
@@ -117,7 +124,7 @@ public class Player extends SimpleDrawableEntity {
                 desiredHorizontalVelocity = velocity.x;
                 break;
             case RIGHT:
-                desiredHorizontalVelocity = Math.min(velocity.x + 5f*speed, 14f*speed);
+                desiredHorizontalVelocity = Math.min(velocity.x + 5f * speed, 14f * speed);
                 if (viewDirection != ViewDirection.RIGHT) {
                     viewDirection = ViewDirection.RIGHT;
                 }
@@ -134,6 +141,13 @@ public class Player extends SimpleDrawableEntity {
     }
 
     public StandardShot shootAt(Vector2 clickPosition) {
+        if (isDead()) {
+            return null;
+        }
+        if (lastTimeShot + 0.2 > SM.gameScreen.getGameDurationSeconds()) {
+            return null;
+        }
+        lastTimeShot = SM.gameScreen.getGameDurationSeconds();
 
         Vector2 playerPosition = body.getPosition();
 
@@ -168,6 +182,11 @@ public class Player extends SimpleDrawableEntity {
     private void onDeath() {
         lastDeathTimeInGameSeconds = SM.gameScreen.getGameDurationSeconds();
         setHorizontalMovementState(HorizontalMovementState.STOPPING);
+        if (SM.state.getGameMode() == GameMode.LAST_MAN_STANDING) {
+            if (remainingLives > 0) {
+                remainingLives--;
+            }
+        }
     }
 
     public boolean isDead() {
@@ -198,7 +217,7 @@ public class Player extends SimpleDrawableEntity {
         body.setLinearVelocity(body.getLinearVelocity().x, JUMP_SPEED);
     }
 
-    public void resetAllStats(){
+    public void resetAllStats() {
         maxJumps = 2;
         speed = 1;
     }
@@ -215,8 +234,23 @@ public class Player extends SimpleDrawableEntity {
     @Override
     public void draw(SpriteBatch batch) {
         sprite.setFlip(viewDirection == ViewDirection.RIGHT, false);
-        super.draw(batch);
-        SM.gameScreen.getMediumFont().draw(batch, name, sprite.getX() + sprite.getWidth() / 2 - 30, sprite.getY() + sprite.getHeight() + 20);
+        sprite.setRotation(isDead() ? -90 : 0);
+        float verticalShift = isDead() ? -sprite.getHeight() / 3 : 0;
+        sprite.setPosition(body.getPosition().x * ShootMeConstants.METERS_TO_PIXELS - sprite.getWidth() / 2, body.getPosition().y * ShootMeConstants.METERS_TO_PIXELS - sprite.getHeight() / 2 + verticalShift);
+        sprite.draw(batch);
+        BitmapFont textFont = SM.gameScreen.getMediumFont();
+        Color previousColor = textFont.getColor();
+        Color color = Color.GREEN;
+        if (health <= 70) {
+            color = Color.ORANGE;
+        }
+        if (health <= 40) {
+            color = Color.RED;
+        }
+        textFont.setColor(color);
+        int horizontalShiftDueToTextSize = 4 * name.length();
+        textFont.draw(batch, name + " - " + health, sprite.getX() + sprite.getWidth() / 2 - 50 - horizontalShiftDueToTextSize, sprite.getY() + sprite.getHeight() + 20);
+        textFont.setColor(previousColor);
     }
 
     @Override
@@ -315,6 +349,14 @@ public class Player extends SimpleDrawableEntity {
 
     public void setCurrentPickup(PickupType currentPickup) {
         this.currentPickup = currentPickup;
+    }
+
+    public int getRemainingLives() {
+        return remainingLives;
+    }
+
+    public void setRemainingLives(int remainingLives) {
+        this.remainingLives = remainingLives;
     }
 
     public static class PlayerCreationMessage extends EntityCreationMessage {

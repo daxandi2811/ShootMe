@@ -21,6 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.util.Random;
+
 /**
  * Created by Steffi on 18.06.2017.
  */
@@ -97,37 +99,39 @@ public class ConnectingScreen implements Screen {
         btSubmit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String playerName = tfPlayername.getText();
-                SM.playerName = playerName;
-                String host = tfIP.getText();
-
-                if (playerName.trim().isEmpty()) {
-                    lbError.setText("Please enter a player name!");
-                    return;
-                }
-                if (playerName.length() > 10) {
-                    lbError.setText("Please only enter 10 or less characters for the name!");
-                    return;
-                }
-
-                try {
-                    GameClient gameClient = new GameClient();
-                    SM.client = gameClient;
-                    gameClient.connect(host);
-                } catch (NetworkingRuntimeException ex) {
-                    lbError.setText("Could not connect! (" + ex.getMessage() + ")");
-                    return;
-                }
-
-                GameState gameState = new GameState();
-                gameState.setStateType(GameStateType.GAME_MODE_SELECTION);
-                SM.gameStateManager.apply(gameState);
+                connect(tfPlayername.getText(), tfIP.getText());
             }
 
             ;
         });
         btSubmit.setPosition(Gdx.graphics.getWidth() / 3, 150);
         stage.addActor(btSubmit); //so the button appears on the Stage!!
+    }
+
+    private void connect(String playerName, String host) {
+        SM.playerName = playerName;
+
+        if (playerName.trim().isEmpty()) {
+            lbError.setText("Please enter a player name!");
+            return;
+        }
+        if (playerName.length() > 10) {
+            lbError.setText("Please only enter 10 or less characters for the name!");
+            return;
+        }
+
+        try {
+            GameClient gameClient = new GameClient();
+            SM.client = gameClient;
+            gameClient.connect(host);
+        } catch (NetworkingRuntimeException ex) {
+            lbError.setText("Could not connect! (" + ex.getMessage() + ")");
+            return;
+        }
+
+        GameState gameState = new GameState();
+        gameState.setStateType(GameStateType.GAME_MODE_SELECTION);
+        SM.gameStateManager.apply(gameState);
     }
 
 
@@ -143,6 +147,9 @@ public class ConnectingScreen implements Screen {
 
         stage.act();
         stage.draw();
+
+        // connect directly for development purposes
+//        connect("" + new Random().nextInt(1000), "localhost");
     }
 
     @Override
