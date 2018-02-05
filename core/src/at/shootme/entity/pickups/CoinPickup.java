@@ -52,8 +52,9 @@ public class CoinPickup extends SimpleDrawableEntity implements Pickup {
     public void pickedUpBy(Player player) {
         if (SM.isClient() && SM.gameScreen.getPlayer() == player) {
             player.setScore(player.getScore() + SCORE_PER_COIN);
-            pickupSound.play();
+
         }
+        if (SM.isClient()) pickupSound.play();
         SM.level.queueForRemoval(this);
     }
 

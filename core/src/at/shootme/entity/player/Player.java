@@ -194,7 +194,7 @@ public class Player extends SimpleDrawableEntity {
      */
     private void jump() {
         availableJumps--;
-        jumpSound.play();
+        jumpSound.play(0.75f);
         body.setLinearVelocity(body.getLinearVelocity().x, JUMP_SPEED);
     }
 

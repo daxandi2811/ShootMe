@@ -32,7 +32,10 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -60,15 +63,18 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     private float gameDurationSeconds = 0;
     private GameEndedMessage gameEndedMessage;
 
-    //private Music music = Gdx.audio.newMusic(Gdx.files.absolute("E:/Musik/AS1/02 I Want To Break Free.mp3"));
+    private Music music = Gdx.audio.newMusic(Gdx.files.internal("assets/music.ogg"));
     private Sound ohYeahSound = Gdx.audio.newSound(Gdx.files.internal("assets/ohyeah.wav"));
 
     private GameScreen() {
         SM.gameScreen = this;
         world = new World(new Vector2(0, -98), true);
         SM.world = world;
-        //music.setLooping(true);
-        //music.play();
+        if (SM.isClient()) {
+            music.setLooping(true);
+            music.setVolume(0.6f);
+            music.play();
+        }
     }
 
     public GameScreen(String levelKey) {
@@ -87,7 +93,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
             case "CITY":
                 level = new Level4(SM.world);
                 break;
-            case "DESSERT":
+            case "DESERT":
                 level = new Level5(SM.world);
                 break;
             default:
@@ -129,10 +135,10 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         world.setContactListener(listener);
         world.setContactFilter(new GameContactFilter());
 
-        if(SM.isServer()){
+        if (SM.isServer()) {
             registerStepListener(10, new PickupGenerator());
             registerStepListener(20, new DeadPlayerRespawner());
-        }else{
+        } else {
             registerStepListener(30, new StatsUpRemover());
         }
 
@@ -311,7 +317,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         batch.dispose();
         world.dispose();
         Gdx.input.setInputProcessor(null);
-        //music.dispose();
+        music.dispose();
         ohYeahSound.dispose();
     }
 
@@ -417,7 +423,7 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     public void setGameEndedMessage(GameEndedMessage gameEndedMessage) {
         this.gameEndedMessage = gameEndedMessage;
 
-        //music.stop();
+        music.stop();
         ohYeahSound.play();
     }
 }

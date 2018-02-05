@@ -3,6 +3,8 @@ package at.shootme.entity.pickups;
 import at.shootme.SM;
 import at.shootme.entity.general.SimpleDrawableEntity;
 import at.shootme.entity.player.Player;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -22,6 +24,7 @@ public class SpeedUpPickup extends SimpleDrawableEntity implements Pickup {
     public static final Vector2 SIZE = new Vector2(100, 70).scl(PIXELS_TO_METERS);
     public final PickupType type = PickupType.SPEED_UP;
     private final float speedMultiplier = 1.5f;
+    private Sound pickupSound = Gdx.audio.newSound(Gdx.files.internal("assets/speedUpPickup.wav"));
 
     public SpeedUpPickup(Vector2 position) {
         sprite = new Sprite(SM.textureStore.getOrLoadTexture("assets/speedUp.png"));
@@ -54,6 +57,13 @@ public class SpeedUpPickup extends SimpleDrawableEntity implements Pickup {
             player.setCurrentPickup(type);
             player.setLastStatsUpAcquiredInGameSeconds(SM.gameScreen.getGameDurationSeconds());
         }
+        if (SM.isClient()) pickupSound.play();
         SM.level.queueForRemoval(this);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        pickupSound.dispose();
+        super.finalize();
     }
 }

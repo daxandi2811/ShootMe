@@ -22,7 +22,7 @@ public class CoinBagPickup extends SimpleDrawableEntity implements Pickup{
 
     public static final Vector2 SIZE = new Vector2(50, 50).scl(PIXELS_TO_METERS);
     public static final int SCORE_PER_GoldBag = 100;
-    private Sound pickupSound = Gdx.audio.newSound(Gdx.files.internal("assets/coinPickup.wav"));
+    private Sound pickupSound = Gdx.audio.newSound(Gdx.files.internal("assets/coinBagPickup.wav"));
 
     public CoinBagPickup(Vector2 position) {
         sprite = new Sprite(SM.textureStore.getOrLoadTexture("assets/coin.png"));
@@ -51,8 +51,8 @@ public class CoinBagPickup extends SimpleDrawableEntity implements Pickup{
     public void pickedUpBy(Player player) {
         if (SM.isClient() && SM.gameScreen.getPlayer() == player) {
             player.setScore(player.getScore() + SCORE_PER_GoldBag);
-            pickupSound.play();
         }
+        if (SM.isClient()) pickupSound.play();
         SM.level.queueForRemoval(this);
     }
 

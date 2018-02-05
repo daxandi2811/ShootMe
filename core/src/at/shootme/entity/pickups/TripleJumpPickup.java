@@ -3,6 +3,8 @@ package at.shootme.entity.pickups;
 import at.shootme.SM;
 import at.shootme.entity.general.SimpleDrawableEntity;
 import at.shootme.entity.player.Player;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -21,6 +23,7 @@ public class TripleJumpPickup extends SimpleDrawableEntity implements Pickup {
 
     public static final Vector2 SIZE = new Vector2(70, 100).scl(PIXELS_TO_METERS);
     public final PickupType type = PickupType.TRIPLE_JUMP;
+    private Sound pickupSound = Gdx.audio.newSound(Gdx.files.internal("assets/tripleJumpPickup.wav"));
 
     public TripleJumpPickup(Vector2 position) {
         sprite = new Sprite(SM.textureStore.getOrLoadTexture("assets/tripleJump.png"));
@@ -53,6 +56,13 @@ public class TripleJumpPickup extends SimpleDrawableEntity implements Pickup {
             player.setCurrentPickup(type);
             player.setLastStatsUpAcquiredInGameSeconds(SM.gameScreen.getGameDurationSeconds());
         }
+        if (SM.isClient()) pickupSound.play();
         SM.level.queueForRemoval(this);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        pickupSound.dispose();
+        super.finalize();
     }
 }
