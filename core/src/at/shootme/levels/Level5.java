@@ -63,7 +63,7 @@ public class Level5 extends Level {
             //add(LevelUtility.createPlatform(new Vector2(-levelWidth / 2 - 600, levelHeight - 400), new Vector2(400, 50), floorType, world));
 
             //bottom right horizontally
-            add(LevelUtility.createPlatform(new Vector2(levelWidth - 400, levelHeight - 400), new Vector2(500, 50), floorType, world));
+            add(LevelUtility.createPlatform(new Vector2(levelWidth - 400, levelHeight - 450), new Vector2(500, 50), floorType, world));
         }
     }
 }
