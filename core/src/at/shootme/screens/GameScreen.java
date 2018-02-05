@@ -10,7 +10,9 @@ import at.shootme.logic.StepListener;
 import at.shootme.networking.GameEndedMessage;
 import at.shootme.physics.GameContactFilter;
 import at.shootme.physics.GameContactListener;
+import at.shootme.pickupgeneration.DeadPlayerRespawner;
 import at.shootme.pickupgeneration.PickupGenerator;
+import at.shootme.pickupgeneration.StatsUpRemover;
 import at.shootme.state.data.GameStateType;
 import at.shootme.util.vectors.Vector2Util;
 import com.badlogic.gdx.Gdx;
@@ -129,6 +131,9 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
 
         if(SM.isServer()){
             registerStepListener(10, new PickupGenerator());
+            registerStepListener(20, new DeadPlayerRespawner());
+        }else{
+            registerStepListener(30, new StatsUpRemover());
         }
 
         bigFont = new BitmapFont();

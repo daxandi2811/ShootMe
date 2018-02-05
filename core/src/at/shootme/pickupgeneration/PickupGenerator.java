@@ -5,6 +5,9 @@ import at.shootme.ShootMeConstants;
 import at.shootme.entity.level.Platform;
 import at.shootme.entity.pickups.CoinBagPickup;
 import at.shootme.entity.pickups.CoinPickup;
+import at.shootme.entity.pickups.SpeedUpPickup;
+import at.shootme.entity.pickups.TripleJumpPickup;
+import at.shootme.entity.player.Player;
 import at.shootme.logic.StepListener;
 import com.badlogic.gdx.math.Vector2;
 
@@ -19,6 +22,8 @@ public class PickupGenerator implements StepListener {
     public static final float COIN_GENERATION_INTERVAL = 5f;
     public static final float COINBAG_GENERATION_INTERVAL = 21f;
     private float lastTimeGeneratedCoinGameSeconds = 0;
+    public static final float STATS_UP_GENERATION_INTERVAL = 7f;
+    private float lastTimeGeneratedStatsUpSeconds = 0;
     private float lastTimeGeneratedCoinBagGameSeconds = 0;
 
     /**
@@ -37,6 +42,10 @@ public class PickupGenerator implements StepListener {
             lastTimeGeneratedCoinBagGameSeconds = gameDurationSeconds;
             //TODO: find a solution?
             /**generateCoinBag();*/
+        }
+        if (gameDurationSeconds > lastTimeGeneratedStatsUpSeconds + STATS_UP_GENERATION_INTERVAL) {
+            lastTimeGeneratedStatsUpSeconds = gameDurationSeconds;
+            generateStatsUp();
         }
     }
 
@@ -57,6 +66,24 @@ public class PickupGenerator implements StepListener {
         if (position != null) {
             CoinBagPickup coinBagPickup = new CoinBagPickup(position);
             SM.level.add(coinBagPickup);
+        }
+    }
+
+    private void generateStatsUp() {
+        Vector2 position = RandomPositionGenerator.getRandomPositionWithMaxGroundGap(SpeedUpPickup.SIZE);
+        Random rand = new Random();
+        if (position != null) {
+            int pickupNumber = rand.nextInt(2);
+            switch(pickupNumber){
+                case 0:
+                    SpeedUpPickup speedUpPickup = new SpeedUpPickup(position);
+                    SM.level.add(speedUpPickup);
+                    break;
+                case 1:
+                    TripleJumpPickup tripleJumpPickup = new TripleJumpPickup(position);
+                    SM.level.add(tripleJumpPickup);
+                    break;
+            }
         }
     }
 }

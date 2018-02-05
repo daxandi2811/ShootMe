@@ -6,6 +6,7 @@ import at.shootme.beans.ViewDirection;
 import at.shootme.entity.EntityCategory;
 import at.shootme.entity.general.SimpleDrawableEntity;
 import at.shootme.entity.level.Platform;
+import at.shootme.entity.pickups.PickupType;
 import at.shootme.entity.shot.StandardShot;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.util.vectors.Vector2Util;
@@ -31,9 +32,16 @@ public class Player extends SimpleDrawableEntity {
 
     private String texturepath;
 
-    private int availableJumps = 2;
+    private int maxJumps = 2;
+    private int availableJumps = maxJumps;
     private int score = 0;
+    private int health = 100;
+    private float speed = 1;
     private String name;
+    private float lastDeathTimeInGameSeconds;
+    private float lastStatsUpAcquiredInGameSeconds;
+    private Vector2 size;
+    private PickupType currentPickup;
 
     private Sound jumpSound = Gdx.audio.newSound(Gdx.files.internal("assets/jump.wav"));
 
@@ -60,7 +68,10 @@ public class Player extends SimpleDrawableEntity {
         PolygonShape shape = new PolygonShape();
 
         //The minus 3 makes the polygon slightly smaller than the sprite so there are no visible gaps between the world and the player
-        shape.setAsBox((sprite.getWidth() - 3) / 2 * PIXELS_TO_METERS, (sprite.getHeight() - 3) / 2 * PIXELS_TO_METERS);
+        float width = (sprite.getWidth() - 3) * PIXELS_TO_METERS;
+        float height = (sprite.getHeight() - 3) * PIXELS_TO_METERS;
+        shape.setAsBox(width / 2, height / 2);
+        this.size = new Vector2(width, height);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -76,6 +87,9 @@ public class Player extends SimpleDrawableEntity {
     }
 
     public void setHorizontalMovementState(HorizontalMovementState horizontalMovementState) {
+        if (isDead()) {
+            horizontalMovementState = HorizontalMovementState.STOPPING;
+        }
         this.horizontalMovementState = horizontalMovementState;
     }
 
@@ -93,7 +107,8 @@ public class Player extends SimpleDrawableEntity {
         float desiredHorizontalVelocity = 0;
         switch (horizontalMovementState) {
             case LEFT:
-                desiredHorizontalVelocity = Math.max(velocity.x - 5f, -14f);
+                //desiredHorizontalVelocity = Math.max(velocity.x - 5f, -14f);
+                desiredHorizontalVelocity = Math.max(velocity.x - 5f*speed, -14f*speed);
                 if (viewDirection != ViewDirection.LEFT) {
                     viewDirection = ViewDirection.LEFT;
                 }
@@ -102,7 +117,7 @@ public class Player extends SimpleDrawableEntity {
                 desiredHorizontalVelocity = velocity.x;
                 break;
             case RIGHT:
-                desiredHorizontalVelocity = Math.min(velocity.x + 5f, 14f);
+                desiredHorizontalVelocity = Math.min(velocity.x + 5f*speed, 14f*speed);
                 if (viewDirection != ViewDirection.RIGHT) {
                     viewDirection = ViewDirection.RIGHT;
                 }
@@ -136,6 +151,29 @@ public class Player extends SimpleDrawableEntity {
         return shot;
     }
 
+    public void receiveScore(int score) {
+        this.score += score;
+    }
+
+    public void receiveDamage(int damage) {
+        if (isDead()) {
+            return; // ignore, already ded
+        }
+        this.health = Math.max(health - damage, 0);
+        if (isDead()) {
+            onDeath();
+        }
+    }
+
+    private void onDeath() {
+        lastDeathTimeInGameSeconds = SM.gameScreen.getGameDurationSeconds();
+        setHorizontalMovementState(HorizontalMovementState.STOPPING);
+    }
+
+    public boolean isDead() {
+        return health == 0;
+    }
+
     private World getWorld() {
         return body.getWorld();
     }
@@ -144,8 +182,10 @@ public class Player extends SimpleDrawableEntity {
      * see, if double jump is available
      */
     public void jumpIfPossible() {
-        if (availableJumps > 0) {
-            jump();
+        if (!isDead()) {
+            if (availableJumps > 0) {
+                jump();
+            }
         }
     }
 
@@ -158,12 +198,18 @@ public class Player extends SimpleDrawableEntity {
         body.setLinearVelocity(body.getLinearVelocity().x, JUMP_SPEED);
     }
 
+    public void resetAllStats(){
+        maxJumps = 2;
+        speed = 1;
+    }
+
     /**
      * resets double jump when touching a ground-platform
+     *
      * @param platform
      */
     public void hitGround(Platform platform) {
-        availableJumps = 2;
+        availableJumps = maxJumps;
     }
 
     @Override
@@ -181,6 +227,22 @@ public class Player extends SimpleDrawableEntity {
     @Override
     public Body getBody() {
         return body;
+    }
+
+    public float getLastStatsUpAcquiredInGameSeconds() {
+        return lastStatsUpAcquiredInGameSeconds;
+    }
+
+    public void setLastStatsUpAcquiredInGameSeconds(float lastStatsUpAcquiredInGameSeconds) {
+        this.lastStatsUpAcquiredInGameSeconds = lastStatsUpAcquiredInGameSeconds;
+    }
+
+    public int getMaxJumps() {
+        return maxJumps;
+    }
+
+    public void setMaxJumps(int maxJumps) {
+        this.maxJumps = maxJumps;
     }
 
     public int getAvailableJumps() {
@@ -223,12 +285,45 @@ public class Player extends SimpleDrawableEntity {
         this.name = name;
     }
 
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public float getLastDeathTimeInGameSeconds() {
+        return lastDeathTimeInGameSeconds;
+    }
+
+    public Vector2 getSize() {
+        return size;
+    }
+
+    public PickupType getCurrentPickup() {
+        return currentPickup;
+    }
+
+    public void setCurrentPickup(PickupType currentPickup) {
+        this.currentPickup = currentPickup;
+    }
+
     public static class PlayerCreationMessage extends EntityCreationMessage {
 
         private int availableJumps;
         private String name;
         private String texturepath;
         private int score;
+        private int health;
 
         public int getAvailableJumps() {
             return availableJumps;
@@ -260,6 +355,14 @@ public class Player extends SimpleDrawableEntity {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public int getHealth() {
+            return health;
+        }
+
+        public void setHealth(int health) {
+            this.health = health;
         }
     }
 

@@ -23,6 +23,7 @@ public class StandardShot extends SimpleDrawableEntity implements Shot {
 
     private static final int TEXTURE_SCALE = 3;
     private static final String TEXTUREPATH = "assets/standard_bullet.png";
+    private static final int SCORE_FOR_KILLING_HIT = 100;
     private Entity originator;
     private Sound shotSound = Gdx.audio.newSound(Gdx.files.internal("assets/shot.wav"));
 
@@ -70,11 +71,25 @@ public class StandardShot extends SimpleDrawableEntity implements Shot {
         SM.level.queueForRemoval(this);
         if (SM.isClient()) {
             if (entity instanceof Player) {
-                if (originator instanceof Player) {
-                    Player originatorPlayer = (Player) originator;
-                    originatorPlayer.setScore(originatorPlayer.getScore() + 10);
-                }
+                hitPlayer((Player) entity, 10);
             }
+        }
+    }
+
+    private void hitPlayer(Player playerBeingHit, int damage) {
+        if(!playerBeingHit.isDead()) {
+            receiveScoreIfOriginatorIsPlayer(damage);
+            playerBeingHit.receiveDamage(damage);
+            if (playerBeingHit.isDead()) {
+                receiveScoreIfOriginatorIsPlayer(SCORE_FOR_KILLING_HIT);
+            }
+        }
+    }
+
+    private void receiveScoreIfOriginatorIsPlayer(int score) {
+        if (originator instanceof Player) {
+            Player originatorPlayer = (Player) originator;
+            originatorPlayer.receiveScore(score);
         }
     }
 

@@ -45,4 +45,5 @@ public abstract class SimpleDrawableEntity implements Entity, Drawable {
         if (this.id != null) throw new IllegalArgumentException();
         this.id = id;
     }
+
 }
