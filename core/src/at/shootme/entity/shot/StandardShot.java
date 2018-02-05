@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
+import static at.shootme.ShootMeConstants.METERS_TO_PIXELS;
 import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
 
 /**
@@ -21,9 +22,9 @@ import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
  */
 public class StandardShot extends SimpleDrawableEntity implements Shot {
 
-    private static final int TEXTURE_SCALE = 3;
     private static final String TEXTUREPATH = "assets/standard_bullet.png";
     private static final int SCORE_FOR_KILLING_HIT = 100;
+    public static final Vector2 SIZE = new Vector2(30, 30).scl(PIXELS_TO_METERS);
     private Entity originator;
     private Sound shotSound = Gdx.audio.newSound(Gdx.files.internal("assets/shot.wav"));
 
@@ -32,8 +33,7 @@ public class StandardShot extends SimpleDrawableEntity implements Shot {
 
         Texture texture = SM.textureStore.getOrLoadTexture(TEXTUREPATH);
         sprite = new Sprite(texture);
-        sprite.setScale(TEXTURE_SCALE);
-
+        sprite.setSize(SIZE.cpy().scl(METERS_TO_PIXELS).x, SIZE.cpy().scl(METERS_TO_PIXELS).y);
         sprite.setOriginCenter();
 
         BodyDef bodyDef = new BodyDef();
