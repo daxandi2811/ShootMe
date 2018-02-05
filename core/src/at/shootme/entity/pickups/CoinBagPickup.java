@@ -20,12 +20,12 @@ import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
  */
 public class CoinBagPickup extends SimpleDrawableEntity implements Pickup{
 
-    public static final Vector2 SIZE = new Vector2(50, 50).scl(PIXELS_TO_METERS);
-    public static final int SCORE_PER_GoldBag = 100;
+    public static final Vector2 SIZE = new Vector2(90, 90).scl(PIXELS_TO_METERS);
+    public static final int SCORE_PER_GOLDBAG = 300;
     private Sound pickupSound = Gdx.audio.newSound(Gdx.files.internal("assets/coinBagPickup.wav"));
 
     public CoinBagPickup(Vector2 position) {
-        sprite = new Sprite(SM.textureStore.getOrLoadTexture("assets/coin.png"));
+        sprite = new Sprite(SM.textureStore.getOrLoadTexture("assets/goldbag.png"));
         sprite.setSize(SIZE.cpy().scl(METERS_TO_PIXELS).x, SIZE.cpy().scl(METERS_TO_PIXELS).y);
         sprite.setOriginCenter();
 
@@ -50,7 +50,7 @@ public class CoinBagPickup extends SimpleDrawableEntity implements Pickup{
     @Override
     public void pickedUpBy(Player player) {
         if (SM.isClient() && SM.gameScreen.getPlayer() == player) {
-            player.setScore(player.getScore() + SCORE_PER_GoldBag);
+            player.setScore(player.getScore() + SCORE_PER_GOLDBAG);
         }
         if (SM.isClient()) pickupSound.play();
         SM.level.queueForRemoval(this);

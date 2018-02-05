@@ -40,8 +40,7 @@ public class PickupGenerator implements StepListener {
 
         if (gameDurationSeconds > lastTimeGeneratedCoinBagGameSeconds + COINBAG_GENERATION_INTERVAL) {
             lastTimeGeneratedCoinBagGameSeconds = gameDurationSeconds;
-            //TODO: find a solution?
-            /**generateCoinBag();*/
+            generateCoinBag();
         }
         if (gameDurationSeconds > lastTimeGeneratedStatsUpSeconds + STATS_UP_GENERATION_INTERVAL) {
             lastTimeGeneratedStatsUpSeconds = gameDurationSeconds;
