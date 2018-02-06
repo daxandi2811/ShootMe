@@ -21,7 +21,7 @@ import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
 public class CoinBagPickup extends SimpleDrawableEntity implements Pickup{
 
     public static final Vector2 SIZE = new Vector2(90, 90).scl(PIXELS_TO_METERS);
-    public static final int SCORE_PER_GOLDBAG = 300;
+    public static final int SCORE_PER_GOLDBAG = 500;
     private Sound pickupSound = Gdx.audio.newSound(Gdx.files.internal("assets/coinBagPickup.wav"));
 
     public CoinBagPickup(Vector2 position) {

@@ -21,7 +21,7 @@ import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
 public class StandardShot extends SimpleDrawableEntity implements Shot {
 
     private static final String TEXTUREPATH = "assets/standard_bullet.png";
-    private static final int SCORE_FOR_KILLING_HIT = 500;
+    private static final int SCORE_FOR_KILLING_HIT = 700;
     public static final Vector2 SIZE = new Vector2(30, 30).scl(PIXELS_TO_METERS);
     private Entity originator;
     private Sound shotSound = Gdx.audio.newSound(Gdx.files.internal("assets/shot.wav"));
