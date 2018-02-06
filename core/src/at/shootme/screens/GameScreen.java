@@ -12,6 +12,7 @@ import at.shootme.physics.GameContactFilter;
 import at.shootme.physics.GameContactListener;
 import at.shootme.pickupgeneration.DeadPlayerRespawner;
 import at.shootme.pickupgeneration.PickupGenerator;
+import at.shootme.pickupgeneration.RandomPositionGenerator;
 import at.shootme.pickupgeneration.StatsUpRemover;
 import at.shootme.state.data.GameMode;
 import at.shootme.state.data.GameStateType;
@@ -121,16 +122,16 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
         batch = new SpriteBatch();
         windowBatch = new SpriteBatch();
 
+        SM.level = level;
+
         if (SM.isClient()) {
             player = new Player();
             String name = SM.playerName;
             player.setName(name);
             player.setTexturepath(SM.nextPlayerSkin.getTextureFilePath());
-            player.init(new Vector2(0, 100).scl(PIXELS_TO_METERS), world);
+            player.init(RandomPositionGenerator.generateRandomPositionInLevel(), world);
             level.add(player);
         }
-
-        SM.level = level;
 
         GameContactListener listener = new GameContactListener();
         registerStepListener(1, listener);
