@@ -27,7 +27,7 @@ public class ClientEventProcessor extends EventProcessor {
     @Override
     public void received(ServerClientConnection connection, Object message) {
         if (message instanceof EntityStateChangeMessage) {
-            if(SM.level == null){
+            if (SM.level == null) {
                 // in the rare case of receiving something before the level has been loaded when joining mid-game -> ignore
                 return;
             }
@@ -59,6 +59,10 @@ public class ClientEventProcessor extends EventProcessor {
             }
         } else if (message instanceof ServerTick) {
             ServerTick serverTick = (ServerTick) message;
+            if (SM.gameScreen == null) {
+                // prevent unlucky crash
+                return;
+            }
             SM.gameScreen.setGameDurationSeconds(serverTick.getCurrentGameDurationSeconds());
         } else if (message instanceof GameEndedMessage) {
             GameEndedMessage gameEndedMessage = (GameEndedMessage) message;
