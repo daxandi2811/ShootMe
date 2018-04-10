@@ -22,6 +22,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.temporal.TemporalUnit;
+
 import static at.shootme.ShootMeConstants.PIXELS_TO_METERS;
 
 /**
@@ -36,6 +41,12 @@ public class Player extends SimpleDrawableEntity {
     private ViewDirection viewDirection = ViewDirection.LEFT;
 
     private String texturepath;
+
+    private Texture left;
+    private Texture right;
+    private Texture rightWalk;
+    private Texture leftWalk;
+    private LocalTime changeTime = LocalTime.now();
 
     private int maxJumps = 2;
     private int availableJumps = maxJumps;
@@ -56,9 +67,12 @@ public class Player extends SimpleDrawableEntity {
     }
 
     public void init(Vector2 position, World world) {
+        left = SM.textureStore.getOrLoadTexture(Gdx.files.internal("assets/playersprite" + texturepath + "_left.png").path());
+        right = SM.textureStore.getOrLoadTexture(Gdx.files.internal("assets/playersprite" + texturepath + "_right.png").path());
+        rightWalk = SM.textureStore.getOrLoadTexture(Gdx.files.internal("assets/playersprite" + texturepath + "_right_walk.png").path());
+        leftWalk = SM.textureStore.getOrLoadTexture(Gdx.files.internal("assets/playersprite" + texturepath + "_left_walk.png").path());
 
-        Texture texture = SM.textureStore.getOrLoadTexture(texturepath);
-        sprite = new Sprite(texture);
+        sprite = new Sprite(left);
 
         sprite.setSize(sprite.getWidth() / 2, sprite.getHeight() / 2);
         sprite.setOriginCenter();
@@ -110,7 +124,6 @@ public class Player extends SimpleDrawableEntity {
         if (horizontalMovementState == HorizontalMovementState.STOPPING && Math.abs(velocity.x) < 0.001f) {
             horizontalMovementState = HorizontalMovementState.STOPPED;
         }
-
         float desiredHorizontalVelocity = 0;
         switch (horizontalMovementState) {
             case LEFT:
@@ -118,6 +131,15 @@ public class Player extends SimpleDrawableEntity {
                 desiredHorizontalVelocity = Math.max(velocity.x - 5f * speed, -14f * speed);
                 if (viewDirection != ViewDirection.LEFT) {
                     viewDirection = ViewDirection.LEFT;
+                    sprite.setTexture(left);
+                }
+                if (Duration.between(changeTime, LocalTime.now()).getNano() / 1000000 >= 150) {
+                    if (sprite.getTexture() == left) {
+                        sprite.setTexture(leftWalk);
+                    } else {
+                        sprite.setTexture(left);
+                    }
+                    changeTime = LocalTime.now();
                 }
                 break;
             case STOPPING:
@@ -127,10 +149,24 @@ public class Player extends SimpleDrawableEntity {
                 desiredHorizontalVelocity = Math.min(velocity.x + 5f * speed, 14f * speed);
                 if (viewDirection != ViewDirection.RIGHT) {
                     viewDirection = ViewDirection.RIGHT;
+                    sprite.setTexture(right);
+                }
+                if (Duration.between(changeTime, LocalTime.now()).getNano() / 1000000 >= 150) {
+                    if (sprite.getTexture() == right) {
+                        sprite.setTexture(rightWalk);
+                    } else {
+                        sprite.setTexture(right);
+                    }
+                    changeTime = LocalTime.now();
                 }
                 break;
             case STOPPED:
                 desiredHorizontalVelocity = 0;
+                if (horizontalMovementState == HorizontalMovementState.LEFT) {
+                    sprite.setTexture(left);
+                } else if (horizontalMovementState == HorizontalMovementState.RIGHT) {
+                    sprite.setTexture(right);
+                }
         }
 
         float horizontalVelocityChange = desiredHorizontalVelocity - velocity.x;
@@ -233,7 +269,6 @@ public class Player extends SimpleDrawableEntity {
 
     @Override
     public void draw(SpriteBatch batch) {
-        sprite.setFlip(viewDirection == ViewDirection.RIGHT, false);
         sprite.setRotation(isDead() ? -90 : 0);
         float verticalShift = isDead() ? -sprite.getHeight() / 3 : 0;
         sprite.setPosition(body.getPosition().x * ShootMeConstants.METERS_TO_PIXELS - sprite.getWidth() / 2, body.getPosition().y * ShootMeConstants.METERS_TO_PIXELS - sprite.getHeight() / 2 + verticalShift);

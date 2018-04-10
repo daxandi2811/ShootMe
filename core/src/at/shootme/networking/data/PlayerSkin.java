@@ -4,11 +4,10 @@ package at.shootme.networking.data;
  * Created by Nicole on 18.06.2017.
  */
 public enum PlayerSkin {
-    PLAYER_1("assets/playersprite1.png"),
-    PLAYER_2("assets/playersprite2.png"),
-    PLAYER_3("assets/playersprite3.png"),
-    PLAYER_4("assets/playersprite4.png"),
-    ;
+    PLAYER_1("1"),
+    PLAYER_2("2"),
+    PLAYER_3("3"),
+    PLAYER_4("4");
 
     private String textureFilePath;
 
