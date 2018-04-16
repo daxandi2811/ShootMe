@@ -3,7 +3,9 @@ package at.shootme.screens;
 import at.shootme.SM;
 import at.shootme.ShootMeConstants;
 import at.shootme.beans.HorizontalMovementState;
+import at.shootme.entity.pickups.PickupType;
 import at.shootme.entity.player.Player;
+import at.shootme.entity.shot.SpecialShot;
 import at.shootme.entity.shot.StandardShot;
 import at.shootme.levels.*;
 import at.shootme.logic.StepListener;
@@ -414,10 +416,17 @@ public class GameScreen implements Screen, InputProcessor, ShootMeConstants {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (SM.isClient()) {
             Vector2 worldClickPoint = Vector2Util.convertVector3To2(camera.unproject(new Vector3(screenX, screenY, 0)));
-            StandardShot shot = player.shootAt(worldClickPoint.scl(PIXELS_TO_METERS));
-            if (shot != null) {
-                level.add(shot);
-            }
+             if(player.getCurrentPickup() == PickupType.SPECIAL_SHOT){
+                 SpecialShot shot2 = player.shootSpecialAt(worldClickPoint.scl(PIXELS_TO_METERS));
+                 if (shot2 != null) {
+                     level.add(shot2);
+                 }
+             }else{
+                 StandardShot shot = player.shootAt(worldClickPoint.scl(PIXELS_TO_METERS));
+                 if (shot != null) {
+                     level.add(shot);
+                 }
+             }
             return true;
         } else {
             return false;

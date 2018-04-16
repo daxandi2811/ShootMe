@@ -7,7 +7,8 @@ import java.security.PrivateKey;
  */
 public enum PickupType {
     SPEED_UP(5f),
-    TRIPLE_JUMP(6f);
+    TRIPLE_JUMP(6f),
+    SPECIAL_SHOT(4f);
 
     float duration;
 
