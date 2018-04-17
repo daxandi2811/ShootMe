@@ -8,6 +8,7 @@ import at.shootme.entity.EntityCategory;
 import at.shootme.entity.general.SimpleDrawableEntity;
 import at.shootme.entity.level.Platform;
 import at.shootme.entity.pickups.PickupType;
+import at.shootme.entity.shot.SpecialShot;
 import at.shootme.entity.shot.StandardShot;
 import at.shootme.networking.data.entity.EntityCreationMessage;
 import at.shootme.state.data.GameMode;
@@ -196,6 +197,31 @@ public class Player extends SimpleDrawableEntity {
         Vector2 initialShotVelocity = directionVector.scl(initialShotSpeed);
 
         StandardShot shot = new StandardShot(playerPosition, initialShotVelocity, this, getWorld());
+//        System.out.println("playerPosition: "+ playerPosition + " --- " + "clickPosition: "+ clickPosition + " --- " + "initialShotVelocity: "+ initialShotVelocity);
+//        System.out.println("directionVector: "+ directionVector + " --- " + "angle: "+ angle + " --- ");
+        return shot;
+    }
+
+    public SpecialShot shootSpecialAt(Vector2 clickPosition) {
+        if (isDead()) {
+            return null;
+        }
+        if (lastTimeShot + 0.2 > SM.gameScreen.getGameDurationSeconds()) {
+            return null;
+        }
+        lastTimeShot = SM.gameScreen.getGameDurationSeconds();
+
+        Vector2 playerPosition = body.getPosition();
+
+        float angle = Vector2Util.getAngleFromAToB(playerPosition, clickPosition);
+        Vector2 directionVector = Vector2Util.degreeToVector2(angle);
+
+        float distance = playerPosition.dst(clickPosition);
+        int initialShotSpeed = 10;
+        System.out.println(initialShotSpeed);
+        Vector2 initialShotVelocity = directionVector.scl(initialShotSpeed);
+
+        SpecialShot shot = new SpecialShot(playerPosition, initialShotVelocity, this, getWorld());
 //        System.out.println("playerPosition: "+ playerPosition + " --- " + "clickPosition: "+ clickPosition + " --- " + "initialShotVelocity: "+ initialShotVelocity);
 //        System.out.println("directionVector: "+ directionVector + " --- " + "angle: "+ angle + " --- ");
         return shot;

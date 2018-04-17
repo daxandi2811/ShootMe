@@ -16,15 +16,15 @@ public class NetworkingUtils {
 
     /**
      * creates an entity creation message for all given entities
+     *
      * @param entities
      * @return
      */
     public static List<EntityCreationMessage> createEntityCreationMessages(List<Entity> entities) {
         return entities.stream().map(entity -> {
             EntityTypeHandler handler = SM.entityTypeHandlerRegistry.getHandlerFor(entity);
-            if(handler == null)
-            {
-                System.out.println("HELP");
+            if (handler == null) {
+                throw new RuntimeException("did not find handler for " + entity);
             }
             return handler.createEntityCreationMessage(entity);
         }).collect(Collectors.toList());

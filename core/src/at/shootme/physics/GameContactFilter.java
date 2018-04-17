@@ -3,6 +3,7 @@ package at.shootme.physics;
 import at.shootme.entity.EntityCategory;
 import at.shootme.entity.general.Entity;
 import at.shootme.entity.shot.Shot;
+import at.shootme.entity.shot.SpecialShot;
 import com.badlogic.gdx.physics.box2d.ContactFilter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 
@@ -37,6 +38,10 @@ public class GameContactFilter implements ContactFilter {
         }
 
         if (categoryA.isOneOf(EntityCategory.SHOT) && categoryB == EntityCategory.SHOT) {
+            return false;
+        }
+
+        if(entityA instanceof SpecialShot || entityB instanceof SpecialShot ){
             return false;
         }
 

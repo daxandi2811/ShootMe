@@ -4,6 +4,7 @@ import at.shootme.SM;
 import at.shootme.entity.general.Entity;
 import at.shootme.entity.general.EntityTypeHandler;
 import at.shootme.entity.player.Player;
+import at.shootme.entity.shot.SpecialShot;
 import at.shootme.entity.shot.StandardShot;
 import at.shootme.networking.GameEndedMessage;
 import at.shootme.networking.data.PlayerSkin;
@@ -77,6 +78,12 @@ public class ClientEventProcessor extends EventProcessor {
         }
         if (entity instanceof StandardShot) {
             Entity originator = ((StandardShot) entity).getOriginator();
+            if (originator == SM.gameScreen.getPlayer()) {
+                return;
+            }
+        }
+        if (entity instanceof SpecialShot) {
+            Entity originator = ((SpecialShot) entity).getOriginator();
             if (originator == SM.gameScreen.getPlayer()) {
                 return;
             }

@@ -2,11 +2,9 @@ package at.shootme.entity.general;
 
 
 import at.shootme.entity.level.PlatformHandler;
-import at.shootme.entity.pickups.CoinBagPickupHandler;
-import at.shootme.entity.pickups.CoinPickupHandler;
-import at.shootme.entity.pickups.SpeedUpPickupHandler;
-import at.shootme.entity.pickups.TripleJumpPickupHandler;
+import at.shootme.entity.pickups.*;
 import at.shootme.entity.player.PlayerHandler;
+import at.shootme.entity.shot.SpecialShotHandler;
 import at.shootme.entity.shot.StandardShotHandler;
 
 import java.util.HashMap;
@@ -25,10 +23,12 @@ public class EntityTypeHandlerRegistry {
         entityTypeHandlers.add(new PlatformHandler());
         entityTypeHandlers.add(new PlayerHandler());
         entityTypeHandlers.add(new StandardShotHandler());
+        entityTypeHandlers.add(new SpecialShotHandler());
         entityTypeHandlers.add(new CoinPickupHandler());
         entityTypeHandlers.add(new CoinBagPickupHandler());
         entityTypeHandlers.add(new SpeedUpPickupHandler());
         entityTypeHandlers.add(new TripleJumpPickupHandler());
+        entityTypeHandlers.add(new SpecialShotPickupHandler());
         entityTypeHandlers.forEach((entityTypeHandler) -> register(entityTypeHandler));
     }
 

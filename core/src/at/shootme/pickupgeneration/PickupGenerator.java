@@ -3,10 +3,7 @@ package at.shootme.pickupgeneration;
 import at.shootme.SM;
 import at.shootme.ShootMeConstants;
 import at.shootme.entity.level.Platform;
-import at.shootme.entity.pickups.CoinBagPickup;
-import at.shootme.entity.pickups.CoinPickup;
-import at.shootme.entity.pickups.SpeedUpPickup;
-import at.shootme.entity.pickups.TripleJumpPickup;
+import at.shootme.entity.pickups.*;
 import at.shootme.entity.player.Player;
 import at.shootme.logic.StepListener;
 import at.shootme.state.data.GameMode;
@@ -75,7 +72,7 @@ public class PickupGenerator implements StepListener {
         Vector2 position = RandomPositionGenerator.getRandomPositionWithMaxGroundGap(SpeedUpPickup.SIZE);
         Random rand = new Random();
         if (position != null) {
-            int pickupNumber = rand.nextInt(2);
+            int pickupNumber = rand.nextInt(3);
             switch (pickupNumber) {
                 case 0:
                     SpeedUpPickup speedUpPickup = new SpeedUpPickup(position);
@@ -84,6 +81,10 @@ public class PickupGenerator implements StepListener {
                 case 1:
                     TripleJumpPickup tripleJumpPickup = new TripleJumpPickup(position);
                     SM.level.add(tripleJumpPickup);
+                    break;
+                case 2:
+                    SpecialShotPickup specialShotPickup = new SpecialShotPickup(position);
+                    SM.level.add(specialShotPickup);
                     break;
             }
         }
